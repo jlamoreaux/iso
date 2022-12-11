@@ -1,0 +1,42 @@
+# ISO Server
+
+The backend of the ISO platform, a SaaS platform that helps photographers find and hire other
+photographers as associates, assistants, and second shooters.
+
+## Prerequisites
+
+- Node.js > 18.x
+- MongoDB >= 4.2.x
+
+## Setup
+
+Set the following environment variables in a .env file in the project root directory:
+
+```
+PORT=3000
+MONGO_URL=mongodb://localhost:27017/iso
+JWT_SECRET=your-jwt-secret-here
+STRIPE_SECRET_KEY=your-stripe-secret-key-here
+```
+
+Compose and run docker:
+
+```
+docker-compose up
+```
+
+Start the backend server:
+
+```
+yarn start
+```
+
+## API
+
+The API of the ISO backend is organized into the following routes:
+
+- `/auth`: Routes for user authentication, registration, and password reset.
+- `/users`: Routes for managing users and their profiles.
+- `/photographers`: Routes for searching for photographers and booking their services.
+- `/messages`: Routes for managing messages between users.
+- `/payments`: Routes for managing payments and subscriptions.
