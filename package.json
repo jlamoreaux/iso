@@ -1,6 +1,7 @@
 {
   "name": "iso",
   "private": true,
+  "description": "ISO is a platform that helps photographers find and hire other photographers",
   "workspaces": [
     "packages/*"
   ],

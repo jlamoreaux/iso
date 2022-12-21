@@ -1,7 +1,8 @@
 {
   "name": "server",
   "version": "1.0.0",
-  "description": "ISO is a platform that helps photographers find and hire other photographers",
+  "private": "true",
+  "description": "Backend server for the ISO platform",
   "type": "module",
   "main": "dist/app.js",
   "engines": {
