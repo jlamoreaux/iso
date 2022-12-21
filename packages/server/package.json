@@ -1,5 +1,5 @@
 {
-  "name": "iso-app",
+  "name": "server",
   "version": "1.0.0",
   "description": "ISO is a platform that helps photographers find and hire other photographers",
   "type": "module",
