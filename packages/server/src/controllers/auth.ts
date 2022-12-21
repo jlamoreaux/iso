@@ -2,7 +2,7 @@
 import { Response, Request, NextFunction } from "express";
 import DALPhotographer from "../data/photographer";
 import logger from "../utils/logger";
-import { AUTH_TYPE, hashPassword } from "../lib/auth";
+import passport, { AUTH_TYPE, hashPassword } from "../lib/auth";
 import { IPhotographer, PhotographerDocument } from "../models/Photographer";
 
 const registerUser = async (
@@ -40,18 +40,9 @@ export const login = async (req: Request, res: Response): Promise<Response | voi
   const loggerMetadata = {
     function: "login",
   };
-  if (!req.body.email || !req.body.password) {
-    logger.warn("Photographer not found", loggerMetadata);
-    return res.status(404).json({ message: "Photographer not found" });
-  }
   logger.info("Logging in photographer", loggerMetadata);
-  req.login(req.user!, (err: Error) => {
-    if (err) {
-      logger.error("Error logging in photographer", { ...loggerMetadata, error: err });
-      return res.sendStatus(500).json({ message: "Error logging in photographer" });
-    }
-    // return res.send(req.user);
-  });
+  passport.authenticate("local", { failureMessage: "Invalid credentials" });
+  res.sendStatus(200);
 };
 
 // registers a photographer

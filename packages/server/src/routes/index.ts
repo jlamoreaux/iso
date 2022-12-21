@@ -42,10 +42,6 @@ router.delete("/events/:id", catchErrors(deleteEvent));
 
 // Auth routes
 router.post("/register", catchErrors(register), catchErrors(login));
-router.post(
-  "/login",
-  passport.authenticate("local", { failureMessage: "Invalid credentials" }),
-  (req, res) => res.sendStatus(200),
-);
+router.post("/login", catchErrors(login));
 
 export default router;
