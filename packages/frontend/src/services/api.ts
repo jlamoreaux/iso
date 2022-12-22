@@ -96,7 +96,7 @@ export const authTest = async () => {
 
 // Photographer routes
 
-export const getPhotographerById = async (id: string): Promise<Photographer> => {
+export const getPhotographerById = async (id: string | undefined): Promise<Photographer> => {
   try {
     const res = await api.get(`/api/photographer/${id}`);
     return res.data;
