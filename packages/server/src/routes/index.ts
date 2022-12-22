@@ -13,10 +13,9 @@ import {
   deleteMessage,
 } from "../controllers/messages";
 import { getEvents, getEvent, createEvent, updateEvent, deleteEvent } from "../controllers/events";
-import { register, login } from "../controllers/auth";
+import { register, login, logout, authTest } from "../controllers/auth";
 import { catchErrors } from "../utils/catchErrors";
-import passport from "../lib/auth";
-import { AUTH_TYPE } from "../lib/auth";
+import passport from "passport";
 
 const router = Router();
 
@@ -42,6 +41,15 @@ router.delete("/events/:id", catchErrors(deleteEvent));
 
 // Auth routes
 router.post("/register", catchErrors(register), catchErrors(login));
-router.post("/login", catchErrors(login));
+router.post(
+  "/login",
+  passport.authenticate("local", {
+    failureMessage: "Invalid credentials",
+    successMessage: "Logged in user",
+  }),
+  catchErrors(login),
+);
+router.post("/logout", catchErrors(logout));
+router.get("/authtest", catchErrors(authTest));
 
 export default router;

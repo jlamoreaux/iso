@@ -4,6 +4,7 @@ import DALPhotographer from "../data/photographer";
 import logger from "../utils/logger";
 import passport, { AUTH_TYPE, hashPassword } from "../lib/auth";
 import { IPhotographer, PhotographerDocument } from "../models/Photographer";
+import { serializeUser } from "passport";
 
 const registerUser = async (
   photographerData: IPhotographer,
@@ -37,12 +38,37 @@ const registerUser = async (
 
 // login a photographer using passport library
 export const login = async (req: Request, res: Response): Promise<Response | void> => {
+  const user = req.user as IPhotographer;
   const loggerMetadata = {
     function: "login",
   };
   logger.info("Logging in photographer", loggerMetadata);
-  passport.authenticate("local", { failureMessage: "Invalid credentials" });
-  res.sendStatus(200);
+  await passport.authenticate(
+    "local",
+    {
+      failureMessage: "Invalid credentials",
+      successMessage: "Logged in user",
+    },
+    (error) => {
+      if (error) {
+        return res.send(error);
+      }
+    },
+  );
+  return res.json({ id: user.id }).sendStatus(200);
+};
+
+// logout a photographer
+export const logout = async (req: Request, res: Response): Promise<Response | void> => {
+  const loggerMetadata = { function: "logout", user: req.user };
+  logger.info("Logging out user", loggerMetadata);
+  req.logout((error) => {
+    if (error) {
+      logger.error("Error during logout", { ...loggerMetadata, error });
+      res.sendStatus(500);
+    }
+    res.sendStatus(200);
+  });
 };
 
 // registers a photographer
@@ -76,4 +102,12 @@ export const register = async (
     logger.error("Error when registering photographer", { ...loggerMetadata, error });
     return res.status(500).json({ message: "Error when registering photographer" });
   }
+};
+
+export const authTest = async (req: Request, res: Response) => {
+  logger.info("Auth test", { user: req.user });
+  await passport.authenticate("local", {
+    failureMessage: "Unauthorized",
+    successMessage: "Authorized",
+  });
 };

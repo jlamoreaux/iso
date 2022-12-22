@@ -24,7 +24,6 @@ passport.use(
     {
       usernameField: "email",
       passwordField: "password",
-      passReqToCallback: false,
     },
     async (email, password, done) => {
       try {
@@ -34,10 +33,13 @@ passport.use(
         }
         const validate = await photographer.isValidPassword(password);
         if (!validate) {
+          logger.info("User attempted wrong password", { userId: photographer._id });
           return done(null, false);
         }
+        logger.info("Passport local strategy completed", { photographer });
         return done(null, photographer, { message: "Logged in Successfully" });
       } catch (error) {
+        logger.error("Error handling passport local strategy", { error });
         return done(error);
       }
     },
@@ -133,10 +135,11 @@ passport.serializeUser((user: any, done) => {
   });
 });
 
-passport.deserializeUser(async (id: string, done) => {
+passport.deserializeUser(async (user: Express.User, done) => {
+  const currentUser = user as IPhotographer;
   try {
-    const user = await DALPhotographer.findById(id);
-    done(null, user);
+    const photographer = await DALPhotographer.findById(currentUser.id!);
+    done(null, photographer);
   } catch (error) {
     done(error, false);
   }

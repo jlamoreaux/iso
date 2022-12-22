@@ -7,14 +7,21 @@ import mongoose from "mongoose";
 import router from "./routes";
 import passport from "passport";
 import { config } from "dotenv";
+import path from "path";
+import { fileURLToPath } from "url";
 
 config();
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const inProd = process.env.NODE_ENV === "production";
 const port = process.env.PORT || 3001;
 const app = express();
 
 app.use(express.urlencoded({ extended: false }));
+app.use(cors({ credentials: true, origin: "http://localhost:5173" }));
+app.use(express.static(path.join(__dirname, "public")));
 app.use(passport.initialize());
 app.use(
   session({
@@ -22,14 +29,13 @@ app.use(
     resave: false,
     saveUninitialized: false,
     cookie: {
-      secure: inProd ? true : "auto",
+      secure: false,
       sameSite: inProd ? "none" : "lax",
       maxAge: 1000 * 60 * 60 * 24 * 7, // 7 days
     },
   }),
 );
 app.use(passport.session());
-app.use(cors({ credentials: true, origin: "http://localhost:5173" }));
 app.use(requestId());
 app.use(express.json());
 app.use(router);

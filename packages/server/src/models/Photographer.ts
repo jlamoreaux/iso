@@ -32,6 +32,7 @@ export type IPhotographer = {
   availability?: Date[];
   regions?: string[];
   profilePic?: string;
+  portfolioImages?: string[];
   bio?: string;
   isTrial?: boolean;
   isPro?: boolean;
@@ -127,6 +128,10 @@ const PhotographerSchema = new Schema({
   },
   profilePic: {
     type: String,
+    required: false,
+  },
+  portfolioImages: {
+    type: [String],
     required: false,
   },
   bio: {
