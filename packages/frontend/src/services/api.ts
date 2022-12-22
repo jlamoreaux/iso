@@ -28,6 +28,15 @@ export type Photographer = User & {
   portfolioImages?: string[];
 };
 
+export type Message = {
+  sender: Photographer;
+  recipient: Photographer;
+  message: string;
+  date?: Date;
+  isRead?: boolean;
+  reactions?: string[];
+};
+
 export interface LoginResponse {
   id: string;
 }
@@ -56,11 +65,15 @@ const api = axios.create({
 });
 
 export const login = async (email: string, password: string): Promise<LoginResponse> => {
-  const res = await api.post<LoginResponse>("/login", {
-    email,
-    password,
-  });
-  return res.data;
+  try {
+    const res = await api.post<LoginResponse>("/login", {
+      email,
+      password,
+    });
+    return res.data;
+  } catch (error) {
+    throw error;
+  }
 };
 
 export const logout = async () => {
@@ -68,8 +81,150 @@ export const logout = async () => {
 };
 
 export const register = async (data: RegisterRequest): Promise<RegisterResponse> => {
-  const res = await api.post<RegisterResponse>("/register", data);
-  return res.data;
+  try {
+    const res = await api.post<RegisterResponse>("/register", data);
+    return res.data;
+  } catch (error) {
+    throw error;
+  }
+};
+
+// Photographer routes
+
+export const getPhotographerById = async (id: string): Promise<Photographer> => {
+  try {
+    const res = await api.get(`/api/photographer/${id}`);
+    return res.data;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const updatePhotographerById = async (
+  id: string,
+  photographer: Photographer,
+): Promise<void> => {
+  try {
+    const res = await api.put(`/api/photographer/${id}`, photographer);
+    return res.data;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const getPhotographersByRegion = async (region: string): Promise<Photographer[]> => {
+  try {
+    const res = await api.get(`/api/photographers/${region}`);
+    return res.data;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const getPhotographersByRegionAndAvailability = async (
+  region: string,
+  date: string,
+): Promise<Photographer[]> => {
+  try {
+    const res = await api.get(`/api/photographers/${region}/${date}`);
+    return res.data;
+  } catch (error) {
+    throw error;
+  }
+};
+
+// Message routes
+
+export const getMessages = async (): Promise<Message[]> => {
+  try {
+    const res = await api.get("/api/messages");
+    return res.data;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const getMessage = async (id: string): Promise<Message> => {
+  try {
+    const res = await api.get(`/api/messages/${id}`);
+    return res.data;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const createMessage = async (message: Message): Promise<void> => {
+  try {
+    const res = await api.post("/api/messages", message);
+    return res.data;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const updateMessage = async (id: string, message: Message): Promise<void> => {
+  try {
+    const res = await api.put(`/api/messages/${id}`, message);
+    return res.data;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const deleteMessage = async (id: string): Promise<void> => {
+  try {
+    const res = await api.delete(`/api/messages/${id}`);
+    return res.data;
+  } catch (error) {
+    throw error;
+  }
+};
+
+// Event routes
+
+export const getEvents = async (): Promise<Event[]> => {
+  try {
+    const res = await api.get("/api/events");
+    return res.data;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const getEvent = async (id: string): Promise<Event> => {
+  try {
+    const res = await api.get(`/api/events/${id}`);
+    return res.data;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const createEvent = async (event: Event): Promise<void> => {
+  try {
+    const res = await api.post("/api/events", event);
+    return res.data;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const updateEvent = async (id: string, event: Event): Promise<void> => {
+  try {
+    const res = await api.put(`/api/events/${id}`, event);
+    return res.data;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const deleteEvent = async (id: string): Promise<void> => {
+  try {
+    const res = await api.delete(`/api/events/${id}`);
+    return res.data;
+  } catch (error) {
+    throw error;
+  }
 };
 
 export const authTest = async () => {
