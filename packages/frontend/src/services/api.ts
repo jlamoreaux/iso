@@ -89,6 +89,11 @@ export const register = async (data: RegisterRequest): Promise<RegisterResponse>
   }
 };
 
+export const authTest = async () => {
+  const response = await api.get("/authtest");
+  return response;
+};
+
 // Photographer routes
 
 export const getPhotographerById = async (id: string): Promise<Photographer> => {
@@ -225,14 +230,4 @@ export const deleteEvent = async (id: string): Promise<void> => {
   } catch (error) {
     throw error;
   }
-};
-
-export const authTest = async () => {
-  const response = await api.get("/authtest");
-  return response;
-};
-
-export const getPhotographer = async (id: string | undefined): Promise<Photographer> => {
-  const response = await api.get<Photographer>(`/photographer/${id}`);
-  return response.data;
 };

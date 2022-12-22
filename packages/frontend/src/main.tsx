@@ -7,7 +7,7 @@ import Logout from "./pages/auth/Logout";
 import Register from "./pages/auth/Register";
 import Profile from "./pages/profile";
 import Root from "./routes/Root";
-import { authTest, getPhotographer, logout } from "./services/api";
+import { authTest, getPhotographerById, logout } from "./services/api";
 import theme from "./styles/theme";
 import logoutLoader from "./utils/logoutLoader";
 
@@ -39,7 +39,7 @@ const router = createBrowserRouter([
   {
     path: "/photographer/:id",
     loader: async ({ params }) => {
-      const photographer = await getPhotographer(params.id);
+      const photographer = await getPhotographerById(params.id);
       return photographer;
     },
     element: <Profile />,
