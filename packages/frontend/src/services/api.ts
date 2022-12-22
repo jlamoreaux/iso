@@ -9,12 +9,27 @@ type User = {
   id: string;
   firstName: string;
   lastName: string;
+  profilePic?: string;
+};
+
+export type Photographer = User & {
+  company?: string;
   email: string;
+  phone?: string;
+  website?: string;
+  city?: string;
+  state?: string;
+  zip?: string;
+  gear?: any;
+  availability?: Date[];
+  regions?: string[];
+  profilePic?: string;
+  bio?: string;
+  portfolioImages?: string[];
 };
 
 export interface LoginResponse {
-  token: string;
-  user: User;
+  id: string;
 }
 
 export interface RegisterRequest {
@@ -48,7 +63,21 @@ export const login = async (email: string, password: string): Promise<LoginRespo
   return res.data;
 };
 
+export const logout = async () => {
+  return await api.post("/logout");
+};
+
 export const register = async (data: RegisterRequest): Promise<RegisterResponse> => {
   const res = await api.post<RegisterResponse>("/register", data);
   return res.data;
+};
+
+export const authTest = async () => {
+  const response = await api.get("/authtest");
+  return response;
+};
+
+export const getPhotographer = async (id: string | undefined): Promise<Photographer> => {
+  const response = await api.get<Photographer>(`/photographer/${id}`);
+  return response.data;
 };

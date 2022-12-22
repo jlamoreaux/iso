@@ -13,8 +13,8 @@ const Login: React.FC = () => {
     e.preventDefault();
     setError("");
     try {
-      await login(email, password);
-      navigate("/");
+      const response = await login(email, password);
+      navigate(`/photographer/${response.id}`);
     } catch (err) {
       setError("Invalid email or password");
     }
