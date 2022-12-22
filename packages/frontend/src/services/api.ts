@@ -47,7 +47,7 @@ export const login = async (email: string, password: string): Promise<LoginRespo
       password,
     });
     return res.data;
-  } catch(error){
+  } catch (error) {
     throw error;
   }
 };
@@ -56,42 +56,49 @@ export const register = async (data: RegisterRequest): Promise<RegisterResponse>
   try {
     const res = await api.post<RegisterResponse>("/register", data);
     return res.data;
-  } catch(error){
+  } catch (error) {
     throw error;
   }
 };
 
 // Photographer routes
 
-export const getPhotographerById = (id: string): Promise<Photographer> => {
+export const getPhotographerById = async (id: string): Promise<Photographer> => {
   try {
-    const res = api.get(`/api/photographer/${id}`);
+    const res = await api.get(`/api/photographer/${id}`);
     return res.data;
   } catch (error) {
     throw error;
   }
 };
 
-export const updatePhotographerById = (id: string, photographer: Photographer): Promise<void> => {
+export const updatePhotographerById = async (
+  id: string,
+  photographer: Photographer,
+): Promise<void> => {
   try {
-    api.put(`/api/photographer/${id}`, photographer);
-  } catch (error) {
-    throw error;
-  }
-};
-
-export const getPhotographersByRegion = (region: string): Promise<Photographer[]> => {
-  try {
-    const res = api.get(`/api/photographers/${region}`);
+    const res = await api.put(`/api/photographer/${id}`, photographer);
     return res.data;
   } catch (error) {
     throw error;
   }
 };
 
-export const getPhotographersByRegionAndAvailability = (region: string, date: string): Promise<Photographer[]> => {
+export const getPhotographersByRegion = async (region: string): Promise<Photographer[]> => {
   try {
-    const res = api.get(`/api/photographers/${region}/${date}`);
+    const res = await api.get(`/api/photographers/${region}`);
+    return res.data;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const getPhotographersByRegionAndAvailability = async (
+  region: string,
+  date: string,
+): Promise<Photographer[]> => {
+  try {
+    const res = await api.get(`/api/photographers/${region}/${date}`);
     return res.data;
   } catch (error) {
     throw error;
@@ -100,43 +107,46 @@ export const getPhotographersByRegionAndAvailability = (region: string, date: st
 
 // Message routes
 
-export const getMessages = (): Promise<Message[]> => {
+export const getMessages = async (): Promise<Message[]> => {
   try {
-    const res = api.get("/api/messages");
+    const res = await api.get("/api/messages");
     return res.data;
   } catch (error) {
     throw error;
   }
 };
 
-export const getMessage = (id: string): Promise<Message> => {
+export const getMessage = async (id: string): Promise<Message> => {
   try {
-    const res = api.get(`/api/messages/${id}`);
+    const res = await api.get(`/api/messages/${id}`);
     return res.data;
   } catch (error) {
     throw error;
   }
 };
 
-export const createMessage = (message: Message): Promise<void> => {
+export const createMessage = async (message: Message): Promise<void> => {
   try {
-    api.post("/api/messages", message);
+    const res = await api.post("/api/messages", message);
+    return res.data;
   } catch (error) {
     throw error;
   }
 };
 
-export const updateMessage = (id: string, message: Message): Promise<void> => {
+export const updateMessage = async (id: string, message: Message): Promise<void> => {
   try {
-    api.put(`/api/messages/${id}`, message);
+    const res = await api.put(`/api/messages/${id}`, message);
+    return res.data;
   } catch (error) {
     throw error;
   }
 };
 
-export const deleteMessage = (id: string): Promise<void> => {
+export const deleteMessage = async (id: string): Promise<void> => {
   try {
-    api.delete(`/api/messages/${id}`);
+    const res = await api.delete(`/api/messages/${id}`);
+    return res.data;
   } catch (error) {
     throw error;
   }
@@ -144,46 +154,47 @@ export const deleteMessage = (id: string): Promise<void> => {
 
 // Event routes
 
-export const getEvents = (): Promise<Event[]> => {
+export const getEvents = async (): Promise<Event[]> => {
   try {
-    const res = api.get("/api/events");
+    const res = await api.get("/api/events");
     return res.data;
   } catch (error) {
     throw error;
   }
 };
 
-export const getEvent = (id: string): Promise<Event> => {
+export const getEvent = async (id: string): Promise<Event> => {
   try {
-    const res = api.get(`/api/events/${id}`);
+    const res = await api.get(`/api/events/${id}`);
     return res.data;
   } catch (error) {
     throw error;
   }
 };
 
-export const createEvent = (event: Event): Promise<void> => {
+export const createEvent = async (event: Event): Promise<void> => {
   try {
-    api.post("/api/events", event);
+    const res = await api.post("/api/events", event);
+    return res.data;
   } catch (error) {
     throw error;
   }
 };
 
-export const updateEvent = (id: string, event: Event): Promise<void> => {
+export const updateEvent = async (id: string, event: Event): Promise<void> => {
   try {
-    api.put(`/api/events/${id}`, event);
+    const res = await api.put(`/api/events/${id}`, event);
+    return res.data;
   } catch (error) {
     throw error;
   }
 };
 
-export const deleteEvent = (id: string): Promise<void> => {
+export const deleteEvent = async (id: string): Promise<void> => {
   try {
-    api.delete(`/api/events/${id}`);
+    const res = await api.delete(`/api/events/${id}`);
+    return res.data;
   } catch (error) {
     throw error;
   }
 };
-
-
