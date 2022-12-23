@@ -10,8 +10,9 @@
   },
   "scripts": {
     "test": "jest",
+    "dev": "yarn watch-ts & yarn watch-node",
     "watch-ts": "tsc -w --preserveWatchOutput",
-    "dev": "npm run watch-ts & nodemon --experimental-specifier-resolution=node --watch dist --exec \"node -r dotenv/config -r ts-node/register\" dist/app.js",
+    "watch-node": "nodemon --experimental-specifier-resolution=node --watch dist --exec \"node -r dotenv/config -r ts-node/register\" dist/app.js",
     "build": "tsc",
     "lint": "eslint --ext .ts src",
     "lint:fix": "eslint --ext .ts src --fix"

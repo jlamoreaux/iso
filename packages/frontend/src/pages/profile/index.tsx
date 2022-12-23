@@ -1,4 +1,4 @@
-import { Title, Text, TypographyStylesProvider } from "@mantine/core";
+import { Title, Text, TypographyStylesProvider, Group, Container } from "@mantine/core";
 import React from "react";
 import { useLoaderData } from "react-router-dom";
 import ProfileCarousel, { ProfileCarouselPlaceholder } from "../../components/ProfileCarousel";
@@ -33,10 +33,10 @@ const Profile: React.FC = () => {
             userFullName={`${firstName} ${lastName}`}
           ></ProfilePhoto>
         </div>
-        <Text lineClamp={3}>
+        <Text>
           <TypographyStylesProvider>
             <Title order={2}>Gear</Title>
-            <p>
+            <Container>
               {gear && (
                 <ul>
                   <li>Cameras: {gear.cameras}</li>
@@ -44,29 +44,30 @@ const Profile: React.FC = () => {
                   <li>Accessories: {gear.accessories}</li>
                 </ul>
               )}
-            </p>
+            </Container>
           </TypographyStylesProvider>
         </Text>
-        <Text lineClamp={3}>
+        <Text>
           <TypographyStylesProvider>
             <Title order={2}>Details</Title>
-            <p>
-              {city && state && (
-                <ul>
-                  <li>Location: {`${city}, ${state}`}</li>
-                </ul>
-              )}
-              {company && (
-                <ul>
-                  <li>Company: {company}</li>
-                </ul>
-              )}
-              {regions && (
-                <ul>
-                  <li>Regions: {regions}</li>
-                </ul>
-              )}
-            </p>
+            <Container>
+              <ul>
+                {city && state && <li>Location: {`${city}, ${state}`}</li>}
+                {company && <li>Company: {company}</li>}
+                {regions && (
+                  <li>
+                    Regions:
+                    <ul>
+                      {regions.map((region) => (
+                        <li
+                          key={`${region.city}, ${region.state} `}
+                        >{`${region.city}, ${region.state}`}</li>
+                      ))}
+                    </ul>
+                  </li>
+                )}
+              </ul>
+            </Container>
           </TypographyStylesProvider>
         </Text>
       </div>

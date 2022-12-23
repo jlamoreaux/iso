@@ -22,7 +22,10 @@ export type Photographer = User & {
   zip?: string;
   gear?: any;
   availability?: Date[];
-  regions?: string[];
+  regions?: {
+    city?: string;
+    state?: string;
+  }[];
   profilePic?: string;
   bio?: string;
   portfolioImages?: string[];
@@ -49,7 +52,7 @@ export interface RegisterRequest {
 }
 
 export interface RegisterResponse {
-  user: User;
+  userId: string;
 }
 
 const api = axios.create({
@@ -73,7 +76,6 @@ export const login = async (
       email,
       password,
     });
-    console.log(res);
     return res.data;
   } catch (error) {
     throw error;
@@ -94,6 +96,15 @@ export const register = async (data: RegisterRequest): Promise<RegisterResponse>
 };
 
 // Photographer routes
+
+export const updateProfile = async (photographer: Partial<Photographer>): Promise<Photographer> => {
+  try {
+    const res = await api.put<Photographer>(`/api/photographer/${photographer.id}`, photographer);
+    return res.data;
+  } catch (error) {
+    throw error;
+  }
+};
 
 export const getPhotographerById = async (id: string | undefined): Promise<Photographer> => {
   try {
