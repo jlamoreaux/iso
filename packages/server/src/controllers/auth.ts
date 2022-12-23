@@ -42,19 +42,6 @@ export const login = async (req: Request, res: Response): Promise<Response | voi
     function: "login",
   };
   logger.info("Logging in photographer", loggerMetadata);
-  // return passport.authenticate(
-  //   "local",
-  //   {
-  //     failureMessage: "Invalid credentials",
-  //     successMessage: "Logged in user",
-  //   },
-  //   // (error) => {
-  //   //   if (error) {
-  //   //     return res.send(error);
-  //   //   }
-  //   //   return res.json({ id: user?.id }).sendStatus(200);
-  //   // },
-  // );
   const user = req.user as PhotographerDocument;
   return res.status(200).json({ id: user?.id });
 };
