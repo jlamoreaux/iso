@@ -1,6 +1,7 @@
 // Description: This file contains the data access layer for the photographers
 import logger from "../utils/logger";
 import Photographer, { IPhotographer, PhotographerDocument } from "../models/Photographer";
+import { Region } from "src/utils/regions";
 
 const DALPhotographer = {
   register: async (
@@ -63,8 +64,8 @@ const DALPhotographer = {
   ): Promise<PhotographerDocument | null> => {
     return await Photographer.findOne({ username }).select("password").exec();
   },
-  findByRegion: async (region: string): Promise<PhotographerDocument[] | null> => {
-    return await Photographer.find({ regions: region }).exec();
+  findByRegion: async (region: Region): Promise<PhotographerDocument[] | null> => {
+    return await Photographer.find({ regions: { $elemMatch: region } }).exec();
   },
   findByRegionAndAvailability: async (
     region: string,
