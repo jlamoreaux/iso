@@ -3,7 +3,7 @@ import Login from "../pages/auth/Login";
 import Logout from "../pages/auth/Logout";
 import Register from "../pages/auth/Register";
 import Profile from "../pages/profile";
-import Root from "../routes/Root";
+import Root from "./Root";
 import {
   getPhotographerById,
   getPhotographersByRegion,
