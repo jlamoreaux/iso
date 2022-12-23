@@ -68,10 +68,13 @@ const DALPhotographer = {
     return await Photographer.find({ regions: { $elemMatch: region } }).exec();
   },
   findByRegionAndAvailability: async (
-    region: string,
+    region: Region,
     date: Date,
   ): Promise<PhotographerDocument[] | null> => {
-    return await Photographer.find({ regions: region, availability: { $ne: date } }).exec();
+    return await Photographer.find({
+      regions: { $elemMatch: region },
+      availability: { $ne: date },
+    }).exec();
   },
   deletePhotographer: async (id: string): Promise<PhotographerDocument | null> => {
     return await Photographer.findByIdAndDelete(id).exec();

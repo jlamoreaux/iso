@@ -55,6 +55,7 @@ export const getPhotographersByRegionAndAvailability = async (
 ): Promise<Response> => {
   const region = req.params.region;
   const date = new Date(req.params.date);
+  const [city, state] = region.split("-"); // city-state
   const loggerMetatada = {
     function: "getPhotographersByRegionAndAvailability",
     region,
@@ -63,7 +64,7 @@ export const getPhotographersByRegionAndAvailability = async (
   logger.info("Getting photographers by region and availability", loggerMetatada);
   let photographers: PhotographerDocument[] | null;
   try {
-    photographers = await DALPhotographer.findByRegionAndAvailability(region, date);
+    photographers = await DALPhotographer.findByRegionAndAvailability({ city, state }, date);
     return res.status(200).json(photographers);
   } catch (error) {
     logger.warn("An error occurred while getting photographers", loggerMetatada);
