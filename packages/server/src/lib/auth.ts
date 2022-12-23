@@ -34,9 +34,9 @@ passport.use(
         const validate = await photographer.isValidPassword(password);
         if (!validate) {
           logger.info("User attempted wrong password", { userId: photographer._id });
-          return done(null, false);
+          return done(null, false, { message: "Invalid username or password" });
         }
-        logger.info("Passport local strategy completed", { photographer });
+        logger.info("Passport local strategy completed", { userId: photographer._id });
         return done(null, photographer, { message: "Logged in Successfully" });
       } catch (error) {
         logger.error("Error handling passport local strategy", { error });
@@ -46,89 +46,89 @@ passport.use(
   ),
 );
 
-// Google OAuth strategy
-passport.use(
-  new GoogleStrategy(
-    {
-      clientID: process.env.GOOGLE_CLIENT_ID,
-      clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-      callbackURL: `${process.env.API_URL}/auth/google/callback`,
-    },
-    async (_, __, profile, done) => {
-      const email = ((profile.emails && profile.emails[0].value) as string) || "";
-      try {
-        const existingUser = await DALPhotographer.findByEmail(email);
-        if (existingUser) {
-          return done(null, existingUser);
-        }
-        let newUser: IPhotographer = {
-          email: email,
-          authType: AUTH_TYPE.GOOGLE,
-          firstName: profile.name?.givenName || "",
-          lastName: profile.name?.familyName || "",
-        };
-        await DALPhotographer.register(newUser, (err, user) => {
-          if (err) {
-            logger.error({
-              message: "Error registering new user",
-              authType: AUTH_TYPE.GOOGLE,
-              error: err,
-            });
-            return done(err);
-          }
-          return done(null, user);
-        });
-        done(null, newUser);
-      } catch (error: any) {
-        done(error, false, error.message);
-      }
-    },
-  ),
-);
+// // Google OAuth strategy
+// passport.use(
+//   new GoogleStrategy(
+//     {
+//       clientID: process.env.GOOGLE_CLIENT_ID,
+//       clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+//       callbackURL: `${process.env.API_URL}/auth/google/callback`,
+//     },
+//     async (_, __, profile, done) => {
+//       const email = ((profile.emails && profile.emails[0].value) as string) || "";
+//       try {
+//         const existingUser = await DALPhotographer.findByEmail(email);
+//         if (existingUser) {
+//           return done(null, existingUser);
+//         }
+//         let newUser: IPhotographer = {
+//           email: email,
+//           authType: AUTH_TYPE.GOOGLE,
+//           firstName: profile.name?.givenName || "",
+//           lastName: profile.name?.familyName || "",
+//         };
+//         await DALPhotographer.register(newUser, (err, user) => {
+//           if (err) {
+//             logger.error({
+//               message: "Error registering new user",
+//               authType: AUTH_TYPE.GOOGLE,
+//               error: err,
+//             });
+//             return done(err);
+//           }
+//           return done(null, user);
+//         });
+//         done(null, newUser);
+//       } catch (error: any) {
+//         done(error, false, error.message);
+//       }
+//     },
+//   ),
+// );
 
-// Facebook OAuth strategy
-passport.use(
-  new FacebookStrategy(
-    {
-      clientID: process.env.FACEBOOK_CLIENT_ID,
-      clientSecret: process.env.FACEBOOK_CLIENT_SECRET,
-      callbackURL: `${process.env.API_URL}/auth/facebook/callback`,
-      profileFields: ["id", "displayName", "photos", "email"],
-    },
-    async (_, __, profile, done) => {
-      const email = (profile.emails && profile.emails[0].value) || "";
-      try {
-        const existingUser = await DALPhotographer.findByEmail(email);
-        if (existingUser) {
-          return done(null, existingUser);
-        }
-        let newUser: IPhotographer = {
-          email: email,
-          authType: AUTH_TYPE.FACEBOOK,
-          firstName: profile.name?.givenName || "",
-          lastName: profile.name?.familyName || "",
-        };
-        await DALPhotographer.register(newUser, (err, user) => {
-          if (err) {
-            logger.error({
-              message: "Error registering new user",
-              authType: AUTH_TYPE.FACEBOOK,
-              error: err,
-            });
-            return done(err);
-          }
-          return done(null, user);
-        });
-        done(null, newUser);
-      } catch (error: any) {
-        done(error, false, error.message);
-      }
-    },
-  ),
-);
+// // Facebook OAuth strategy
+// passport.use(
+//   new FacebookStrategy(
+//     {
+//       clientID: process.env.FACEBOOK_CLIENT_ID,
+//       clientSecret: process.env.FACEBOOK_CLIENT_SECRET,
+//       callbackURL: `${process.env.API_URL}/auth/facebook/callback`,
+//       profileFields: ["id", "displayName", "photos", "email"],
+//     },
+//     async (_, __, profile, done) => {
+//       const email = (profile.emails && profile.emails[0].value) || "";
+//       try {
+//         const existingUser = await DALPhotographer.findByEmail(email);
+//         if (existingUser) {
+//           return done(null, existingUser);
+//         }
+//         let newUser: IPhotographer = {
+//           email: email,
+//           authType: AUTH_TYPE.FACEBOOK,
+//           firstName: profile.name?.givenName || "",
+//           lastName: profile.name?.familyName || "",
+//         };
+//         await DALPhotographer.register(newUser, (err, user) => {
+//           if (err) {
+//             logger.error({
+//               message: "Error registering new user",
+//               authType: AUTH_TYPE.FACEBOOK,
+//               error: err,
+//             });
+//             return done(err);
+//           }
+//           return done(null, user);
+//         });
+//         done(null, newUser);
+//       } catch (error: any) {
+//         done(error, false, error.message);
+//       }
+//     },
+//   ),
+// );
 
 passport.serializeUser((user: any, done) => {
-  done(null, {
+  return done(null, {
     id: user.id,
     username: user.username,
     picture: user.picture,
@@ -139,9 +139,9 @@ passport.deserializeUser(async (user: Express.User, done) => {
   const currentUser = user as IPhotographer;
   try {
     const photographer = await DALPhotographer.findById(currentUser.id!);
-    done(null, photographer);
+    return done(null, photographer);
   } catch (error) {
-    done(error, false);
+    return done(error, false);
   }
 });
 

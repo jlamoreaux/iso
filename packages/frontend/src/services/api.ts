@@ -64,12 +64,16 @@ const api = axios.create({
   },
 });
 
-export const login = async (email: string, password: string): Promise<LoginResponse> => {
+export const login = async (
+  email: string,
+  password: string | undefined,
+): Promise<LoginResponse> => {
   try {
-    const res = await api.post<LoginResponse>("/login", {
+    const res = await api.post<LoginResponse>("/auth/login", {
       email,
       password,
     });
+    console.log(res);
     return res.data;
   } catch (error) {
     throw error;
@@ -77,21 +81,16 @@ export const login = async (email: string, password: string): Promise<LoginRespo
 };
 
 export const logout = async () => {
-  return await api.post("/logout");
+  return await api.post("/auth/logout");
 };
 
 export const register = async (data: RegisterRequest): Promise<RegisterResponse> => {
   try {
-    const res = await api.post<RegisterResponse>("/register", data);
+    const res = await api.post<RegisterResponse>("/auth/register", data);
     return res.data;
   } catch (error) {
     throw error;
   }
-};
-
-export const authTest = async () => {
-  const response = await api.get("/authtest");
-  return response;
 };
 
 // Photographer routes
@@ -117,7 +116,9 @@ export const updatePhotographerById = async (
   }
 };
 
-export const getPhotographersByRegion = async (region: string): Promise<Photographer[]> => {
+export const getPhotographersByRegion = async (
+  region: string | undefined,
+): Promise<Photographer[]> => {
   try {
     const res = await api.get(`/api/photographers/${region}`);
     return res.data;
@@ -127,8 +128,8 @@ export const getPhotographersByRegion = async (region: string): Promise<Photogra
 };
 
 export const getPhotographersByRegionAndAvailability = async (
-  region: string,
-  date: string,
+  region?: string,
+  date?: string,
 ): Promise<Photographer[]> => {
   try {
     const res = await api.get(`/api/photographers/${region}/${date}`);
@@ -149,7 +150,7 @@ export const getMessages = async (): Promise<Message[]> => {
   }
 };
 
-export const getMessage = async (id: string): Promise<Message> => {
+export const getMessage = async (id: string | undefined): Promise<Message> => {
   try {
     const res = await api.get(`/api/messages/${id}`);
     return res.data;
@@ -176,7 +177,7 @@ export const updateMessage = async (id: string, message: Message): Promise<void>
   }
 };
 
-export const deleteMessage = async (id: string): Promise<void> => {
+export const deleteMessage = async (id: string | undefined): Promise<void> => {
   try {
     const res = await api.delete(`/api/messages/${id}`);
     return res.data;
@@ -196,7 +197,7 @@ export const getEvents = async (): Promise<Event[]> => {
   }
 };
 
-export const getEvent = async (id: string): Promise<Event> => {
+export const getEvent = async (id: string | undefined): Promise<Event> => {
   try {
     const res = await api.get(`/api/events/${id}`);
     return res.data;
@@ -223,7 +224,7 @@ export const updateEvent = async (id: string, event: Event): Promise<void> => {
   }
 };
 
-export const deleteEvent = async (id: string): Promise<void> => {
+export const deleteEvent = async (id: string | undefined): Promise<void> => {
   try {
     const res = await api.delete(`/api/events/${id}`);
     return res.data;

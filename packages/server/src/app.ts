@@ -4,7 +4,7 @@ import requestId from "express-request-id";
 import session from "express-session";
 import cors from "cors";
 import mongoose from "mongoose";
-import router from "./routes";
+import { apiRouter, authRouter } from "./routes";
 import passport from "passport";
 import { config } from "dotenv";
 import path from "path";
@@ -38,7 +38,10 @@ app.use(
 app.use(passport.session());
 app.use(requestId());
 app.use(express.json());
-app.use(router);
+
+// routes
+app.use("/api", apiRouter);
+app.use("/auth", authRouter);
 
 // connect to mongodb
 mongoose

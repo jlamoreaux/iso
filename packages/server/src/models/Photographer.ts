@@ -194,7 +194,7 @@ PhotographerSchema.statics = {
 };
 
 // Add passportLocalMongoose to the schema
-PhotographerSchema.plugin(passportLocalMongoose, { usernameField: "email" });
+// PhotographerSchema.plugin(passportLocalMongoose, { usernameField: "email" });
 
 export default mongoose.model<PhotographerDocument, PhotographerModel>(
   "Photographer",
