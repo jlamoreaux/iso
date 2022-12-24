@@ -16,10 +16,11 @@ const DALMessage = {
   findById: async (id: string): Promise<IMessageDocument | null> => {
     return await Message.findById(id);
   },
-  findByPhotographer: async (photographerId: string): Promise<IMessageDocument[]> => {
-    return await Message.find({
-      $or: [{ recipient: photographerId }, { sender: photographerId }],
-    });
+  findBySender: async (photographerId: string): Promise<IMessageDocument[]> => {
+    return await Message.find({ sender: photographerId });
+  },
+  findByRecipient: async (photographerId: string): Promise<IMessageDocument[]> => {
+    return await Message.find({ recipient: photographerId }).populate("sender");
   },
   updateAsRead: async (id: string): Promise<IMessageDocument | null> => {
     return await Message.findByIdAndUpdate(id, { read: true }, { new: true });

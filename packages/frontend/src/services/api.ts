@@ -1,7 +1,7 @@
 import axios from "axios";
 
 export interface LoginRequest {
-  email: string;
+  username: string;
   password: string;
 }
 
@@ -14,6 +14,7 @@ type User = {
 
 export type Photographer = User & {
   company?: string;
+  username: string;
   email: string;
   phone?: string;
   website?: string;
@@ -32,12 +33,22 @@ export type Photographer = User & {
 };
 
 export type Message = {
-  sender: Photographer;
-  recipient: Photographer;
+  sender: string;
+  recipient: string;
   message: string;
+  eventTitle?: string;
+  eventType?: string;
+  eventLocation?: string;
+  eventDescription?: string;
+  eventDate?: Date;
   date?: Date;
   isRead?: boolean;
   reactions?: string[];
+};
+
+export type IncomingMessage = Message & {
+  id: string;
+  sender: Photographer;
 };
 
 export interface LoginResponse {
@@ -47,8 +58,12 @@ export interface LoginResponse {
 export interface RegisterRequest {
   firstName: string;
   lastName: string;
+  username: string;
   email: string;
   password: string;
+  company?: string;
+  city?: string;
+  state?: string;
 }
 
 export interface RegisterResponse {
@@ -68,12 +83,12 @@ const api = axios.create({
 });
 
 export const login = async (
-  email: string,
+  username: string,
   password: string | undefined,
 ): Promise<LoginResponse> => {
   try {
     const res = await api.post<LoginResponse>("/auth/login", {
-      email,
+      username,
       password,
     });
     return res.data;
@@ -170,7 +185,7 @@ export const getMessage = async (id: string | undefined): Promise<Message> => {
   }
 };
 
-export const createMessage = async (message: Message): Promise<void> => {
+export const createMessage = async (message: Message): Promise<Message> => {
   try {
     const res = await api.post("/api/messages", message);
     return res.data;

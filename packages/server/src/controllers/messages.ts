@@ -3,6 +3,7 @@ import { Request, Response } from "express";
 import { IMessageDocument } from "../models/Message";
 import DALMessage from "../data/message";
 import logger from "../utils/logger";
+import { IPhotographer } from "src/models/Photographer";
 
 /**
  * @description - gets a message with the given id
@@ -38,15 +39,19 @@ export const getMessage = async (req: Request, res: Response): Promise<Response>
  * @returns {Promise<void>}
  */
 export const getMessages = async (req: Request, res: Response): Promise<Response> => {
-  const photographerId = req.params.photographerId;
-  const loggerMetadata = {
+  let loggerMetadata = {
     function: "getMessages",
-    photographerId,
   };
-  logger.info("Getting all messages for user", loggerMetadata);
+  const photographer = req.user as IPhotographer;
+  if (!photographer || !photographer.id) {
+    logger.info("Unauthorized request", loggerMetadata);
+    return res.status(401).json({ message: "Unauthorized request" });
+  }
+  const photographerId = photographer.id;
+  logger.info("Getting all messages for user", { ...loggerMetadata, photographerId });
   let messages: IMessageDocument[] | null;
   try {
-    messages = await DALMessage.findByPhotographer(photographerId);
+    messages = await DALMessage.findByRecipient(photographerId);
     if (!messages) {
       logger.info("Messages not found", loggerMetadata);
       return res.status(404).json({ message: "Messages not found" });
@@ -65,17 +70,25 @@ export const getMessages = async (req: Request, res: Response): Promise<Response
  * @returns {Promise<void>}
  */
 export const createMessage = async (req: Request, res: Response): Promise<Response> => {
+  const messageData = req.body;
+  const sender = req.user as IPhotographer;
   const loggerMetadata = {
     function: "createMessage",
-    message: req.body,
+    message: messageData,
   };
+  console.log(messageData);
+  if (!messageData || !messageData.message) {
+    logger.info("Invalid request", loggerMetadata);
+    return res.status(400).json({ message: "Message is required" });
+  }
+  messageData.sender = sender.id;
   logger.info("Creating message", loggerMetadata);
   let message: IMessageDocument;
   try {
     message = await DALMessage.create(req.body);
     return res.status(201).json(message);
   } catch (error) {
-    logger.info("Error creating message", loggerMetadata);
+    logger.info("Error creating message", { ...loggerMetadata, error });
     return res.status(404).json({ message: "Error creating message" });
   }
 };

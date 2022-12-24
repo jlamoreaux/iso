@@ -15,6 +15,8 @@ import {
 } from "../services/api";
 import logoutLoader from "../utils/logoutLoader";
 import PhotographersList, { LIST_TYPE } from "../pages/PhotographersList";
+import Compose from "../pages/messages/Compose";
+import Inbox from "../pages/messages/Inbox";
 
 const router = createBrowserRouter([
   {
@@ -61,14 +63,20 @@ const router = createBrowserRouter([
     },
     element: <PhotographersList listType={LIST_TYPE.AVAILABILITY} />,
   },
-  // {
-  //   path: "/messages",
-  //   loader: async () => {
-  //     const messages = await getMessages();
-  //     return messages;
-  //   },
-  //   element: <MessagesList />,
-  // },
+  {
+    path: "/messages",
+    loader: async () => {
+      const messages = await getMessages();
+      return messages;
+    },
+    children: [
+      {
+        path: "compose",
+        element: <Compose />,
+      },
+    ],
+    element: <Inbox />,
+  },
   // {
   //   path: "/messages/:id",
   //   loader: async ({ params }) => {
