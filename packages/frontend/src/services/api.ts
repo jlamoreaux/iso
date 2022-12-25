@@ -41,9 +41,10 @@ export type Message = {
   eventLocation?: string;
   eventDescription?: string;
   eventDate?: Date;
-  date?: Date;
+  createdAd?: Date;
   isRead?: boolean;
   reactions?: string[];
+  replyTo?: string;
 };
 
 export type IncomingMessage = Message & {
@@ -194,9 +195,9 @@ export const createMessage = async (message: Message): Promise<Message> => {
   }
 };
 
-export const updateMessage = async (id: string, message: Message): Promise<void> => {
+export const updateMessage = async (id: string, message: Partial<Message>): Promise<void> => {
   try {
-    const res = await api.put(`/api/messages/${id}`, message);
+    const res = await api.patch(`/api/messages/${id}`, message);
     return res.data;
   } catch (error) {
     throw error;

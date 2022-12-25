@@ -1,9 +1,11 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Container, Textarea, TextInput, Title } from "@mantine/core";
 import { useForm } from "@mantine/form";
-import { createMessage } from "../../services/api";
+import { createMessage, IncomingMessage } from "../../services/api";
 import { DatePicker } from "@mantine/dates";
 import { ReactComponent as Calendar } from "../../assets/svg/calendar.svg";
+import { useParams } from "react-router";
+import { useLoaderData } from "react-router-dom";
 
 type FormValues = {
   message: string;
@@ -16,6 +18,7 @@ type FormValues = {
 
 const Compose: React.FC = () => {
   const [isSubmitted, setIsSubmitted] = useState(false);
+  const [isReply, setIsReply] = useState(false);
   const form = useForm<FormValues>({
     initialValues: {
       message: "",
@@ -31,9 +34,27 @@ const Compose: React.FC = () => {
     },
   });
 
+  const replyMessage = useLoaderData() as IncomingMessage;
+
+  useEffect(() => {
+    if (replyMessage) {
+      form.setValues({
+        eventTitle: replyMessage.eventTitle,
+        eventDate: replyMessage.eventDate,
+        eventType: replyMessage.eventType,
+        eventLocation: replyMessage.eventLocation,
+        eventDescription: replyMessage.eventDescription,
+      });
+      setIsReply(true);
+    }
+  }, []);
+
   const handleSubmit = async (values: any) => {
     // TODO: remove static recipient id
     values.recipient = "63a2fdef71e0f6bb8dcd069a";
+    if (replyMessage) {
+      values.replyTo = replyMessage.replyTo || replyMessage.id;
+    }
     const data = await createMessage(values);
     if (data) {
       setIsSubmitted(true);
@@ -50,12 +71,13 @@ const Compose: React.FC = () => {
   }
   return (
     <Container>
-      <Title>Compose</Title>
+      <Title>Compose{isReply && " Reply"}</Title>
       <form onSubmit={form.onSubmit(handleSubmit)}>
         <TextInput
           aria-label="Event Title"
           name="eventTitle"
           placeholder="Event Title"
+          disabled={isReply}
           {...form.getInputProps("eventTitle")}
         />
         <DatePicker
@@ -66,24 +88,28 @@ const Compose: React.FC = () => {
           firstDayOfWeek="sunday"
           minDate={new Date()}
           rightSection={<Calendar />}
+          disabled={isReply}
           {...form.getInputProps("eventDate")}
         />
         <TextInput
           aria-label="Event Type"
           name="eventType"
           placeholder="Event Type"
+          disabled={isReply}
           {...form.getInputProps("eventType")}
         />
         <TextInput
           aria-label="Event Location"
           name="eventLocation"
           placeholder="Event Location"
+          disabled={isReply}
           {...form.getInputProps("eventLocation")}
         />
         <TextInput
           aria-label="Event Description"
           name="eventDescription"
           placeholder="Event Description"
+          disabled={isReply}
           {...form.getInputProps("eventDescription")}
         />
         <Textarea

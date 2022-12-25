@@ -17,6 +17,7 @@ import logoutLoader from "../utils/logoutLoader";
 import PhotographersList, { LIST_TYPE } from "../pages/PhotographersList";
 import Compose from "../pages/messages/Compose";
 import Inbox from "../pages/messages/Inbox";
+import ViewMessage from "../pages/messages/ViewMessage";
 
 const router = createBrowserRouter([
   {
@@ -69,22 +70,28 @@ const router = createBrowserRouter([
       const messages = await getMessages();
       return messages;
     },
-    children: [
-      {
-        path: "compose",
-        element: <Compose />,
-      },
-    ],
     element: <Inbox />,
   },
-  // {
-  //   path: "/messages/:id",
-  //   loader: async ({ params }) => {
-  //     const message = await getMessage(params.id);
-  //     return message;
-  //   },
-  //   element: <MessageDetails />,
-  // },
+  {
+    path: "/messages/compose",
+    element: <Compose />,
+  },
+  {
+    path: "/messages/:id",
+    loader: async ({ params }) => {
+      const message = await getMessage(params.id);
+      return message;
+    },
+    element: <ViewMessage />,
+  },
+  {
+    path: "/messages/:id/reply",
+    element: <Compose />,
+    loader: async ({ params }) => {
+      const message = await getMessage(params.id);
+      return message;
+    },
+  },
   // {
   //   path: "/events",
   //   loader: async () => {

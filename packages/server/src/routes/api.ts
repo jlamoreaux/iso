@@ -27,7 +27,7 @@ apiRouter.get("/photographers/:region/:date", catchErrors(getPhotographersByRegi
 apiRouter.get("/messages", catchErrors(getMessages));
 apiRouter.get("/messages/:id", catchErrors(getMessage));
 apiRouter.post("/messages", catchErrors(createMessage));
-apiRouter.put("/messages/:id", catchErrors(updateMessage));
+apiRouter.patch("/messages/:id", catchErrors(updateMessage));
 apiRouter.delete("/messages/:id", catchErrors(deleteMessage));
 
 // Event routes

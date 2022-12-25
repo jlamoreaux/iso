@@ -15,6 +15,7 @@ export interface IMessage {
   createdAt: Date;
   isRead: boolean;
   reactions?: string[];
+  replyTo?: Types.ObjectId;
 }
 
 export interface IMessageDocument extends IMessage, Document {}
@@ -64,6 +65,11 @@ const MessageSchema = new Schema({
   },
   reactions: {
     type: [String],
+    required: false,
+  },
+  replyTo: {
+    type: Schema.Types.ObjectId,
+    ref: "Message",
     required: false,
   },
 });

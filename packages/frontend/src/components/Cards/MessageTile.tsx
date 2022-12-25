@@ -20,18 +20,29 @@ export const MessageTile: React.FC<MessageTileProps> = ({ message }) => {
         color: "inherit",
       }}
     >
-      <Group>
+      <Group bg={isRead ? undefined : theme.colors?.gray?.[2]} noWrap>
         <ProfilePhoto userFullName={`${firstName} ${lastName}`} photoUrl={profilePic} />
-        <Stack>
-          <Group position="apart">
-            <Title order={3}>{`${firstName} ${lastName}`}</Title>
+        <Stack
+          align="stretch"
+          style={{
+            flexBasis: "100%",
+          }}
+        >
+          <Group position="apart" grow noWrap>
+            <Title order={4}>{`${firstName} ${lastName}`}</Title>
             <Title order={5} color={theme!.colors!.seaFoamGreen![4]}>
               {city}, {state}
             </Title>
           </Group>
-          <Text>{eventDate && new Date(eventDate).toLocaleDateString()}</Text>
-          <Text lineClamp={1}>{eventDescription}</Text>
-          <Text lineClamp={1}>{eventType}</Text>
+          <Stack spacing={0}>
+            <Text size={"sm"}>{eventDate && new Date(eventDate).toLocaleDateString()}</Text>
+            <Text size={"sm"} lineClamp={1}>
+              {eventDescription}
+            </Text>
+            <Text size={"sm"} lineClamp={1}>
+              {eventType}
+            </Text>
+          </Stack>
         </Stack>
       </Group>
     </Link>

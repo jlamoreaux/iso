@@ -1,4 +1,4 @@
-import { Container, Title } from "@mantine/core";
+import { Container, Stack, Title } from "@mantine/core";
 import React from "react";
 import { useLoaderData } from "react-router-dom";
 import MessageTile from "../../components/Cards/MessageTile";
@@ -11,9 +11,11 @@ const Inbox: React.FC = () => {
   return (
     <Container>
       <Title>INBOX</Title>
-      {messages.map((message: any, i: number) => (
-        <MessageTile message={message} key={i} />
-      ))}
+      <Stack spacing="md">
+        {messages.map((message: any, i: number) => (
+          <MessageTile message={message} key={i} />
+        ))}
+      </Stack>
     </Container>
   );
 };

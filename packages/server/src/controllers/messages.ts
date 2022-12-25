@@ -101,27 +101,33 @@ export const createMessage = async (req: Request, res: Response): Promise<Respon
  */
 export const updateMessage = async (req: Request, res: Response): Promise<Response> => {
   const id = req.params.id;
+  const loggedInUser = req.user as IPhotographer;
+  if (!id) return res.status(400).json({ message: "Message id is required" });
+  if (!loggedInUser || !loggedInUser.id)
+    return res.status(401).json({ message: "Unauthorized request" });
   const loggerMetadata = {
     function: "updateMessage",
     messageId: id,
     message: req.body,
   };
-  if (!req.body?.message) {
+  if (!req.body) {
     logger.info("Invalid request", loggerMetadata);
     return res.status(400).json({ message: "Message is required" });
   }
+
   logger.info("Updating message", loggerMetadata);
-  let message: IMessageDocument | null;
+  let messageToUpdate: IMessageDocument | null;
   try {
-    message = await DALMessage.update(id, req.body);
-    if (!message) {
+    messageToUpdate = await DALMessage.findByIdAndSender(id, loggedInUser.id);
+    if (!messageToUpdate) {
       logger.info("Message not found", loggerMetadata);
       return res.status(404).json({ message: "Message not found" });
     }
-    return res.status(200).json(message);
+    messageToUpdate = await DALMessage.update(id, req.body);
+    return res.status(200).json(messageToUpdate);
   } catch (error) {
-    logger.info("Message not found", loggerMetadata);
-    return res.status(404).json({ message: "Message not found" });
+    logger.info("Error when updating message", { ...loggerMetadata, error });
+    return res.status(404).json({ message: "Error when updating message" });
   }
 };
 

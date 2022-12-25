@@ -14,7 +14,13 @@ const DALMessage = {
     return await Message.findByIdAndRemove(id);
   },
   findById: async (id: string): Promise<IMessageDocument | null> => {
-    return await Message.findById(id);
+    return await Message.findById(id).populate("sender");
+  },
+  findByIdAndSender: async (
+    id: string,
+    photographerId: string,
+  ): Promise<IMessageDocument | null> => {
+    return await Message.findOne({ _id: id, sender: photographerId });
   },
   findBySender: async (photographerId: string): Promise<IMessageDocument[]> => {
     return await Message.find({ sender: photographerId });
