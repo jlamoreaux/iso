@@ -5,6 +5,7 @@ import logger from "../utils/logger";
 import { AUTH_TYPE, hashPassword } from "../lib/auth";
 import { IPhotographer, PhotographerDocument } from "../models/Photographer";
 import passport from "passport";
+import { findNearestRegion } from "../utils/regions";
 
 const registerUser = async (
   photographerData: IPhotographer,
@@ -12,7 +13,8 @@ const registerUser = async (
   const loggerMetadata = {
     function: "registerUser",
   };
-  const photographer = await DALPhotographer.register(
+  logger.info("Registering photographer", loggerMetadata);
+  const currentPhotographer = await DALPhotographer.register(
     photographerData,
     async (err, photographer) => {
       if (err) {
@@ -24,16 +26,17 @@ const registerUser = async (
         throw new Error(err);
       }
       logger.info("Photographer registered", loggerMetadata);
+      return await DALPhotographer.findByUsername(photographer.username);
     },
   );
-  if (!photographer) {
+  if (!currentPhotographer) {
     logger.warn("Error when looking up the snewly registered photographer", {
       ...loggerMetadata,
       error: "Error when looking up newly registered photographer",
     });
     throw new Error("Error when looking up newly registered photographer");
   }
-  return await DALPhotographer.findByEmail(photographerData.email);
+  return currentPhotographer;
 };
 
 // login a photographer using passport library
@@ -42,19 +45,6 @@ export const login = async (req: Request, res: Response): Promise<Response | voi
     function: "login",
   };
   logger.info("Logging in photographer", loggerMetadata);
-  // return passport.authenticate(
-  //   "local",
-  //   {
-  //     failureMessage: "Invalid credentials",
-  //     successMessage: "Logged in user",
-  //   },
-  //   // (error) => {
-  //   //   if (error) {
-  //   //     return res.send(error);
-  //   //   }
-  //   //   return res.json({ id: user?.id }).sendStatus(200);
-  //   // },
-  // );
   const user = req.user as PhotographerDocument;
   return res.status(200).json({ id: user?.id });
 };
@@ -78,16 +68,19 @@ export const register = async (
   res: Response,
   next: NextFunction,
 ): Promise<Response | void> => {
+  if (!req.body) return res.status(400).json({ message: "No body" });
+  if (!req.body.username) {
+    return res.status(400).json({ message: "Username is required" });
+  }
   if (!req.body.email || !req.body.password) {
     return res.status(400).json({ message: "Email and password are required" });
   }
   const loggerMetadata = {
     function: "register",
   };
-  logger.info("Registering photographer", loggerMetadata);
-  const { email } = req.body;
+  const { username, email } = req.body;
   try {
-    const photographer = await DALPhotographer.findByEmail(email);
+    const photographer = await DALPhotographer.findByUsernameOrEmail({ username, email });
     if (photographer) {
       logger.info("Photographer already exists", loggerMetadata);
       return res.status(400).json({ message: "Photographer already exists" });
@@ -95,14 +88,25 @@ export const register = async (
     const newPhotographerData: IPhotographer = req.body;
     newPhotographerData.authType = AUTH_TYPE.LOCAL;
     newPhotographerData.password = await hashPassword(newPhotographerData.password!);
+    const region = findNearestRegion({
+      city: newPhotographerData.city,
+      state: newPhotographerData.state,
+    });
+    if (region) {
+      newPhotographerData.regions = [region];
+    }
     const newPhotographer = await registerUser(newPhotographerData);
-    logger.info("Photographer registered", loggerMetadata);
-    req.user = newPhotographer || undefined;
-    next();
+    logger.info("Photographer registered", {
+      ...loggerMetadata,
+      photographerId: newPhotographer?.id,
+    });
+    req.user = { ...newPhotographer };
+    req.body.id = newPhotographer?.id;
   } catch (error) {
     logger.error("Error when registering photographer", { ...loggerMetadata, error });
     return res.status(500).json({ message: "Error when registering photographer" });
   }
+  next();
 };
 
 export const authTest = async (req: Request, res: Response) => {

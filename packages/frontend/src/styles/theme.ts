@@ -27,7 +27,7 @@ const colors: Partial<
     "#160704",
   ],
   // SEA_FOAM_GREEN IS BASED ON #A5D6D1.
-  "sea-foam-green": [
+  seaFoamGreen: [
     "#E4F3F1",
     "#D2EBE8",
     "#C0E2DF",

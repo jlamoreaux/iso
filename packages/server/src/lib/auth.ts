@@ -5,9 +5,10 @@ import { Strategy as LocalStrategy } from "passport-local";
 import { Strategy as GoogleStrategy } from "passport-google-oauth20";
 import { Strategy as FacebookStrategy } from "passport-facebook";
 import DALPhotographer from "../data/photographer";
-import { IPhotographer } from "../models/Photographer";
+import Photographer, { IPhotographer } from "../models/Photographer";
 import { config } from "dotenv";
 import logger from "../utils/logger";
+import { convertTypeAcquisitionFromJson } from "typescript";
 
 // TODO: Figure out why this is needed
 config();
@@ -22,12 +23,12 @@ export enum AUTH_TYPE {
 passport.use(
   new LocalStrategy(
     {
-      usernameField: "email",
+      usernameField: "username",
       passwordField: "password",
     },
-    async (email, password, done) => {
+    async (username, password, done) => {
       try {
-        const photographer = await DALPhotographer.findByEmailForAuthenticating(email);
+        const photographer = await DALPhotographer.findByUsernameForAuthenticating(username);
         if (!photographer) {
           return done(null, false);
         }
@@ -127,11 +128,11 @@ passport.use(
 //   ),
 // );
 
-passport.serializeUser((user: any, done) => {
+passport.serializeUser(async (user: any, done) => {
   return done(null, {
     id: user.id,
     username: user.username,
-    picture: user.picture,
+    picture: user.profilePic,
   });
 });
 

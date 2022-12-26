@@ -1,7 +1,7 @@
 import axios from "axios";
 
 export interface LoginRequest {
-  email: string;
+  username: string;
   password: string;
 }
 
@@ -14,6 +14,7 @@ type User = {
 
 export type Photographer = User & {
   company?: string;
+  username: string;
   email: string;
   phone?: string;
   website?: string;
@@ -22,19 +23,33 @@ export type Photographer = User & {
   zip?: string;
   gear?: any;
   availability?: Date[];
-  regions?: string[];
+  regions?: {
+    city?: string;
+    state?: string;
+  }[];
   profilePic?: string;
   bio?: string;
   portfolioImages?: string[];
 };
 
 export type Message = {
-  sender: Photographer;
-  recipient: Photographer;
+  sender: string;
+  recipient: string;
   message: string;
-  date?: Date;
+  eventTitle?: string;
+  eventType?: string;
+  eventLocation?: string;
+  eventDescription?: string;
+  eventDate?: Date;
+  createdAd?: Date;
   isRead?: boolean;
   reactions?: string[];
+  replyTo?: string;
+};
+
+export type IncomingMessage = Message & {
+  id: string;
+  sender: Photographer;
 };
 
 export interface LoginResponse {
@@ -44,12 +59,16 @@ export interface LoginResponse {
 export interface RegisterRequest {
   firstName: string;
   lastName: string;
+  username: string;
   email: string;
   password: string;
+  company?: string;
+  city?: string;
+  state?: string;
 }
 
 export interface RegisterResponse {
-  user: User;
+  userId: string;
 }
 
 const api = axios.create({
@@ -65,15 +84,14 @@ const api = axios.create({
 });
 
 export const login = async (
-  email: string,
+  username: string,
   password: string | undefined,
 ): Promise<LoginResponse> => {
   try {
     const res = await api.post<LoginResponse>("/auth/login", {
-      email,
+      username,
       password,
     });
-    console.log(res);
     return res.data;
   } catch (error) {
     throw error;
@@ -94,6 +112,15 @@ export const register = async (data: RegisterRequest): Promise<RegisterResponse>
 };
 
 // Photographer routes
+
+export const updateProfile = async (photographer: Partial<Photographer>): Promise<Photographer> => {
+  try {
+    const res = await api.put<Photographer>(`/api/photographer/${photographer.id}`, photographer);
+    return res.data;
+  } catch (error) {
+    throw error;
+  }
+};
 
 export const getPhotographerById = async (id: string | undefined): Promise<Photographer> => {
   try {
@@ -159,7 +186,7 @@ export const getMessage = async (id: string | undefined): Promise<Message> => {
   }
 };
 
-export const createMessage = async (message: Message): Promise<void> => {
+export const createMessage = async (message: Message): Promise<Message> => {
   try {
     const res = await api.post("/api/messages", message);
     return res.data;
@@ -168,9 +195,9 @@ export const createMessage = async (message: Message): Promise<void> => {
   }
 };
 
-export const updateMessage = async (id: string, message: Message): Promise<void> => {
+export const updateMessage = async (id: string, message: Partial<Message>): Promise<void> => {
   try {
-    const res = await api.put(`/api/messages/${id}`, message);
+    const res = await api.patch(`/api/messages/${id}`, message);
     return res.data;
   } catch (error) {
     throw error;

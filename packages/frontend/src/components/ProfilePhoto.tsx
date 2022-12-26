@@ -8,5 +8,5 @@ type ProfilePhotoProps = {
 
 export const ProfilePhoto: React.FC<ProfilePhotoProps> = ({ photoUrl, userFullName }) => {
   const src = photoUrl || null;
-  return <Avatar src={photoUrl} alt={userFullName} size="xl" />;
+  return <Avatar src={photoUrl} alt={userFullName} size={104} radius={0} />;
 };

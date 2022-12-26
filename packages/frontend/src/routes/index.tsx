@@ -14,6 +14,10 @@ import {
   getEvent,
 } from "../services/api";
 import logoutLoader from "../utils/logoutLoader";
+import PhotographersList, { LIST_TYPE } from "../pages/PhotographersList";
+import Compose from "../pages/messages/Compose";
+import Inbox from "../pages/messages/Inbox";
+import ViewMessage from "../pages/messages/ViewMessage";
 
 const router = createBrowserRouter([
   {
@@ -41,41 +45,53 @@ const router = createBrowserRouter([
     },
     element: <Profile />,
   },
-  // {
-  //   path: "/photographers/:region",
-  //   loader: async ({ params }) => {
-  //     const photographers = await getPhotographersByRegion(params.region);
-  //     return photographers;
-  //   },
-  //   element: <PhotographersList />,
-  // },
-  // {
-  //   path: "/photographers/:region/:date",
-  //   loader: async ({ params }) => {
-  //     const photographers = await getPhotographersByRegionAndAvailability(
-  //       params.region,
-  //       params.date,
-  //     );
-  //     return photographers;
-  //   },
-  //   element: <PhotographersList />,
-  // },
-  // {
-  //   path: "/messages",
-  //   loader: async () => {
-  //     const messages = await getMessages();
-  //     return messages;
-  //   },
-  //   element: <MessagesList />,
-  // },
-  // {
-  //   path: "/messages/:id",
-  //   loader: async ({ params }) => {
-  //     const message = await getMessage(params.id);
-  //     return message;
-  //   },
-  //   element: <MessageDetails />,
-  // },
+  {
+    path: "/photographers/:region",
+    loader: async ({ params }) => {
+      const photographers = await getPhotographersByRegion(params.region);
+      return photographers;
+    },
+    element: <PhotographersList listType={LIST_TYPE.REGION} />,
+  },
+  {
+    path: "/photographers/:region/:date",
+    loader: async ({ params }) => {
+      const photographers = await getPhotographersByRegionAndAvailability(
+        params.region,
+        params.date,
+      );
+      return photographers;
+    },
+    element: <PhotographersList listType={LIST_TYPE.AVAILABILITY} />,
+  },
+  {
+    path: "/messages",
+    loader: async () => {
+      const messages = await getMessages();
+      return messages;
+    },
+    element: <Inbox />,
+  },
+  {
+    path: "/messages/compose",
+    element: <Compose />,
+  },
+  {
+    path: "/messages/:id",
+    loader: async ({ params }) => {
+      const message = await getMessage(params.id);
+      return message;
+    },
+    element: <ViewMessage />,
+  },
+  {
+    path: "/messages/:id/reply",
+    element: <Compose />,
+    loader: async ({ params }) => {
+      const message = await getMessage(params.id);
+      return message;
+    },
+  },
   // {
   //   path: "/events",
   //   loader: async () => {

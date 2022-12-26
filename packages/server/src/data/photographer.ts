@@ -1,6 +1,7 @@
 // Description: This file contains the data access layer for the photographers
 import logger from "../utils/logger";
 import Photographer, { IPhotographer, PhotographerDocument } from "../models/Photographer";
+import { Region } from "src/utils/regions";
 
 const DALPhotographer = {
   register: async (
@@ -46,17 +47,34 @@ const DALPhotographer = {
   findByEmail: async (email: string): Promise<PhotographerDocument | null> => {
     return await Photographer.findOne({ email }).exec();
   },
-  findByEmailForAuthenticating: async (email: string): Promise<PhotographerDocument | null> => {
-    return await Photographer.findOne({ email }).select("password").exec();
+  findByUsername: async (username: string): Promise<PhotographerDocument | null> => {
+    return await Photographer.findOne({ username }).exec();
   },
-  findByRegion: async (region: string): Promise<PhotographerDocument[] | null> => {
-    return await Photographer.find({ regions: region }).exec();
+  findByUsernameOrEmail: async ({
+    username,
+    email,
+  }: {
+    username: string;
+    email: string;
+  }): Promise<PhotographerDocument | null> => {
+    return await Photographer.findOne({ $or: [{ username }, { email }] }).exec();
+  },
+  findByUsernameForAuthenticating: async (
+    username: string,
+  ): Promise<PhotographerDocument | null> => {
+    return await Photographer.findOne({ username }).select("password").exec();
+  },
+  findByRegion: async (region: Region): Promise<PhotographerDocument[] | null> => {
+    return await Photographer.find({ regions: { $elemMatch: region } }).exec();
   },
   findByRegionAndAvailability: async (
-    region: string,
+    region: Region,
     date: Date,
   ): Promise<PhotographerDocument[] | null> => {
-    return await Photographer.find({ regions: region, availability: { $ne: date } }).exec();
+    return await Photographer.find({
+      regions: { $elemMatch: region },
+      availability: { $ne: date },
+    }).exec();
   },
   deletePhotographer: async (id: string): Promise<PhotographerDocument | null> => {
     return await Photographer.findByIdAndDelete(id).exec();

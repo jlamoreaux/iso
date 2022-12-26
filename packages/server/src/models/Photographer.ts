@@ -4,6 +4,7 @@ import passportLocalMongoose from "passport-local-mongoose";
 import { Strategy as LocalStrategy } from "passport-local";
 import bcrypt from "bcryptjs";
 import { IGear } from "./Gear";
+import { Region } from "src/utils/regions";
 
 const Schema = mongoose.Schema;
 
@@ -16,6 +17,7 @@ type SerializedUser = {
 
 export type IPhotographer = {
   id?: string;
+  username: string;
   firstName: string;
   lastName: string;
   password?: string;
@@ -30,7 +32,7 @@ export type IPhotographer = {
   zip?: string;
   gear?: IGear;
   availability?: Date[];
-  regions?: string[];
+  regions?: Region[];
   profilePic?: string;
   portfolioImages?: string[];
   bio?: string;
@@ -62,6 +64,12 @@ export interface PhotographerModel extends Model<PhotographerDocument> {
 }
 
 const PhotographerSchema = new Schema({
+  username: {
+    type: String,
+    required: true,
+    index: true,
+    unique: true,
+  },
   firstName: {
     type: String,
     required: true,
@@ -123,7 +131,7 @@ const PhotographerSchema = new Schema({
     required: false,
   },
   regions: {
-    type: [String],
+    type: [{ state: String, city: String }],
     required: false,
   },
   profilePic: {
@@ -194,7 +202,7 @@ PhotographerSchema.statics = {
 };
 
 // Add passportLocalMongoose to the schema
-// PhotographerSchema.plugin(passportLocalMongoose, { usernameField: "email" });
+PhotographerSchema.plugin(passportLocalMongoose, { usernameField: "email" });
 
 export default mongoose.model<PhotographerDocument, PhotographerModel>(
   "Photographer",
