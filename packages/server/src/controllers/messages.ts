@@ -39,7 +39,7 @@ export const getMessage = async (req: Request, res: Response): Promise<Response>
  * @returns {Promise<void>}
  */
 export const getMessages = async (req: Request, res: Response): Promise<Response> => {
-  let loggerMetadata = {
+  const loggerMetadata = {
     function: "getMessages",
   };
   const photographer = req.user as IPhotographer;
@@ -76,7 +76,6 @@ export const createMessage = async (req: Request, res: Response): Promise<Respon
     function: "createMessage",
     message: messageData,
   };
-  console.log(messageData);
   if (!messageData || !messageData.message) {
     logger.info("Invalid request", loggerMetadata);
     return res.status(400).json({ message: "Message is required" });

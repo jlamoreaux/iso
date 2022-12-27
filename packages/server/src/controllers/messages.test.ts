@@ -25,12 +25,18 @@ describe("getMessage", () => {
     params: {
       id: "123",
     },
+    user: {
+      id: "456",
+    },
   } as unknown as Request;
 
   it("should return a 200 response and the message with the given id", async () => {
     const expected = {
       id: "123",
       message: "Hello world!",
+      sender: {
+        id: "456",
+      },
     } as IMessageDocument;
     (DALMessage.findById as jest.Mock).mockResolvedValue(expected);
 
@@ -69,12 +75,18 @@ describe("createMessage", () => {
     body: {
       message: "Hello world!",
     },
+    user: {
+      id: "456",
+    },
   } as unknown as Request;
 
   it("should return a 201 response and the created message", async () => {
     const expected = {
       id: "123",
       message: "Hello world!",
+      sender: {
+        id: "456",
+      },
     } as IMessageDocument;
     (DALMessage.create as jest.Mock).mockResolvedValue(expected);
 
@@ -108,13 +120,18 @@ describe("updateMessage", () => {
     body: {
       message: "Hello world!",
     },
+    user: {
+      id: "456",
+    },
   } as unknown as Request;
 
   it("should return a 200 response and the updated message", async () => {
     const expected = {
       id: "123",
       message: "Hello world!",
+      sender: "456",
     } as IMessageDocument;
+    (DALMessage.findByIdAndSender as jest.Mock).mockResolvedValue(expected);
     (DALMessage.update as jest.Mock).mockResolvedValue(expected);
 
     const response = await updateMessage(mockRequest, mockResponse);
@@ -136,7 +153,9 @@ describe("updateMessage", () => {
       params: {
         id: "123",
       },
-      body: {},
+      user: {
+        id: "456",
+      },
     } as unknown as Request;
     const response = await updateMessage(mockRequest, mockResponse);
     expect(response).toEqual({});
@@ -171,6 +190,9 @@ describe("deleteMessage", () => {
     const expected = {
       id: "123",
       message: "Hello world!",
+      sender: {
+        id: "456",
+      },
     } as IMessageDocument;
     (DALMessage.delete as jest.Mock).mockResolvedValue(expected);
 
