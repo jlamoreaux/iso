@@ -3,7 +3,7 @@ import { Request, Response } from "express";
 import { IMessageDocument } from "../models/Message";
 import DALMessage from "../data/message";
 import logger from "../utils/logger";
-import { IPhotographer } from "src/models/Photographer";
+import { IPhotographer } from "../models/Photographer";
 
 /**
  * @description - gets a message with the given id

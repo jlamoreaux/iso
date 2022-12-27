@@ -1,6 +1,6 @@
 // import and initialize express app
 import express, { ErrorRequestHandler, NextFunction, Request, Response } from "express";
-import requestId from "express-request-id";
+// import requestId from "express-request-id";
 import session from "express-session";
 import cors from "cors";
 import mongoose from "mongoose";
@@ -11,9 +11,6 @@ import path from "path";
 import { fileURLToPath } from "url";
 
 config();
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
 
 const inProd = process.env.NODE_ENV === "production";
 const port = process.env.PORT || 3001;
@@ -36,7 +33,7 @@ app.use(
   }),
 );
 app.use(passport.session());
-app.use(requestId());
+// app.use(requestId());
 app.use(express.json());
 
 // routes
@@ -45,6 +42,7 @@ app.use("/auth", authRouter);
 
 // connect to mongodb
 mongoose
+  .set("strictQuery", true)
   .connect(process.env.MONGODB_URI as string)
   .then(() => {
     console.log("MongoDB Connected");

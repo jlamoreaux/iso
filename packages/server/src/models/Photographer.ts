@@ -4,7 +4,7 @@ import passportLocalMongoose from "passport-local-mongoose";
 import { Strategy as LocalStrategy } from "passport-local";
 import bcrypt from "bcryptjs";
 import { IGear } from "./Gear";
-import { Region } from "src/utils/regions";
+import { Region } from "../utils/regions";
 
 const Schema = mongoose.Schema;
 

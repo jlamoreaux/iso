@@ -1,7 +1,7 @@
 // Description: This file contains the data access layer for the photographers
 import logger from "../utils/logger";
 import Photographer, { IPhotographer, PhotographerDocument } from "../models/Photographer";
-import { Region } from "src/utils/regions";
+import { Region } from "../utils/regions";
 
 const DALPhotographer = {
   register: async (

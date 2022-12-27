@@ -1,0 +1,49 @@
+{
+  "folders": [
+    {
+      "path": "."
+    },
+    {
+      "path": "./packages/server"
+    },
+    {
+      "path": "./packages/frontend"
+    }
+  ],
+  "settings": {
+    // Place your settings in this file to overwrite default and user settings.
+    "eslint.validate": ["javascript", "javascriptreact", "html"],
+    "files.watcherExclude": {
+      "**/.git/objects/**": true,
+      "**/.git/subtree-cache/**": true,
+      "**/node_modules/**": true,
+      "**/test-results": true
+    },
+    "files.exclude": {
+      "**/.git": true,
+      "**/.svn": true,
+      "**/.hg": true,
+      "**/CVS": true,
+      "**/.DS_Store": true
+      // "**/dist/**": true
+    },
+    "search.exclude": {
+      "**/node_modules": true,
+      "**/bower_components": true,
+      "**/dist/**": true,
+      "**/coverge": true,
+      "**/test-results": true,
+      "**/tsconfig.tsbuildinfo": true
+    },
+    "typescript.tsdk": "./node_modules/typescript/lib",
+    "typescript.tsserver.log": "verbose",
+    "editor.suggestSelection": "first",
+    "typescript.preferences.quoteStyle": "double",
+    "editor.codeActionsOnSave": {
+      "source.fixAll.eslint": true
+    }
+  },
+  "extensions": {
+    "recommendations": ["dbaeumer.vscode-eslint", "ms-vscode.vscode-typescript-tslint-plugin"]
+  }
+}
