@@ -4,7 +4,6 @@ import DALPhotographer from "../data/photographer";
 import logger from "../utils/logger";
 import { AUTH_TYPE, hashPassword } from "../lib/auth";
 import { IPhotographer, PhotographerDocument } from "../models/Photographer";
-import passport from "passport";
 import { findNearestRegion } from "../utils/regions";
 
 const registerUser = async (
@@ -69,11 +68,8 @@ export const register = async (
   next: NextFunction,
 ): Promise<Response | void> => {
   if (!req.body) return res.status(400).json({ message: "No body" });
-  if (!req.body.username) {
-    return res.status(400).json({ message: "Username is required" });
-  }
-  if (!req.body.email || !req.body.password) {
-    return res.status(400).json({ message: "Email and password are required" });
+  if (!req.body.username.trim() || !req.body.email.trim()) {
+    return res.status(400).json({ message: "Username and email addressare required" });
   }
   const loggerMetadata = {
     function: "register",
@@ -86,8 +82,12 @@ export const register = async (
       return res.status(400).json({ message: "Photographer already exists" });
     }
     const newPhotographerData: IPhotographer = req.body;
+
+    if (!newPhotographerData.password) {
+      return res.status(400).json({ message: "Password is required" });
+    }
     newPhotographerData.authType = AUTH_TYPE.LOCAL;
-    newPhotographerData.password = await hashPassword(newPhotographerData.password!);
+    newPhotographerData.password = await hashPassword(newPhotographerData.password);
     const region = findNearestRegion({
       city: newPhotographerData.city,
       state: newPhotographerData.state,
@@ -107,12 +107,4 @@ export const register = async (
     return res.status(500).json({ message: "Error when registering photographer" });
   }
   next();
-};
-
-export const authTest = async (req: Request, res: Response) => {
-  logger.info("Auth test", { user: req.user });
-  await passport.authenticate("local", {
-    failureMessage: "Unauthorized",
-    successMessage: "Authorized",
-  });
 };

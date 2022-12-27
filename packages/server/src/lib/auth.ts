@@ -2,13 +2,12 @@
 import passport from "passport";
 import bcrypt from "bcrypt";
 import { Strategy as LocalStrategy } from "passport-local";
-import { Strategy as GoogleStrategy } from "passport-google-oauth20";
-import { Strategy as FacebookStrategy } from "passport-facebook";
+// import { Strategy as GoogleStrategy } from "passport-google-oauth20";
+// import { Strategy as FacebookStrategy } from "passport-facebook";
 import DALPhotographer from "../data/photographer";
-import Photographer, { IPhotographer } from "../models/Photographer";
+import { IPhotographer } from "../models/Photographer";
 import { config } from "dotenv";
 import logger from "../utils/logger";
-import { convertTypeAcquisitionFromJson } from "typescript";
 
 // TODO: Figure out why this is needed
 config();
@@ -139,7 +138,8 @@ passport.serializeUser(async (user: any, done) => {
 passport.deserializeUser(async (user: Express.User, done) => {
   const currentUser = user as IPhotographer;
   try {
-    const photographer = await DALPhotographer.findById(currentUser.id!);
+    if (!currentUser.id) throw new Error("No user id found");
+    const photographer = await DALPhotographer.findById(currentUser.id);
     return done(null, photographer);
   } catch (error) {
     return done(error, false);
