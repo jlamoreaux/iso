@@ -1,7 +1,18 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { login } from "../../services/api";
-import { TextInput, Button, PasswordInput } from "@mantine/core";
+import {
+  TextInput,
+  Button,
+  PasswordInput,
+  Text,
+  Group,
+  Stack,
+  Title,
+  Container,
+  Anchor,
+  Space,
+} from "@mantine/core";
 
 const Login: React.FC = () => {
   const navigate = useNavigate();
@@ -21,8 +32,8 @@ const Login: React.FC = () => {
   };
 
   return (
-    <div className="login-container">
-      <h1>ISO</h1>
+    <Container>
+      <Title>Log In</Title>
       <form onSubmit={handleLogin}>
         {error && <p className="error">{error}</p>}
         <TextInput
@@ -35,14 +46,22 @@ const Login: React.FC = () => {
           value={password}
           onChange={(e) => setPassword(e.target.value)}
         />
-        <Button type="submit" disabled={!username || !password}>
-          Login
-        </Button>
-        <Button onClick={() => navigate("/register")} variant="subtle">
-          Register
-        </Button>
+        <Stack align="center" spacing="xs">
+          <Button type="submit" disabled={!username || !password}>
+            Login
+          </Button>
+          <Anchor variant="link" href="/forgot-password">
+            Forgot your password?
+          </Anchor>
+          <Space h="xl" />
+          <Space h="xl" />
+          <Text>Don't have an account? No problem!</Text>
+          <Button onClick={() => navigate("/register")} variant="subtle">
+            Sign Up
+          </Button>
+        </Stack>
       </form>
-    </div>
+    </Container>
   );
 };
 

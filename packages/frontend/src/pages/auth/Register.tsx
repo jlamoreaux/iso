@@ -9,6 +9,10 @@ import {
   Code,
   PasswordInput,
   Select,
+  Container,
+  Space,
+  Text,
+  Stack,
 } from "@mantine/core";
 import { redirect, useNavigate } from "react-router-dom";
 import { states } from "../../utils/geography";
@@ -93,7 +97,7 @@ const Register: React.FC = () => {
   };
 
   return (
-    <>
+    <Container>
       <Stepper
         active={active}
         breakpoint="sm"
@@ -170,7 +174,7 @@ const Register: React.FC = () => {
             Back
           </Button>
         )}
-        {active !== 2 && <Button onClick={nextStep}>Next step</Button>}
+        {active !== 2 && <Button onClick={nextStep}>Continue</Button>}
         {active === 2 && (
           <Button
             onClick={() => {
@@ -181,7 +185,17 @@ const Register: React.FC = () => {
           </Button>
         )}
       </Group>
-    </>
+      {active === 0 && (
+        <Stack align="center">
+          <Space h="xl" />
+          <Space h="xl" />
+          <Text>Already have an account? No problem!</Text>
+          <Button variant="subtle" onClick={() => navigate("/login")}>
+            Log in
+          </Button>
+        </Stack>
+      )}
+    </Container>
   );
 };
 
