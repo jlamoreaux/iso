@@ -122,6 +122,15 @@ export const updateProfile = async (photographer: Partial<Photographer>): Promis
   }
 };
 
+export const getCurrentPhotographer = async (): Promise<Photographer> => {
+  try {
+    const res = await api.get("/api/photographer");
+    return res.data;
+  } catch (error) {
+    throw error;
+  }
+};
+
 export const getPhotographerById = async (id: string | undefined): Promise<Photographer> => {
   try {
     const res = await api.get(`/api/photographer/${id}`);
