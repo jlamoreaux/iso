@@ -5,7 +5,8 @@
   "description": "Backend server for the ISO platform",
   "main": "dist/app.js",
   "engines": {
-    "node": ">=18.0.0"
+    "node": "18.12.1",
+    "yarn": ">=1.22.18"
   },
   "nodemonConfig": {
     "ignore": [
