@@ -1,6 +1,5 @@
 import React from "react";
 import { Anchor, AnchorProps } from "@mantine/core";
-import theme from "../../styles/theme";
 
 type LinkProps = AnchorProps & {
   children: React.ReactNode;

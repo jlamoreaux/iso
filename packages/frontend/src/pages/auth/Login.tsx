@@ -46,6 +46,8 @@ const Login: React.FC = () => {
           value={password}
           onChange={(e) => setPassword(e.target.value)}
         />
+        <Space h="xl" />
+        <Space h="xl" />
         <Stack align="center" spacing="xs">
           <Button type="submit" disabled={!username || !password}>
             Login

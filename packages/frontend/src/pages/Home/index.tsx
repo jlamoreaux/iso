@@ -1,6 +1,6 @@
 import React from "react";
 import { Anchor } from "@mantine/core";
-import { PrimaryLink } from "../../components/Buttons";
+import { PrimaryLink } from "../../components/buttons";
 
 const Home: React.FC = () => {
   return (

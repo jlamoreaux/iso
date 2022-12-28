@@ -1,7 +1,7 @@
 import React from "react";
 import { Group, Title, Text, Badge, Stack, List, HoverCard } from "@mantine/core";
 import { IncomingMessage, Message } from "../../services/api";
-import { ProfilePhoto } from "../ProfilePhoto";
+import { ProfilePhoto } from "../images/ProfilePhoto";
 import theme from "../../styles/theme";
 import { Link } from "react-router-dom";
 

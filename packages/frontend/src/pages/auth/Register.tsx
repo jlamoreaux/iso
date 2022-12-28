@@ -111,7 +111,9 @@ const Register: React.FC = () => {
         }}
       >
         <Stepper.Step withIcon={false}>
-          <Title order={2}>Sign Up</Title>
+          <Title align="center" order={2}>
+            Sign Up
+          </Title>
           <TextInput
             label="Username"
             placeholder="Username"
@@ -168,9 +170,9 @@ const Register: React.FC = () => {
           </Code>
         </Stepper.Completed>
       </Stepper>
-      <Group position="right" mt="xl">
+      <Group position="center" mt="xl">
         {active !== 0 && (
-          <Button variant="default" onClick={prevStep}>
+          <Button variant="subtle" onClick={prevStep}>
             Back
           </Button>
         )}
@@ -189,7 +191,7 @@ const Register: React.FC = () => {
         <Stack align="center">
           <Space h="xl" />
           <Space h="xl" />
-          <Text>Already have an account? No problem!</Text>
+          <Text align="center">Already have an account? No problem!</Text>
           <Button variant="subtle" onClick={() => navigate("/login")}>
             Log in
           </Button>

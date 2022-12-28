@@ -1,7 +1,7 @@
 import { Container, Stack, Title } from "@mantine/core";
 import React from "react";
 import { useLoaderData } from "react-router-dom";
-import MessageTile from "../../components/Cards/MessageTile";
+import MessageTile from "../../components/cards/MessageTile";
 import { IncomingMessage } from "../../services/api";
 
 // Message inbox page

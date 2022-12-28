@@ -1,8 +1,10 @@
 import { Title, Text, TypographyStylesProvider, Group, Container } from "@mantine/core";
 import React from "react";
 import { useLoaderData } from "react-router-dom";
-import ProfileCarousel, { ProfileCarouselPlaceholder } from "../../components/ProfileCarousel";
-import { ProfilePhoto } from "../../components/ProfilePhoto";
+import ProfileCarousel, {
+  ProfileCarouselPlaceholder,
+} from "../../components/images/ProfileCarousel";
+import { ProfilePhoto } from "../../components/images/ProfilePhoto";
 import { Photographer } from "../../services/api";
 
 const Profile: React.FC = () => {

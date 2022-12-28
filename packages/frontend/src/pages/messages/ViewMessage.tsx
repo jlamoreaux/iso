@@ -3,8 +3,8 @@
 import { Container, Stack, Text, Title } from "@mantine/core";
 import React, { useEffect, useState } from "react";
 import { useLoaderData, useParams } from "react-router-dom";
-import { PrimaryLink } from "../../components/Buttons";
-import { ProfileCard } from "../../components/Cards/ProfileCards";
+import { PrimaryLink } from "../../components/buttons";
+import { ProfileCard } from "../../components/cards/ProfileCards";
 import { IncomingMessage, updateMessage } from "../../services/api";
 
 const ViewMessage = () => {
