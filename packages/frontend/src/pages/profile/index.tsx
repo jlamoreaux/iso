@@ -1,11 +1,13 @@
-import { Title, Text, TypographyStylesProvider, Group, Container } from "@mantine/core";
+import { Title, Text, TypographyStylesProvider, Group, Container, Loader } from "@mantine/core";
 import React from "react";
 import { useLoaderData } from "react-router-dom";
+import { useAuth } from "../../context/AuthProvider";
 import ProfileCarousel, {
   ProfileCarouselPlaceholder,
 } from "../../components/images/ProfileCarousel";
 import { ProfilePhoto } from "../../components/images/ProfilePhoto";
 import { Photographer } from "../../services/api";
+import Login from "../auth/Login";
 
 const Profile: React.FC = () => {
   const photographer = useLoaderData() as Photographer;
@@ -21,6 +23,13 @@ const Profile: React.FC = () => {
     profilePic,
     bio,
   } = photographer;
+  const { loading, isAuthenticated } = useAuth();
+  if (loading) {
+    return <Loader />;
+  }
+  if (!isAuthenticated) {
+    return <Login />;
+  }
   return (
     <div>
       {images?.length ? <ProfileCarousel images={images} /> : <ProfileCarouselPlaceholder />}

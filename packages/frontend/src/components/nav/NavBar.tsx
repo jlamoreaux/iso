@@ -7,9 +7,8 @@ type ActiveNav = typeof navItems[number]["name"];
 type NavBarProps = Omit<NavbarProps, "children">;
 
 const NavBar: React.FC<NavBarProps> = (navbarProps) => {
-  const location = window.location.pathname;
+  const location = useLocation().pathname;
   const active = navItems.find((item) => item.path === location)?.name;
-  // const [active, setActive] = useState<ActiveNav>("Home");
   return (
     <Navbar {...navbarProps}>
       {navItems.map((item) => (
@@ -20,7 +19,6 @@ const NavBar: React.FC<NavBarProps> = (navbarProps) => {
           // icon={item.icon}
           label={item.name}
           active={active === item.name}
-          // onClick={() => setActive(item.name)}
         />
       ))}
     </Navbar>

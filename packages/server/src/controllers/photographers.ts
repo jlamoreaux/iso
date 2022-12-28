@@ -31,6 +31,30 @@ export const getPhotographerById = async (req: Request, res: Response): Promise<
   }
 };
 
+/**
+ * @description - gets the current photographer
+ * @param {Request} req - request object
+ * @param {Response} res - response object
+ * @returns {Promise<void>}
+ */
+export const getCurrentPhotographer = async (req: Request, res: Response): Promise<Response> => {
+  const loggerMetadata = {
+    function: "getCurrentPhotographer",
+  };
+  logger.info("Getting current photographer", loggerMetadata);
+  const user = req.user as IPhotographer;
+  if (!user) {
+    logger.info("Photographer not found", loggerMetadata);
+    return res.status(401).json({ message: "Unauthorized" });
+  }
+  const photographer = await DALPhotographer.findById(user.id || "");
+  if (!photographer) {
+    logger.info("Photographer not found", loggerMetadata);
+    return res.status(404).json({ message: "Photographer not found" });
+  }
+  return res.status(200).json(photographer);
+};
+
 export const getPhotographersByRegion = async (req: Request, res: Response): Promise<Response> => {
   const region = req.params.region;
   const [city, state] = region.split("-"); // city-state

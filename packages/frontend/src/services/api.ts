@@ -5,7 +5,7 @@ export interface LoginRequest {
   password: string;
 }
 
-type User = {
+export type User = {
   id: string;
   firstName: string;
   lastName: string;
@@ -52,9 +52,9 @@ export type IncomingMessage = Message & {
   sender: Photographer;
 };
 
-export interface LoginResponse {
-  id: string;
-}
+export type LoginResponse = User & {
+  status: Number;
+};
 
 export interface RegisterRequest {
   firstName: string;
@@ -83,6 +83,15 @@ const api = axios.create({
   },
 });
 
+api.interceptors.response.use(
+  (response) => {
+    return response;
+  },
+  (error) => {
+    return error.response;
+  },
+);
+
 export const login = async (
   username: string,
   password: string | undefined,
@@ -92,7 +101,7 @@ export const login = async (
       username,
       password,
     });
-    return res.data;
+    return { ...res.data, status: res.status };
   } catch (error) {
     throw error;
   }
@@ -106,6 +115,15 @@ export const register = async (data: RegisterRequest): Promise<RegisterResponse>
   try {
     const res = await api.post<RegisterResponse>("/auth/register", data);
     return res.data;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const getLoggedInUser = async (): Promise<LoginResponse> => {
+  try {
+    const res = await api.get("/auth/user");
+    return { ...res.data, status: res.status };
   } catch (error) {
     throw error;
   }

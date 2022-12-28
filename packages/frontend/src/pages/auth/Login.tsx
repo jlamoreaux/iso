@@ -1,6 +1,7 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { login } from "../../services/api";
+import { useLocation, useNavigate } from "react-router-dom";
+import { useAuth } from "../../context/AuthProvider";
+
 import {
   TextInput,
   Button,
@@ -19,13 +20,20 @@ const Login: React.FC = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  const location = useLocation().pathname;
+
+  const { login } = useAuth();
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
     try {
-      const response = await login(username, password);
-      navigate(`/photographer/${response.id}`);
+      await login({ username, password });
+      if (location === "/login") {
+        navigate("/");
+      } else {
+        navigate(location);
+      }
     } catch (err) {
       setError("Invalid username or password");
     }

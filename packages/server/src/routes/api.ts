@@ -1,4 +1,5 @@
-import { Router } from "express";
+import { NextFunction, Request, Response, Router } from "express";
+import logger from "../utils/logger";
 import { getEvents, getEvent, createEvent, updateEvent, deleteEvent } from "../controllers/events";
 import {
   getMessages,
@@ -8,6 +9,7 @@ import {
   deleteMessage,
 } from "../controllers/messages";
 import {
+  getCurrentPhotographer,
   getPhotographerById,
   updatePhotographerById,
   getPhotographersByRegion,
@@ -18,6 +20,14 @@ import { catchErrors } from "../utils/catchErrors";
 const apiRouter = Router();
 
 // Photographer routes
+apiRouter.get(
+  "/photographer",
+  (req: Request, res: Response, next: NextFunction) => {
+    logger.info({ user: req.user });
+    next();
+  },
+  catchErrors(getCurrentPhotographer),
+);
 apiRouter.get("/photographer/:id", catchErrors(getPhotographerById));
 apiRouter.put("/photographer/:id", catchErrors(updatePhotographerById));
 apiRouter.get("/photographers/:region", catchErrors(getPhotographersByRegion));

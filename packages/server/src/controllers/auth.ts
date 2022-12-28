@@ -18,7 +18,18 @@ export const login = async (req: Request, res: Response): Promise<Response | voi
     return res.status(401).json({ message: "Unauthorized" });
   }
   const user = req.user as IPhotographer;
-  return res.status(200).json({ id: user.id });
+  const photographer = await DALPhotographer.findById(user.id || "");
+  if (!photographer) {
+    logger.warn("Unauthorized", loggerMetadata);
+    return res.status(401).json({ message: "Unauthorized" });
+  }
+  const { id, firstName, lastName, profilePic } = photographer;
+  return res.status(200).json({
+    id,
+    firstName,
+    lastName,
+    profilePic,
+  });
 };
 
 // logout a photographer
@@ -80,4 +91,23 @@ export const register = async (
     return res.status(500).json({ message: "Error when registering photographer" });
   }
   next();
+};
+
+// gets the current user
+export const checkAuth = async (req: Request, res: Response): Promise<Response | void> => {
+  const loggerMetadata = {
+    function: "getCurrentUser",
+  };
+  logger.info("Getting current user", loggerMetadata);
+  if (!req.user) {
+    logger.warn("Unauthorized", loggerMetadata);
+    return res.status(401).json({ message: "Unauthorized" });
+  }
+  const user = req.user as IPhotographer;
+  return res.status(200).json({
+    id: user.id,
+    firstName: user.firstName,
+    lastName: user.lastName,
+    profilePic: user.profilePic,
+  });
 };
