@@ -19,9 +19,3 @@ workflows:
           version: "18.12.1"
           # If you are using yarn, change the line below from "npm" to "yarn"
           pkg-manager: yarn
-
-dependencies:
-  pre:
-    - rm -rf ~/.yarn
-    - npm install -g yarn
-    - yarn -v
