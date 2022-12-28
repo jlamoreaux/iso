@@ -43,9 +43,11 @@ describe("login", () => {
     jest.clearAllMocks();
   });
 
-  it("should return the id of the logged in user", async () => {
+  it("should return the id, firstName and lastName of the logged in user", async () => {
+    const mockUser = { id: 1, firstName: "test", lastName: "user" };
     // Create a mock Request object
     const req = createMockRequest({ username, password }, { id: 1 });
+    (DALPhotographer.findById as jest.Mock).mockResolvedValueOnce(mockUser);
 
     // Create a mock Response object
     const res = createMockResponse();
@@ -57,7 +59,7 @@ describe("login", () => {
 
     // Assert that the response status was set to 200
     expect(res.status).toHaveBeenCalledWith(200);
-    expect(res.json).toHaveBeenCalledWith({ id: 1 });
+    expect(res.json).toHaveBeenCalledWith(mockUser);
   });
 
   it("should return a 401 if req.user does not exist", async () => {
