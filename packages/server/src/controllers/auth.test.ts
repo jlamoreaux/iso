@@ -2,6 +2,7 @@ import { describe, expect, test } from "@jest/globals";
 import { Request, Response, NextFunction } from "express";
 import { login, register } from "./auth";
 import DALPhotographer from "../data/photographer";
+import { PhotographerDocument } from "../models/Photographer";
 import logger from "../utils/logger";
 import passport, { hashPassword, registerUser } from "../lib/auth";
 
