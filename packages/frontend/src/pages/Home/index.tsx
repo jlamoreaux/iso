@@ -1,19 +1,28 @@
 import React from "react";
-import { Anchor } from "@mantine/core";
-import { PrimaryLink } from "../../components/Buttons";
+import { Anchor, Container, Loader, Space, Stack, Text } from "@mantine/core";
+import { PrimaryLink } from "../../components/buttons";
+import { useAuth } from "../../context/AuthProvider";
 
 const Home: React.FC = () => {
+  const { isAuthenticated, user, loading } = useAuth();
   return (
-    <div className="home-container">
-      <h1>ISO</h1>
-      <p>The best platform for photographers to find and hire other photographers.</p>
-      <div className="actions">
-        <PrimaryLink href="/login">Login</PrimaryLink>
-        <Anchor href="/register" className="register-button">
-          Register
-        </Anchor>
-      </div>
-    </div>
+    <Container>
+      {loading ? (
+        <Loader />
+      ) : isAuthenticated ? (
+        <Text>Hello{user?.firstName && `, ${user.firstName}`}!</Text>
+      ) : (
+        <Stack spacing="md" align="center">
+          <p>The best platform for photographers to find and hire other photographers.</p>
+          <Space h="xl" />
+          <Space h="xl" />
+          <PrimaryLink href="/login">Login</PrimaryLink>
+          <Anchor href="/register" className="register-button">
+            Register
+          </Anchor>
+        </Stack>
+      )}
+    </Container>
   );
 };
 

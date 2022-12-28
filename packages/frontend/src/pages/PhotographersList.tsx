@@ -1,7 +1,7 @@
 import React from "react";
 import { Title, Stack, Container } from "@mantine/core";
 import { Photographer } from "../services/api";
-import { ProfileCard } from "../components/Cards/ProfileCards";
+import { ProfileCard } from "../components/cards/ProfileCards";
 import { useLoaderData } from "react-router-dom";
 
 type PhotographersListProps = {

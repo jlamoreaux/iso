@@ -9,6 +9,10 @@ import {
   Code,
   PasswordInput,
   Select,
+  Container,
+  Space,
+  Text,
+  Stack,
 } from "@mantine/core";
 import { redirect, useNavigate } from "react-router-dom";
 import { states } from "../../utils/geography";
@@ -93,7 +97,7 @@ const Register: React.FC = () => {
   };
 
   return (
-    <>
+    <Container>
       <Stepper
         active={active}
         breakpoint="sm"
@@ -107,7 +111,9 @@ const Register: React.FC = () => {
         }}
       >
         <Stepper.Step withIcon={false}>
-          <Title order={2}>Sign Up</Title>
+          <Title align="center" order={2}>
+            Sign Up
+          </Title>
           <TextInput
             label="Username"
             placeholder="Username"
@@ -164,13 +170,13 @@ const Register: React.FC = () => {
           </Code>
         </Stepper.Completed>
       </Stepper>
-      <Group position="right" mt="xl">
+      <Group position="center" mt="xl">
         {active !== 0 && (
-          <Button variant="default" onClick={prevStep}>
+          <Button variant="subtle" onClick={prevStep}>
             Back
           </Button>
         )}
-        {active !== 2 && <Button onClick={nextStep}>Next step</Button>}
+        {active !== 2 && <Button onClick={nextStep}>Continue</Button>}
         {active === 2 && (
           <Button
             onClick={() => {
@@ -181,7 +187,17 @@ const Register: React.FC = () => {
           </Button>
         )}
       </Group>
-    </>
+      {active === 0 && (
+        <Stack align="center">
+          <Space h="xl" />
+          <Space h="xl" />
+          <Text align="center">Already have an account? No problem!</Text>
+          <Button variant="subtle" onClick={() => navigate("/login")}>
+            Log in
+          </Button>
+        </Stack>
+      )}
+    </Container>
   );
 };
 

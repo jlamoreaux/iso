@@ -1,7 +1,7 @@
 import { Router } from "express";
 import passport from "passport";
 import { PhotographerDocument } from "../models/Photographer";
-import { register, login, logout } from "../controllers/auth";
+import { register, login, logout, checkAuth } from "../controllers/auth";
 import { catchErrors } from "../utils/catchErrors";
 
 const authRouter = Router();
@@ -25,5 +25,7 @@ authRouter.post(
   catchErrors(login),
 );
 authRouter.post("/logout", catchErrors(logout));
+
+authRouter.get("/user", catchErrors(checkAuth));
 
 export default authRouter;

@@ -2,7 +2,7 @@ import React from "react";
 import { Carousel } from "@mantine/carousel";
 import { Image } from "@mantine/core";
 import { IconArrowLeft, IconArrowRight } from "@tabler/icons";
-import theme from "../styles/theme";
+import theme from "../../styles/theme";
 
 type ProfileCarouselProps = {
   images: string[];
