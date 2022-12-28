@@ -5,7 +5,7 @@ import { Strategy as LocalStrategy } from "passport-local";
 // import { Strategy as GoogleStrategy } from "passport-google-oauth20";
 // import { Strategy as FacebookStrategy } from "passport-facebook";
 import DALPhotographer from "../data/photographer";
-import { IPhotographer } from "../models/Photographer";
+import { IPhotographer, PhotographerDocument } from "../models/Photographer";
 import { config } from "dotenv";
 import logger from "../utils/logger";
 
@@ -149,6 +149,38 @@ passport.deserializeUser(async (user: Express.User, done) => {
 export const hashPassword = async (password: string): Promise<string> => {
   const salt = await bcrypt.genSalt(10);
   return await bcrypt.hash(password, salt);
+};
+
+export const registerUser = async (
+  photographerData: IPhotographer,
+): Promise<PhotographerDocument> => {
+  const loggerMetadata = {
+    function: "registerUser",
+  };
+  logger.info("Registering photographer", loggerMetadata);
+  const currentPhotographer = await DALPhotographer.register(
+    photographerData,
+    async (err, photographer) => {
+      if (err) {
+        logger.warn("Error when registering photographer", {
+          ...loggerMetadata,
+          photographer,
+          error: "Photographer not created",
+        });
+        throw new Error(err);
+      }
+      logger.info("Photographer registered", loggerMetadata);
+      return await DALPhotographer.findByUsername(photographer.username);
+    },
+  );
+  if (!currentPhotographer) {
+    logger.warn("Error when looking up the snewly registered photographer", {
+      ...loggerMetadata,
+      error: "Error when looking up newly registered photographer",
+    });
+    throw new Error("Error when looking up newly registered photographer");
+  }
+  return currentPhotographer;
 };
 
 export default passport;

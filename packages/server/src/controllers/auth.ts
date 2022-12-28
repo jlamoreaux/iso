@@ -3,40 +3,9 @@ import { Response, Request, NextFunction } from "express";
 import DALPhotographer from "../data/photographer";
 import logger from "../utils/logger";
 import { AUTH_TYPE, hashPassword } from "../lib/auth";
-import { IPhotographer, PhotographerDocument } from "../models/Photographer";
+import { IPhotographer } from "../models/Photographer";
 import { findNearestRegion } from "../utils/regions";
-
-const registerUser = async (
-  photographerData: IPhotographer,
-): Promise<PhotographerDocument | null> => {
-  const loggerMetadata = {
-    function: "registerUser",
-  };
-  logger.info("Registering photographer", loggerMetadata);
-  const currentPhotographer = await DALPhotographer.register(
-    photographerData,
-    async (err, photographer) => {
-      if (err) {
-        logger.warn("Error when registering photographer", {
-          ...loggerMetadata,
-          photographer,
-          error: "Photographer not created",
-        });
-        throw new Error(err);
-      }
-      logger.info("Photographer registered", loggerMetadata);
-      return await DALPhotographer.findByUsername(photographer.username);
-    },
-  );
-  if (!currentPhotographer) {
-    logger.warn("Error when looking up the snewly registered photographer", {
-      ...loggerMetadata,
-      error: "Error when looking up newly registered photographer",
-    });
-    throw new Error("Error when looking up newly registered photographer");
-  }
-  return currentPhotographer;
-};
+import { registerUser } from "../lib/auth";
 
 // login a photographer using passport library
 export const login = async (req: Request, res: Response): Promise<Response | void> => {
@@ -44,8 +13,12 @@ export const login = async (req: Request, res: Response): Promise<Response | voi
     function: "login",
   };
   logger.info("Logging in photographer", loggerMetadata);
-  const user = req.user as PhotographerDocument;
-  return res.status(200).json({ id: user?.id });
+  if (!req.user) {
+    logger.warn("Unauthorized", loggerMetadata);
+    return res.status(401).json({ message: "Unauthorized" });
+  }
+  const user = req.user as IPhotographer;
+  return res.status(200).json({ id: user.id });
 };
 
 // logout a photographer

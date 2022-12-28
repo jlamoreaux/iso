@@ -37,7 +37,7 @@ describe("getMessage", () => {
       sender: {
         id: "456",
       },
-    } as IMessageDocument;
+    } as unknown as IMessageDocument;
     (DALMessage.findById as jest.Mock).mockResolvedValue(expected);
 
     const response = await getMessage(mockRequest, mockResponse);
@@ -87,7 +87,7 @@ describe("createMessage", () => {
       sender: {
         id: "456",
       },
-    } as IMessageDocument;
+    } as unknown as IMessageDocument;
     (DALMessage.create as jest.Mock).mockResolvedValue(expected);
 
     const response = await createMessage(mockRequest, mockResponse);
@@ -130,7 +130,7 @@ describe("updateMessage", () => {
       id: "123",
       message: "Hello world!",
       sender: "456",
-    } as IMessageDocument;
+    } as unknown as IMessageDocument;
     (DALMessage.findByIdAndSender as jest.Mock).mockResolvedValue(expected);
     (DALMessage.update as jest.Mock).mockResolvedValue(expected);
 
@@ -193,7 +193,7 @@ describe("deleteMessage", () => {
       sender: {
         id: "456",
       },
-    } as IMessageDocument;
+    } as unknown as IMessageDocument;
     (DALMessage.delete as jest.Mock).mockResolvedValue(expected);
 
     const response = await deleteMessage(mockRequest, mockResponse);
