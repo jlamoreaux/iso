@@ -178,8 +178,7 @@ const PhotographerSchema = new Schema({
 
 // static isValidPassword method
 PhotographerSchema.methods.isValidPassword = async function (password: string) {
-  const photographer = this;
-  const compare = await bcrypt.compare(password, photographer.password);
+  const compare = await bcrypt.compare(password, this.password);
   return compare;
 };
 
