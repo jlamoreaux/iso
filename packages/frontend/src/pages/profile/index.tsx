@@ -1,6 +1,6 @@
 import { Title, Text, TypographyStylesProvider, Group, Container, Loader } from "@mantine/core";
 import React from "react";
-import { useLoaderData } from "react-router-dom";
+import { useLoaderData, useLocation } from "react-router-dom";
 import { useAuth } from "../../context/AuthProvider";
 import ProfileCarousel, {
   ProfileCarouselPlaceholder,
@@ -12,6 +12,7 @@ import FavoriteButton from "../../components/buttons/Favorite";
 
 const Profile: React.FC = () => {
   const photographer = useLoaderData() as Photographer;
+  const location = useLocation().pathname;
   const {
     id,
     portfolioImages: images,
@@ -46,7 +47,7 @@ const Profile: React.FC = () => {
             photoUrl={profilePic}
             userFullName={`${firstName} ${lastName}`}
           ></ProfilePhoto>
-          <FavoriteButton id={id} isFavorite={isFavorite || false} />
+          {location !== "/profile" && <FavoriteButton id={id} isFavorite={isFavorite || false} />}
         </div>
         <Text>
           <TypographyStylesProvider>
