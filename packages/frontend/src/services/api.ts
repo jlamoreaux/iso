@@ -30,6 +30,7 @@ export type Photographer = User & {
   profilePic?: string;
   bio?: string;
   portfolioImages?: string[];
+  isFavorite?: boolean;
 };
 
 export type Message = {
@@ -187,6 +188,33 @@ export const getPhotographersByRegionAndAvailability = async (
 ): Promise<Photographer[]> => {
   try {
     const res = await api.get(`/api/photographers/${region}/${date}`);
+    return res.data;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const getFavorites = async (): Promise<Photographer[]> => {
+  try {
+    const res = await api.get("/api/favorites");
+    return res.data;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const addFavorite = async (id: string): Promise<Photographer> => {
+  try {
+    const res = await api.post("/api/favorites", { id });
+    return res.data;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const removeFavorite = async (id: string): Promise<Photographer> => {
+  try {
+    const res = await api.delete("/api/favorites/", { data: { id } });
     return res.data;
   } catch (error) {
     throw error;

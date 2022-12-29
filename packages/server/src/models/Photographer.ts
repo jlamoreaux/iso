@@ -36,6 +36,8 @@ export type IPhotographer = {
   profilePic?: string;
   portfolioImages?: string[];
   bio?: string;
+  favorites: { [photographerId: string]: boolean };
+  isFavorite?: boolean;
   isTrial?: boolean;
   isPro?: boolean;
   isVerified?: boolean;
@@ -49,6 +51,8 @@ export type PhotographerDocument = IPhotographer &
   Document & {
     verifyPassword: (password: string, callback: (err: any, isMatch: boolean) => void) => void;
     isValidPassword: (password: string) => Promise<boolean>;
+    getFavorites: () => Promise<PhotographerDocument[]>;
+    checkIfIsFavorite: (photographerId: string) => Promise<boolean>;
   };
 
 export interface PhotographerModel extends Model<PhotographerDocument> {
@@ -146,6 +150,11 @@ const PhotographerSchema = new Schema({
     type: String,
     required: false,
   },
+  favorites: {
+    type: Map,
+    of: String,
+    required: false,
+  },
   isTrial: {
     type: Boolean,
     default: true,
@@ -182,6 +191,20 @@ PhotographerSchema.methods.isValidPassword = async function (password: string) {
   return compare;
 };
 
+// getFavoritePhotographers method
+PhotographerSchema.methods.getFavorites = async function () {
+  const favorites = Array.from(this.favorites.keys()) as string[];
+  const photographers = this.model("Photographer").find({
+    _id: { $in: favorites },
+  });
+  return photographers;
+};
+
+// isFavorite method
+PhotographerSchema.methods.checkIfIsFavorite = async function (photographerId: string) {
+  return this.favorites.get(photographerId);
+};
+
 PhotographerSchema.statics = {
   // serializeUser method
   serializeUser: () => {
@@ -199,6 +222,14 @@ PhotographerSchema.statics = {
     return this.findOne({ username });
   },
 };
+
+PhotographerSchema.virtual("id").get(function () {
+  return this._id.toHexString();
+});
+
+PhotographerSchema.set("toJSON", {
+  virtuals: true,
+});
 
 // Add passportLocalMongoose to the schema
 PhotographerSchema.plugin(passportLocalMongoose, { usernameField: "email" });
