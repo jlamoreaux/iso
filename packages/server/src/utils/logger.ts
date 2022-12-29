@@ -2,16 +2,22 @@
 import { Request } from "express";
 import { createLogger, format, transports } from "winston";
 
-export type LoggerMetadata = {
-  [key: string]: any;
-  timestamp: never;
-  level: never;
-  message: never;
-  label: never;
-  metadata: never;
+export type LoggerMetadata = Omit<
+  LoggerFieldsToOmit,
+  "timestamp" | "level" | "message" | "label" | "metadata"
+> & {
+  [key: string]: string | number | boolean | object | undefined | Error;
 };
 
-const logger = createLogger({
+type LoggerFieldsToOmit = {
+  timestamp?: never;
+  level?: never;
+  message?: never;
+  label?: never;
+  metadata?: never;
+};
+
+const winstonLogger = createLogger({
   format: format.combine(
     format.timestamp({
       format: "YYYY-MM-DD HH:mm:ss",
@@ -21,8 +27,18 @@ const logger = createLogger({
     }),
 
     format.errors({ stack: true }),
-    format.splat(),
-    format.json(),
+    format.printf((info) => {
+      const { timestamp, level, message, ...metadata } = info;
+      const metadataString = Object.keys(metadata)
+        .map((key) => {
+          if (typeof metadata[key] === "object") {
+            return `${key}: ${JSON.stringify(metadata[key])}`;
+          }
+          return `${key}: ${metadata[key]}`;
+        })
+        .join(", ");
+      return `${timestamp} ${level}: ${message} ${metadataString}`;
+    }),
   ),
   defaultMeta: (req: Request) => ({ requestId: req.headers["x-request-id"] }),
   transports: [
@@ -32,11 +48,26 @@ const logger = createLogger({
 });
 
 if (process.env.NODE_ENV !== "production") {
-  logger.add(
+  winstonLogger.add(
     new transports.Console({
       format: format.combine(format.colorize(), format.simple()),
     }),
   );
 }
+
+const logger = {
+  info: (message: string, metadata?: LoggerMetadata) => {
+    winstonLogger.info(message, metadata);
+  },
+  error: (message: string, metadata?: LoggerMetadata) => {
+    winstonLogger.error(message, metadata);
+  },
+  warn: (message: string, metadata?: LoggerMetadata) => {
+    winstonLogger.warn(message, metadata);
+  },
+  debug: (message: string, metadata?: LoggerMetadata) => {
+    winstonLogger.debug(message, metadata);
+  },
+};
 
 export default logger;
