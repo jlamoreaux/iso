@@ -23,7 +23,6 @@ describe("Photographers Controller", () => {
     profilePic: "./images/profilePic.jpg",
     isFavorite: false,
     bio: "I am a photographer with 10 years of experience",
-    id: 1,
     city: "City 1",
     state: "State 1",
   };
