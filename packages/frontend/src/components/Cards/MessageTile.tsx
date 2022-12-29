@@ -11,7 +11,7 @@ type MessageTileProps = {
 
 export const MessageTile: React.FC<MessageTileProps> = ({ message }) => {
   const { firstName, lastName, city, state, profilePic } = message.sender;
-  const { eventType, eventDate, eventLocation, eventDescription, isRead } = message;
+  const { lastReply, eventTitle, isRead, message: body } = message;
   return (
     <Link
       to={`/messages/${message.id}`}
@@ -27,20 +27,26 @@ export const MessageTile: React.FC<MessageTileProps> = ({ message }) => {
           style={{
             flexBasis: "100%",
           }}
+          p={4}
         >
-          <Group position="apart" grow noWrap>
-            <Title order={4}>{`${firstName} ${lastName}`}</Title>
-            <Title order={5} color={theme!.colors!.seaFoamGreen![4]}>
-              {city}, {state}
-            </Title>
+          <Group position="apart">
+            <Stack spacing={0}>
+              <Title order={4}>{`${firstName} ${lastName}`}</Title>
+              <Title order={5} color={theme!.colors!.seaFoamGreen![4]}>
+                {city}, {state}
+              </Title>
+            </Stack>
+            <Stack spacing={0} align="end">
+              <Text size={"sm"}>{lastReply && new Date(lastReply).toLocaleTimeString()}</Text>
+              <Text size={"sm"}>{lastReply && new Date(lastReply).toLocaleDateString()}</Text>
+            </Stack>
           </Group>
           <Stack spacing={0}>
-            <Text size={"sm"}>{eventDate && new Date(eventDate).toLocaleDateString()}</Text>
-            <Text size={"sm"} lineClamp={1}>
-              {eventDescription}
-            </Text>
-            <Text size={"sm"} lineClamp={1}>
-              {eventType}
+            <Title order={6} lineClamp={2}>
+              {eventTitle}
+            </Title>
+            <Text size={"sm"} color={theme.colors?.gray?.[9]} lineClamp={1}>
+              {body}
             </Text>
           </Stack>
         </Stack>

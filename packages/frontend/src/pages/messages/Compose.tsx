@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Container, Textarea, TextInput, Title } from "@mantine/core";
 import { useForm } from "@mantine/form";
-import { createMessage, IncomingMessage } from "../../services/api";
+import { createMessage, MessageResponse } from "../../services/api";
 import { DatePicker } from "@mantine/dates";
 import { ReactComponent as Calendar } from "../../assets/svg/calendar.svg";
 import { useParams } from "react-router";
@@ -34,7 +34,7 @@ const Compose: React.FC = () => {
     },
   });
 
-  const replyMessage = useLoaderData() as IncomingMessage;
+  const { message: replyMessage } = (useLoaderData() as MessageResponse) || {};
 
   useEffect(() => {
     if (replyMessage) {

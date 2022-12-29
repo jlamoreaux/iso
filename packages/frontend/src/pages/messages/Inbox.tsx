@@ -3,14 +3,13 @@ import React from "react";
 import { useLoaderData } from "react-router-dom";
 import { useAuth } from "../../context/AuthProvider";
 import MessageTile from "../../components/cards/MessageTile";
-import { IncomingMessage } from "../../services/api";
+import { IncomingMessage, MessageResponse } from "../../services/api";
 import Login from "../auth/Login";
 
 // Message inbox page
 const Inbox: React.FC = () => {
   const { loading, isAuthenticated } = useAuth();
-  const messages = useLoaderData() as IncomingMessage[];
-
+  const unsortedMessages = useLoaderData() as IncomingMessage[];
   if (loading) {
     return <Loader />;
   }
@@ -18,6 +17,10 @@ const Inbox: React.FC = () => {
   if (!isAuthenticated) {
     return <Login />;
   }
+
+  const messages = unsortedMessages.sort((a: any, b: any) => {
+    return new Date(b.lastReply).valueOf() - new Date(a.lastReply).valueOf();
+  });
 
   return (
     <Container>

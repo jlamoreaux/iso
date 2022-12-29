@@ -102,15 +102,14 @@ const router = createBrowserRouter([
         path: "/messages/:id/reply",
         element: <Compose />,
         loader: async ({ params }) => {
-          const message = await getMessage(params.id);
-          return message;
+          const data = await getMessage(params.id);
+          return data;
         },
       },
       {
         path: "/favorites",
         loader: async () => {
           const photographers = await getFavorites();
-          console.log(photographers);
           return photographers;
         },
         element: <PhotographersList listType={LIST_TYPE.FAVORITES} />,

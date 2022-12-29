@@ -37,20 +37,28 @@ export type Message = {
   sender: string;
   recipient: string;
   message: string;
+  createdAt: string;
+  lastReply: string;
+  isRootMessage: boolean;
   eventTitle?: string;
   eventType?: string;
   eventLocation?: string;
   eventDescription?: string;
   eventDate?: Date;
-  createdAd?: Date;
   isRead?: boolean;
   reactions?: string[];
   replyTo?: string;
 };
 
 export type IncomingMessage = Message & {
+  replies?: IncomingMessage[];
   id: string;
   sender: Photographer;
+};
+
+export type MessageResponse = {
+  message: IncomingMessage;
+  thread: IncomingMessage[];
 };
 
 export type LoginResponse = User & {
