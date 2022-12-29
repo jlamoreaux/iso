@@ -14,6 +14,7 @@ export const getPhotographerById = async (req: Request, res: Response): Promise<
   const loggerMetadata = {
     function: "getPhotographerById",
     photographerId: id,
+    userId: "",
   };
   logger.info("Getting photographer by id", loggerMetadata);
 
@@ -24,7 +25,29 @@ export const getPhotographerById = async (req: Request, res: Response): Promise<
       logger.info("Photographer not found", loggerMetadata);
       return res.status(404).json({ message: "Photographer not found" });
     }
-    return res.status(200).json(photographer);
+    let isFavorite = false;
+    if (req.user) {
+      loggerMetadata.userId = (req.user as IPhotographer).id || "";
+      logger.info("Checking if photographer is favorite", loggerMetadata);
+      const user = await DALPhotographer.findById((req.user as IPhotographer).id || "");
+      if (user && (await user.checkIfIsFavorite(photographer.id))) {
+        logger.info("Photographer is favorite", loggerMetadata);
+        isFavorite = true;
+      }
+    }
+    const result = {
+      firstName: photographer.firstName,
+      lastName: photographer.lastName,
+      gear: photographer.gear,
+      regions: photographer.regions,
+      profilePic: photographer.profilePic,
+      isFavorite,
+      bio: photographer.bio,
+      id: photographer.id,
+      city: photographer.city,
+      state: photographer.state,
+    };
+    return res.status(200).json(result);
   } catch (error) {
     logger.warn("An error occurred while getting photographer", loggerMetadata);
     return res.status(500).json({ error: "An error occurred while getting photographer" });
@@ -44,7 +67,7 @@ export const getCurrentPhotographer = async (req: Request, res: Response): Promi
   logger.info("Getting current photographer", loggerMetadata);
   const user = req.user as IPhotographer;
   if (!user) {
-    logger.info("Photographer not found", loggerMetadata);
+    logger.info("User not logged in", loggerMetadata);
     return res.status(401).json({ message: "Unauthorized" });
   }
   const photographer = await DALPhotographer.findById(user.id || "");
@@ -121,5 +144,107 @@ export const updatePhotographerById = async (req: Request, res: Response): Promi
   } catch (error) {
     logger.warn("An error occurred while updating photographer", loggerMetadata);
     return res.status(500).json({ error: "An error occurred while updating photographer" });
+  }
+};
+
+/**
+ * @description - gets favorite photographers for the current photographer
+ * @param {Request} req - request object
+ * @param {Response} res - response object
+ * @returns {Promise<void>}
+ */
+export const getFavoritePhotographers = async (req: Request, res: Response): Promise<Response> => {
+  const loggerMetadata = {
+    function: "getFavoritePhotographers",
+  };
+  logger.info("Getting favorite photographers", loggerMetadata);
+  const user = req.user as IPhotographer;
+  if (!user) {
+    logger.info("Photographer not found", loggerMetadata);
+    return res.status(401).json({ message: "Unauthorized" });
+  }
+  let favorites: PhotographerDocument[] | null = [];
+  try {
+    favorites = await DALPhotographer.getFavorites(user.id || "");
+  } catch (error) {
+    logger.warn("An error occurred while getting favorite photographers", loggerMetadata);
+  }
+  return res.status(200).json(favorites);
+};
+
+/**
+ * @description - adds a photographer to the current photographer's favorites
+ * @param {Request} req - request object
+ * @param {Response} res - response object
+ * @returns {Promise<void>}
+ */
+export const addFavoritePhotographer = async (req: Request, res: Response): Promise<Response> => {
+  const photographerId = req.body.id as string;
+  const loggerMetadata = {
+    function: "addFavoritePhotographer",
+    photographerId,
+  };
+  logger.info("Adding favorite photographer", loggerMetadata);
+  const user = req.user as IPhotographer;
+  if (!user) {
+    logger.info("Photographer not found", loggerMetadata);
+    return res.status(401).json({ message: "Unauthorized" });
+  }
+  let photographer: PhotographerDocument | null;
+  try {
+    photographer = await DALPhotographer.findById(photographerId);
+    if (!photographer) {
+      logger.info("Photographer not found", loggerMetadata);
+      return res.status(404).json({ message: "Photographer not found" });
+    }
+    await DALPhotographer.addFavorite(user.id || "", photographerId);
+    return res.status(200).json(photographer);
+  } catch (error: any) {
+    logger.warn("An error occurred while adding favorite photographer", {
+      ...loggerMetadata,
+      error: error.message,
+    });
+    return res.status(500).json({ error: "An error occurred while adding favorite photographer" });
+  }
+};
+
+/**
+ * @description - removes a photographer from the current photographer's favorites
+ * @param {Request} req - request object
+ * @param {Response} res - response object
+ * @returns {Promise<void>}
+ */
+export const removeFavoritePhotographer = async (
+  req: Request,
+  res: Response,
+): Promise<Response> => {
+  const photographerId = req.body.id as string;
+  const loggerMetadata = {
+    function: "removeFavoritePhotographer",
+    photographerId,
+  };
+  logger.info("Removing favorite photographer", loggerMetadata);
+  const user = req.user as IPhotographer;
+  if (!user) {
+    logger.info("Photographer not found", loggerMetadata);
+    return res.status(401).json({ message: "Unauthorized" });
+  }
+  let photographer: PhotographerDocument | null;
+  try {
+    photographer = await DALPhotographer.findById(photographerId);
+    if (!photographer) {
+      logger.info("Photographer not found", loggerMetadata);
+      return res.status(404).json({ message: "Photographer not found" });
+    }
+    await DALPhotographer.removeFavorite(user.id || "", photographerId);
+    return res.status(200).json(photographer);
+  } catch (error: any) {
+    logger.warn("An error occurred while removing favorite photographer", {
+      ...loggerMetadata,
+      error: error.message,
+    });
+    return res
+      .status(500)
+      .json({ error: "An error occurred while removing favorite photographer" });
   }
 };

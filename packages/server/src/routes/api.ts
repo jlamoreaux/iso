@@ -1,5 +1,4 @@
-import { NextFunction, Request, Response, Router } from "express";
-import logger from "../utils/logger";
+import { Router } from "express";
 import { getEvents, getEvent, createEvent, updateEvent, deleteEvent } from "../controllers/events";
 import {
   getMessages,
@@ -14,24 +13,24 @@ import {
   updatePhotographerById,
   getPhotographersByRegion,
   getPhotographersByRegionAndAvailability,
+  getFavoritePhotographers,
+  addFavoritePhotographer,
+  removeFavoritePhotographer,
 } from "../controllers/photographers";
 import { catchErrors } from "../utils/catchErrors";
 
 const apiRouter = Router();
 
 // Photographer routes
-apiRouter.get(
-  "/photographer",
-  (req: Request, res: Response, next: NextFunction) => {
-    logger.info({ user: req.user });
-    next();
-  },
-  catchErrors(getCurrentPhotographer),
-);
+apiRouter.get("/photographer", catchErrors(getCurrentPhotographer));
 apiRouter.get("/photographer/:id", catchErrors(getPhotographerById));
 apiRouter.put("/photographer/:id", catchErrors(updatePhotographerById));
 apiRouter.get("/photographers/:region", catchErrors(getPhotographersByRegion));
 apiRouter.get("/photographers/:region/:date", catchErrors(getPhotographersByRegionAndAvailability));
+
+apiRouter.get("/favorites", catchErrors(getFavoritePhotographers));
+apiRouter.post("/favorites", catchErrors(addFavoritePhotographer));
+apiRouter.delete("/favorites", catchErrors(removeFavoritePhotographer));
 
 // Message routes
 apiRouter.get("/messages", catchErrors(getMessages));

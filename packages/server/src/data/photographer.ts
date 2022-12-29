@@ -10,7 +10,7 @@ const DALPhotographer = {
   ): Promise<PhotographerDocument> => {
     logger.info("Registering photographer", { function: "DALPhotographer.register" });
     const newPhotographer = new Photographer(photographer);
-    await Photographer.register(newPhotographer, newPhotographer.password!, callback);
+    await Photographer.register(newPhotographer, newPhotographer.password as string, callback);
     return newPhotographer;
   },
   verify: async (
@@ -78,6 +78,25 @@ const DALPhotographer = {
   },
   deletePhotographer: async (id: string): Promise<PhotographerDocument | null> => {
     return await Photographer.findByIdAndDelete(id).exec();
+  },
+  getFavorites: async (id: string): Promise<PhotographerDocument[] | null> => {
+    const photographer = await Photographer.findById(id).populate("favorites").exec();
+    if (photographer) {
+      return photographer.getFavorites();
+    }
+    return null;
+  },
+  addFavorite: async (id: string, favoriteId: string): Promise<PhotographerDocument | null> => {
+    const setKey = `favorites.${favoriteId}`;
+    return await Photographer.findByIdAndUpdate(id, {
+      $set: { [setKey]: true },
+    }).exec();
+  },
+  removeFavorite: async (id: string, favoriteId: string): Promise<PhotographerDocument | null> => {
+    const unsetKey = `favorites.${favoriteId}`;
+    return await Photographer.findByIdAndUpdate(id, {
+      $unset: { [unsetKey]: true },
+    }).exec();
   },
 };
 

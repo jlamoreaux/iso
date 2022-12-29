@@ -16,9 +16,16 @@ describe("Photographers Controller", () => {
 
   const photographer = {
     id: 1,
-    name: "Photographer 1",
-    description: "Description 1",
-    email: "hello@example.com",
+    firstName: "John",
+    lastName: "Doe",
+    gear: "",
+    regions: [{city: "City 1", state: "State 1"}, {city: "City 2", state: "State 2"}],
+    profilePic: "./images/profilePic.jpg",
+    isFavorite: false,
+    bio: "I am a photographer with 10 years of experience",
+    id: 1,
+    city: "City 1",
+    state: "State 1",
   };
 
   beforeEach(() => {
@@ -52,6 +59,7 @@ describe("Photographers Controller", () => {
 
       expect(mockResponse.status).toHaveBeenCalledWith(200);
       expect(mockResponse.json).toHaveBeenCalledWith(photographer);
+
     });
 
     it("should return a 404 error if the photographer is not found", async () => {

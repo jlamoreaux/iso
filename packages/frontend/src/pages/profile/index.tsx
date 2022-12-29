@@ -8,10 +8,12 @@ import ProfileCarousel, {
 import { ProfilePhoto } from "../../components/images/ProfilePhoto";
 import { Photographer } from "../../services/api";
 import Login from "../auth/Login";
+import FavoriteButton from "../../components/buttons/Favorite";
 
 const Profile: React.FC = () => {
   const photographer = useLoaderData() as Photographer;
   const {
+    id,
     portfolioImages: images,
     firstName,
     lastName,
@@ -22,6 +24,7 @@ const Profile: React.FC = () => {
     regions,
     profilePic,
     bio,
+    isFavorite,
   } = photographer;
   const { loading, isAuthenticated } = useAuth();
   if (loading) {
@@ -31,7 +34,7 @@ const Profile: React.FC = () => {
     return <Login />;
   }
   return (
-    <div>
+    <Container>
       {images?.length ? <ProfileCarousel images={images} /> : <ProfileCarouselPlaceholder />}
       <div>
         <div>
@@ -43,6 +46,7 @@ const Profile: React.FC = () => {
             photoUrl={profilePic}
             userFullName={`${firstName} ${lastName}`}
           ></ProfilePhoto>
+          <FavoriteButton id={id} isFavorite={isFavorite || false} />
         </div>
         <Text>
           <TypographyStylesProvider>
@@ -82,7 +86,7 @@ const Profile: React.FC = () => {
           </TypographyStylesProvider>
         </Text>
       </div>
-    </div>
+    </Container>
   );
 };
 

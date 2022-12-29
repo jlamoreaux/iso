@@ -10,12 +10,13 @@ import {
   getPhotographersByRegionAndAvailability,
   getMessages,
   getMessage,
+  getFavorites,
   getEvents,
   getEvent,
   getCurrentPhotographer,
 } from "../services/api";
 import logoutLoader from "../utils/logoutLoader";
-import PhotographersList, { LIST_TYPE } from "../pages/PhotographersList";
+import PhotographersList, { LIST_TYPE } from "../pages/photographers/PhotographersList";
 import Compose from "../pages/messages/Compose";
 import Inbox from "../pages/messages/Inbox";
 import ViewMessage from "../pages/messages/ViewMessage";
@@ -104,6 +105,15 @@ const router = createBrowserRouter([
           const message = await getMessage(params.id);
           return message;
         },
+      },
+      {
+        path: "/favorites",
+        loader: async () => {
+          const photographers = await getFavorites();
+          console.log(photographers);
+          return photographers;
+        },
+        element: <PhotographersList listType={LIST_TYPE.FAVORITES} />,
       },
       // {
       //   path: "/events",
