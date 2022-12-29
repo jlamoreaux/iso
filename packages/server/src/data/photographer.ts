@@ -33,9 +33,12 @@ const DALPhotographer = {
       } else {
         return callback(new Error("User not found"), null);
       }
-    } catch (err) {
-      logger.error({ function: "DALPhotographer.verify", error: err });
-      return callback(err, null);
+    } catch (error) {
+      logger.error("error when verifying user", {
+        function: "DALPhotographer.verify",
+        error: error as Error,
+      });
+      return callback(error, null);
     }
   },
   update: async (id: string, photographer: IPhotographer): Promise<PhotographerDocument | null> => {

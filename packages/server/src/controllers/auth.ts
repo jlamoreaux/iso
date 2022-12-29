@@ -38,7 +38,7 @@ export const logout = async (req: Request, res: Response): Promise<Response | vo
   logger.info("Logging out user", loggerMetadata);
   req.logout((error) => {
     if (error) {
-      logger.error("Error during logout", { ...loggerMetadata, error });
+      logger.error("Error during logout", { ...loggerMetadata, error: error as Error });
       res.sendStatus(500);
     }
     res.sendStatus(200);
@@ -87,7 +87,10 @@ export const register = async (
     req.user = { ...newPhotographer };
     req.body.id = newPhotographer?.id;
   } catch (error) {
-    logger.error("Error when registering photographer", { ...loggerMetadata, error });
+    logger.error("Error when registering photographer", {
+      ...loggerMetadata,
+      error: error as Error,
+    });
     return res.status(500).json({ message: "Error when registering photographer" });
   }
   next();

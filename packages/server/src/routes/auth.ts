@@ -2,7 +2,7 @@ import { Router } from "express";
 import passport from "passport";
 import { PhotographerDocument } from "../models/Photographer";
 import { register, login, logout, checkAuth } from "../controllers/auth";
-import { catchErrors } from "../utils/catchErrors";
+import { catchErrors } from "../utils/errors";
 
 const authRouter = Router();
 

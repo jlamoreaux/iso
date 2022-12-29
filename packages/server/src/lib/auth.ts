@@ -33,13 +33,13 @@ passport.use(
         }
         const validate = await photographer.isValidPassword(password);
         if (!validate) {
-          logger.info("User attempted wrong password", { userId: photographer._id });
+          logger.info("User attempted wrong password", { userId: photographer.id });
           return done(null, false, { message: "Invalid username or password" });
         }
-        logger.info("Passport local strategy completed", { userId: photographer._id });
+        logger.info("Passport local strategy completed", { userId: photographer.id });
         return done(null, photographer, { message: "Logged in Successfully" });
       } catch (error) {
-        logger.error("Error handling passport local strategy", { error });
+        logger.error("Error handling passport local strategy", { error: error as Error });
         return done(error);
       }
     },

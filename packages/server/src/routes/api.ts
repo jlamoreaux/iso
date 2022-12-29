@@ -17,7 +17,7 @@ import {
   addFavoritePhotographer,
   removeFavoritePhotographer,
 } from "../controllers/photographers";
-import { catchErrors } from "../utils/catchErrors";
+import { catchErrors } from "../utils/errors";
 
 const apiRouter = Router();
 

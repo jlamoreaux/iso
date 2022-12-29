@@ -72,7 +72,7 @@ export const createEvent = async (req: Request, res: Response): Promise<Response
     newEvent = await DALEvent.create(event);
     return res.status(201).json(newEvent);
   } catch (error) {
-    logger.error("Error creating event", { ...loggerMetadata, error });
+    logger.error("Error creating event", { ...loggerMetadata, error: error as Error });
     return res.status(500).json({ message: "Error creating event" });
   }
 };
@@ -100,7 +100,7 @@ export const updateEvent = async (req: Request, res: Response): Promise<Response
     }
     return res.status(200).json({ event, message: "Event updated" });
   } catch (error) {
-    logger.error("Error updating event", { ...loggerMetadata, error });
+    logger.error("Error updating event", { ...loggerMetadata, error: error as Error });
     return res.status(500).json({ message: "Error updating event" });
   }
 };
@@ -126,7 +126,7 @@ export const deleteEvent = async (req: Request, res: Response): Promise<Response
     }
     return res.status(200).json({ event, message: "Event deleted" });
   } catch (error) {
-    logger.error("Error deleting event", { ...loggerMetadata, error });
+    logger.error("Error deleting event", { ...loggerMetadata, error: error as Error });
     return res.status(500).json({ message: "Error deleting event" });
   }
 };
