@@ -4,6 +4,7 @@ import mongoose, { Document, Types } from "mongoose";
 const Schema = mongoose.Schema;
 
 export interface IMessage {
+  id?: string;
   sender: Types.ObjectId;
   recipient: Types.ObjectId;
   message: string;
@@ -19,9 +20,11 @@ export interface IMessage {
   replies?: Types.ObjectId[] | IMessage[];
   lastReply?: Date;
   replyTo?: Types.ObjectId;
+  hasUnreadReplies?: boolean;
+  lastReadReplyId?: string;
 }
 
-export interface IMessageDocument extends IMessage, Document {}
+export type IMessageDocument = IMessage & Document;
 
 const MessageSchema = new Schema(
   {
@@ -69,7 +72,9 @@ const MessageSchema = new Schema(
     },
     isRootMessage: {
       type: Boolean,
-      default: true,
+      default: function (this: IMessageDocument) {
+        return !this.replyTo;
+      },
       required: true,
     },
     lastReply: {
@@ -102,7 +107,7 @@ const MessageSchema = new Schema(
 
 // Automatically populate the sender field
 MessageSchema.pre("find", function (this: any) {
-  this.populate("sender");
+  this.populate("sender", "firstName lastName profilePic city state id");
 });
 
 MessageSchema.virtual("id").get(function () {

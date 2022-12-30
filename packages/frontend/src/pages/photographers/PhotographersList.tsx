@@ -1,10 +1,9 @@
 import React from "react";
 import { Title, Stack, Container, Loader } from "@mantine/core";
-import { useLoaderData, useNavigate } from "react-router-dom";
+import { useLoaderData } from "react-router-dom";
 import { Photographer } from "../../services/api";
 import { ProfileCard } from "../../components/cards/ProfileCards";
-import { useAuth } from "../../context/AuthProvider";
-import Login from "../auth/Login";
+import { AuthWrapper } from "../../context/AuthProvider";
 
 type PhotographersListProps = {
   listType: LIST_TYPE;
@@ -17,8 +16,6 @@ export enum LIST_TYPE {
 }
 
 const PhotographersList: React.FC<PhotographersListProps> = ({ listType }) => {
-  const { loading, isAuthenticated } = useAuth();
-  const navigate = useNavigate();
   const photographers = useLoaderData() as Photographer[];
   const titles = {
     [LIST_TYPE.REGION]: "Photographers in your Area",
@@ -35,19 +32,13 @@ const PhotographersList: React.FC<PhotographersListProps> = ({ listType }) => {
     content = <div>No photographers found</div>;
   }
 
-  if (loading) {
-    return <Loader />;
-  }
-
-  if (!isAuthenticated) {
-    return <Login />;
-  }
-
   return (
-    <Container>
-      <Title>{title}</Title>
-      <Stack>{content}</Stack>
-    </Container>
+    <AuthWrapper>
+      <Container>
+        <Title>{title}</Title>
+        <Stack>{content}</Stack>
+      </Container>
+    </AuthWrapper>
   );
 };
 

@@ -81,8 +81,8 @@ const router = createBrowserRouter([
       {
         path: "/messages",
         loader: async () => {
-          const messages = await getMessages();
-          return messages;
+          const data = await getMessages();
+          return data;
         },
         element: <Inbox />,
       },

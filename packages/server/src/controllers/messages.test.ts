@@ -31,19 +31,19 @@ describe("getMessage", () => {
   } as unknown as Request;
 
   it("should return a 200 response and the message with the given id", async () => {
-    const expected = {
-      id: "123",
-      message: "Hello world!",
-      sender: {
-        id: "456",
-      },
+    const message = {
+        id: "123",
+        message: "Hello world!",
+        sender: {
+          id: "456",
+        },
     } as unknown as IMessageDocument;
-    (DALMessage.findById as jest.Mock).mockResolvedValue(expected);
+    (DALMessage.findById as jest.Mock).mockResolvedValue(message);
 
     const response = await getMessage(mockRequest, mockResponse);
     expect(response).toEqual({});
     expect(mockResponse.status).toHaveBeenCalledWith(200);
-    expect(mockResponse.json).toHaveBeenCalledWith(expected);
+    expect(mockResponse.json).toHaveBeenCalledWith({message, thread: []});
   });
 
   it("should return a 404 response if the message is not found", async () => {

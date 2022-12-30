@@ -1,4 +1,6 @@
+import { Loader } from "@mantine/core";
 import React, { useState, useEffect, useContext } from "react";
+import Login from "../pages/auth/Login";
 import { getLoggedInUser, login as loginApi, logout as logoutApi, User } from "../services/api";
 
 interface IAuthContext {
@@ -56,6 +58,21 @@ const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => 
       {children}
     </AuthContext.Provider>
   );
+};
+
+type AuthWrapperProps = {
+  children: React.ReactNode;
+};
+
+export const AuthWrapper: React.FC<AuthWrapperProps> = ({ children }) => {
+  const { loading, isAuthenticated } = useContext(AuthContext);
+  if (loading) {
+    return <Loader />;
+  }
+  if (!isAuthenticated) {
+    return <Login />;
+  }
+  return <>{children}</>;
 };
 
 export const useAuth = () => useContext(AuthContext);

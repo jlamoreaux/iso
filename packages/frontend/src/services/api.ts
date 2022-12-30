@@ -48,6 +48,8 @@ export type Message = {
   isRead?: boolean;
   reactions?: string[];
   replyTo?: string;
+  hasUnreadReplies?: boolean;
+  lastReadReplyId?: string;
 };
 
 export type IncomingMessage = Message & {
