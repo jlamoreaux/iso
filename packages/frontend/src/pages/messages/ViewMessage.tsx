@@ -1,17 +1,6 @@
 // Page to view recieved message
 
-import {
-  Button,
-  Collapse,
-  Container,
-  Group,
-  Loader,
-  ScrollArea,
-  Space,
-  Stack,
-  Text,
-  Title,
-} from "@mantine/core";
+import { Button, Collapse, Container, Group, Space, Stack, Text, Title } from "@mantine/core";
 import React, { useEffect, useState } from "react";
 import { useLoaderData, useLocation, useParams } from "react-router-dom";
 import MessageTile from "../../components/cards/MessageTile";
@@ -40,7 +29,7 @@ const ViewMessage = () => {
     replies,
   } = message;
 
-  const threadMessages = replies && replies.length > 0 ? replies : thread;
+  const threadMessages = replies && replies.length > 0 ? [message, ...replies] : thread;
 
   const CollapseButton = ({
     open,
@@ -89,32 +78,30 @@ const ViewMessage = () => {
               <PrimaryLink href={`/messages/${id}/reply`}>Reply</PrimaryLink>
             </Stack>
             {threadMessages && threadMessages.length > 0 && (
-              <ScrollArea w="100%" style={{ height: 600 }}>
-                <Stack style={{ width: "100%" }}>
-                  <CollapseButton open={repliesOpen} setOpen={setRepliesOpen}>
-                    {repliesOpen ? "Hide" : "Show"} {threadMessages.length} repl
-                    {threadMessages.length > 1 ? "ies" : "y"}
-                  </CollapseButton>
-                  <Collapse in={repliesOpen}>
-                    {isRootMessage && (
-                      <MessageTile
-                        message={message}
-                        key={message.id}
-                        currentMessage={currentMessage}
-                        isMessageView
-                      />
-                    )}
-                    {threadMessages.map((msg) => (
-                      <MessageTile
-                        message={msg}
-                        key={msg.id}
-                        currentMessage={currentMessage}
-                        isMessageView
-                      />
-                    ))}
-                  </Collapse>
-                </Stack>
-              </ScrollArea>
+              <Stack style={{ width: "100%" }}>
+                <CollapseButton open={repliesOpen} setOpen={setRepliesOpen}>
+                  {repliesOpen ? "Hide" : "Show"} {threadMessages.length} repl
+                  {threadMessages.length > 1 ? "ies" : "y"}
+                </CollapseButton>
+                <Collapse in={repliesOpen}>
+                  {/* {isRootMessage && (
+                    <MessageTile
+                      message={message}
+                      key={message.id}
+                      currentMessage={currentMessage}
+                      isMessageView
+                    />
+                  )} */}
+                  {threadMessages.map((msg) => (
+                    <MessageTile
+                      message={msg}
+                      key={msg.id}
+                      currentMessage={currentMessage}
+                      isMessageView
+                    />
+                  ))}
+                </Collapse>
+              </Stack>
             )}
           </Group>
         </Stack>
