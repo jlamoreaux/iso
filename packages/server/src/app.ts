@@ -1,5 +1,5 @@
 // import and initialize express app
-import express, { ErrorRequestHandler, NextFunction, Request, Response } from "express";
+import express from "express";
 // import requestId from "express-request-id";
 import session from "express-session";
 import cors from "cors";
@@ -8,7 +8,6 @@ import { apiRouter, authRouter } from "./routes";
 import passport from "passport";
 import { config } from "dotenv";
 import path from "path";
-import { fileURLToPath } from "url";
 
 config();
 

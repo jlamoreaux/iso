@@ -3,9 +3,7 @@ import {
   getPhotographerById,
   getPhotographersByRegion,
   getPhotographersByRegionAndAvailability,
-  updatePhotographerById,
 } from "./photographers";
-import { PhotographerDocument } from "../models/Photographer";
 import DALPhotographer from "../data/photographer";
 
 // Mocking the photographer data access layer
@@ -19,7 +17,10 @@ describe("Photographers Controller", () => {
     firstName: "John",
     lastName: "Doe",
     gear: "",
-    regions: [{city: "City 1", state: "State 1"}, {city: "City 2", state: "State 2"}],
+    regions: [
+      { city: "City 1", state: "State 1" },
+      { city: "City 2", state: "State 2" },
+    ],
     profilePic: "./images/profilePic.jpg",
     isFavorite: false,
     bio: "I am a photographer with 10 years of experience",
@@ -58,7 +59,6 @@ describe("Photographers Controller", () => {
 
       expect(mockResponse.status).toHaveBeenCalledWith(200);
       expect(mockResponse.json).toHaveBeenCalledWith(photographer);
-
     });
 
     it("should return a 404 error if the photographer is not found", async () => {

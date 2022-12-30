@@ -1,7 +1,6 @@
 // Test for events controller
 import { Request, Response } from "express";
 import { getEvent, getEvents, createEvent, updateEvent, deleteEvent } from "./events";
-import { EventDocument } from "../models/Event";
 import DALEvent from "../data/event";
 
 // Mocking the event data access layer
@@ -118,14 +117,14 @@ describe("Events Controller", () => {
 
   describe("updateEvent", () => {
     it("should update a event", async () => {
-      const event = {
-        id: 1,
-        name: "Event 1",
-        description: "Description 1",
-        date: "2024-01-01",
-        time: "10:00:00",
-        location: "Location 1",
-      };
+      // const event = {
+      //   id: 1,
+      //   name: "Event 1",
+      //   description: "Description 1",
+      //   date: "2024-01-01",
+      //   time: "10:00:00",
+      //   location: "Location 1",
+      // };
 
       const updatedEvent = {
         id: 1,

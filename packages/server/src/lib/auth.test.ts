@@ -1,5 +1,5 @@
 // Tests for auth library
-import { hashPassword } from './auth';
+import { hashPassword } from "./auth";
 
 describe("auth", () => {
   describe("hashPassword", () => {
@@ -11,4 +11,3 @@ describe("auth", () => {
     });
   });
 });
-
