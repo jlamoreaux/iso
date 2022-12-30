@@ -1,11 +1,23 @@
 import React, { useEffect, useState } from "react";
-import { Container, Loader, Textarea, TextInput, Title } from "@mantine/core";
+import { useLoaderData, useLocation, useNavigate } from "react-router-dom";
+import {
+  Alert,
+  Button,
+  Container,
+  Overlay,
+  Space,
+  Text,
+  Textarea,
+  TextInput,
+  Title,
+} from "@mantine/core";
 import { useForm } from "@mantine/form";
-import { useLoaderData } from "react-router-dom";
 import { DatePicker } from "@mantine/dates";
+import { IconAlertTriangle } from "@tabler/icons";
 import { createMessage, MessageResponse } from "../../services/api";
 import { ReactComponent as Calendar } from "../../assets/svg/calendar.svg";
 import { AuthWrapper } from "../../context/AuthProvider";
+import theme from "../../styles/theme";
 
 type FormValues = {
   message: string;
@@ -19,6 +31,8 @@ type FormValues = {
 const Compose: React.FC = () => {
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [isReply, setIsReply] = useState(false);
+  const recipient = new URLSearchParams(useLocation().search).get("p");
+  const navigate = useNavigate();
 
   const form = useForm<FormValues>({
     initialValues: {
@@ -52,7 +66,7 @@ const Compose: React.FC = () => {
 
   const handleSubmit = async (values: any) => {
     // TODO: remove static recipient id
-    values.recipient = "63a2fdef71e0f6bb8dcd069a";
+    values.recipient = recipient;
     if (replyMessage) {
       values.replyTo = replyMessage.replyTo || replyMessage.id;
     }
@@ -70,10 +84,33 @@ const Compose: React.FC = () => {
       </Container>
     );
   }
+
   return (
     <AuthWrapper>
       <Container>
         <Title>Compose{isReply && " Reply"}</Title>
+        {!recipient && (
+          <>
+            <Overlay opacity={0.8} color={theme.colors?.gray?.[9]} zIndex={1} />
+            <Alert
+              icon={<IconAlertTriangle size={64} />}
+              title="Oops!"
+              style={{ zIndex: 9 }}
+              variant="filled"
+            >
+              <Text>
+                Looks like you're trying to send a message to no one. recipient: {recipient}
+                <br />
+                You can send a message by going to the photgrapher's profile and clicking the
+                contact button.
+                <Space p={8} />
+                <Button color={"white"} variant="outline" onClick={() => navigate(-1)}>
+                  Go Back
+                </Button>
+              </Text>
+            </Alert>
+          </>
+        )}
         <form onSubmit={form.onSubmit(handleSubmit)}>
           <TextInput
             aria-label="Event Title"

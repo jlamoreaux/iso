@@ -11,6 +11,12 @@ const Layout: React.FC = () => {
   return (
     <AppShell
       fixed
+      padding={0}
+      styles={{
+        main: {
+          width: "100vw",
+        },
+      }}
       navbar={
         <NavBar p="md" hiddenBreakpoint="md" width={{ sm: 200, lg: 300 }} hidden={isMobile} />
       }
@@ -22,7 +28,7 @@ const Layout: React.FC = () => {
         </Header>
       }
       footer={
-        <Footer height="60" position={{ bottom: 0 }}>
+        <Footer height="auto" position={{ bottom: 0 }}>
           <MobileNavBar hidden={!isMobile} />
         </Footer>
       }

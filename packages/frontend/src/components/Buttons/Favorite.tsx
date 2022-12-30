@@ -12,6 +12,8 @@ const FavoriteButton: React.FC<AddFavoriteProps> = ({ id, isFavorite: initialFav
   const [isFavorite, setIsFavorite] = useState(initialFavoriteState);
   const [isLoading, setIsLoading] = useState(false);
 
+  const fillColor = theme.primaryColor as string;
+
   const handleAddFavorite = async () => {
     setIsLoading(true);
     if (!isFavorite) {
@@ -31,12 +33,12 @@ const FavoriteButton: React.FC<AddFavoriteProps> = ({ id, isFavorite: initialFav
   };
   return (
     <ActionIcon
-      variant={isFavorite ? "filled" : "transparent"}
+      variant="transparent"
       color={theme.colors?.gray?.[4]}
       onClick={handleAddFavorite}
       loading={isLoading}
     >
-      <IconBookmark />
+      <IconBookmark color={fillColor} fill={isFavorite ? fillColor : "none"} />
     </ActionIcon>
   );
 };
