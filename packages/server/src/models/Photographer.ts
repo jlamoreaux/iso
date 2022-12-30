@@ -44,7 +44,6 @@ export type IPhotographer = {
   isFeatured?: boolean;
   isSuspended?: boolean;
   isDeleted?: boolean;
-  dateCreated?: Date;
 };
 
 export type PhotographerDocument = IPhotographer &
@@ -67,123 +66,124 @@ export interface PhotographerModel extends Model<PhotographerDocument> {
   deserializeUser: () => PhotographerModel;
 }
 
-const PhotographerSchema = new Schema({
-  username: {
-    type: String,
-    required: true,
-    index: true,
-    unique: true,
+const PhotographerSchema = new Schema(
+  {
+    username: {
+      type: String,
+      required: true,
+      index: true,
+      unique: true,
+    },
+    firstName: {
+      type: String,
+      required: true,
+    },
+    lastName: {
+      type: String,
+      required: true,
+    },
+    company: {
+      type: String,
+      required: false,
+    },
+    email: {
+      type: String,
+      required: true,
+      index: true,
+      unique: true,
+    },
+    password: {
+      type: String,
+      required: false,
+      select: false,
+    },
+    authType: {
+      type: String,
+      required: true,
+    },
+    phone: {
+      type: String,
+      required: false,
+    },
+    website: {
+      type: String,
+      required: false,
+    },
+    address: {
+      type: String,
+      required: false,
+    },
+    city: {
+      type: String,
+      required: false,
+    },
+    state: {
+      type: String,
+      required: false,
+    },
+    zip: {
+      type: String,
+      required: false,
+    },
+    gear: {
+      type: Schema.Types.ObjectId,
+      ref: "Gear",
+      required: false,
+    },
+    availability: {
+      type: [Date],
+      required: false,
+    },
+    regions: {
+      type: [{ state: String, city: String }],
+      required: false,
+    },
+    profilePic: {
+      type: String,
+      required: false,
+    },
+    portfolioImages: {
+      type: [String],
+      required: false,
+    },
+    bio: {
+      type: String,
+      required: false,
+    },
+    favorites: {
+      type: Map,
+      of: String,
+      required: false,
+    },
+    isTrial: {
+      type: Boolean,
+      default: true,
+    },
+    isPro: {
+      type: Boolean,
+      default: false,
+    },
+    isVerified: {
+      type: Boolean,
+      default: false,
+    },
+    isFeatured: {
+      type: Boolean,
+      default: false,
+    },
+    isSuspended: {
+      type: Boolean,
+      default: false,
+    },
+    isDeleted: {
+      type: Boolean,
+      default: false,
+    },
   },
-  firstName: {
-    type: String,
-    required: true,
+  {
+    timestamps: true,
   },
-  lastName: {
-    type: String,
-    required: true,
-  },
-  company: {
-    type: String,
-    required: false,
-  },
-  email: {
-    type: String,
-    required: true,
-    index: true,
-    unique: true,
-  },
-  password: {
-    type: String,
-    required: false,
-    select: false,
-  },
-  authType: {
-    type: String,
-    required: true,
-  },
-  phone: {
-    type: String,
-    required: false,
-  },
-  website: {
-    type: String,
-    required: false,
-  },
-  address: {
-    type: String,
-    required: false,
-  },
-  city: {
-    type: String,
-    required: false,
-  },
-  state: {
-    type: String,
-    required: false,
-  },
-  zip: {
-    type: String,
-    required: false,
-  },
-  gear: {
-    type: Schema.Types.ObjectId,
-    ref: "Gear",
-    required: false,
-  },
-  availability: {
-    type: [Date],
-    required: false,
-  },
-  regions: {
-    type: [{ state: String, city: String }],
-    required: false,
-  },
-  profilePic: {
-    type: String,
-    required: false,
-  },
-  portfolioImages: {
-    type: [String],
-    required: false,
-  },
-  bio: {
-    type: String,
-    required: false,
-  },
-  favorites: {
-    type: Map,
-    of: String,
-    required: false,
-  },
-  isTrial: {
-    type: Boolean,
-    default: true,
-  },
-  isPro: {
-    type: Boolean,
-    default: false,
-  },
-  isVerified: {
-    type: Boolean,
-    default: false,
-  },
-  isFeatured: {
-    type: Boolean,
-    default: false,
-  },
-  isSuspended: {
-    type: Boolean,
-    default: false,
-  },
-  isDeleted: {
-    type: Boolean,
-    default: false,
-  },
-  dateCreated: {
-    type: Date,
-    default: Date.now,
-  },
-});
+);
 
 // static isValidPassword method
 PhotographerSchema.methods.isValidPassword = async function (password: string) {

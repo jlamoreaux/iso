@@ -1,11 +1,23 @@
 import React, { useEffect, useState } from "react";
-import { Container, Textarea, TextInput, Title } from "@mantine/core";
+import { useLoaderData, useLocation, useNavigate } from "react-router-dom";
+import {
+  Alert,
+  Button,
+  Container,
+  Overlay,
+  Space,
+  Text,
+  Textarea,
+  TextInput,
+  Title,
+} from "@mantine/core";
 import { useForm } from "@mantine/form";
-import { createMessage, IncomingMessage } from "../../services/api";
 import { DatePicker } from "@mantine/dates";
+import { IconAlertTriangle } from "@tabler/icons";
+import { createMessage, MessageResponse } from "../../services/api";
 import { ReactComponent as Calendar } from "../../assets/svg/calendar.svg";
-import { useParams } from "react-router";
-import { useLoaderData } from "react-router-dom";
+import { AuthWrapper } from "../../context/AuthProvider";
+import theme from "../../styles/theme";
 
 type FormValues = {
   message: string;
@@ -19,6 +31,9 @@ type FormValues = {
 const Compose: React.FC = () => {
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [isReply, setIsReply] = useState(false);
+  const recipient = new URLSearchParams(useLocation().search).get("p");
+  const navigate = useNavigate();
+
   const form = useForm<FormValues>({
     initialValues: {
       message: "",
@@ -34,7 +49,7 @@ const Compose: React.FC = () => {
     },
   });
 
-  const replyMessage = useLoaderData() as IncomingMessage;
+  const { message: replyMessage } = (useLoaderData() as MessageResponse) || {};
 
   useEffect(() => {
     if (replyMessage) {
@@ -51,7 +66,7 @@ const Compose: React.FC = () => {
 
   const handleSubmit = async (values: any) => {
     // TODO: remove static recipient id
-    values.recipient = "63a2fdef71e0f6bb8dcd069a";
+    values.recipient = recipient;
     if (replyMessage) {
       values.replyTo = replyMessage.replyTo || replyMessage.id;
     }
@@ -69,59 +84,84 @@ const Compose: React.FC = () => {
       </Container>
     );
   }
+
   return (
-    <Container>
-      <Title>Compose{isReply && " Reply"}</Title>
-      <form onSubmit={form.onSubmit(handleSubmit)}>
-        <TextInput
-          aria-label="Event Title"
-          name="eventTitle"
-          placeholder="Event Title"
-          disabled={isReply}
-          {...form.getInputProps("eventTitle")}
-        />
-        <DatePicker
-          aria-label="Event Date"
-          label="Event Date"
-          name="eventDate"
-          placeholder="mm/dd/yyyy"
-          firstDayOfWeek="sunday"
-          minDate={new Date()}
-          rightSection={<Calendar />}
-          disabled={isReply}
-          {...form.getInputProps("eventDate")}
-        />
-        <TextInput
-          aria-label="Event Type"
-          name="eventType"
-          placeholder="Event Type"
-          disabled={isReply}
-          {...form.getInputProps("eventType")}
-        />
-        <TextInput
-          aria-label="Event Location"
-          name="eventLocation"
-          placeholder="Event Location"
-          disabled={isReply}
-          {...form.getInputProps("eventLocation")}
-        />
-        <TextInput
-          aria-label="Event Description"
-          name="eventDescription"
-          placeholder="Event Description"
-          disabled={isReply}
-          {...form.getInputProps("eventDescription")}
-        />
-        <Textarea
-          aria-label="Message"
-          name="message"
-          placeholder="Message"
-          multiline
-          {...form.getInputProps("message")}
-        />
-        <button type="submit">Send</button>
-      </form>
-    </Container>
+    <AuthWrapper>
+      <Container>
+        <Title>Compose{isReply && " Reply"}</Title>
+        {!recipient && (
+          <>
+            <Overlay opacity={0.8} color={theme.colors?.gray?.[9]} zIndex={1} />
+            <Alert
+              icon={<IconAlertTriangle size={64} />}
+              title="Oops!"
+              style={{ zIndex: 9 }}
+              variant="filled"
+            >
+              <Text>
+                Looks like you're trying to send a message to no one. recipient: {recipient}
+                <br />
+                You can send a message by going to the photgrapher's profile and clicking the
+                contact button.
+                <Space p={8} />
+                <Button color={"white"} variant="outline" onClick={() => navigate(-1)}>
+                  Go Back
+                </Button>
+              </Text>
+            </Alert>
+          </>
+        )}
+        <form onSubmit={form.onSubmit(handleSubmit)}>
+          <TextInput
+            aria-label="Event Title"
+            name="eventTitle"
+            placeholder="Event Title"
+            disabled={isReply}
+            {...form.getInputProps("eventTitle")}
+          />
+          <DatePicker
+            aria-label="Event Date"
+            label="Event Date"
+            name="eventDate"
+            placeholder="mm/dd/yyyy"
+            firstDayOfWeek="sunday"
+            minDate={new Date()}
+            rightSection={<Calendar />}
+            disabled={isReply}
+            {...form.getInputProps("eventDate")}
+          />
+          <TextInput
+            aria-label="Event Type"
+            name="eventType"
+            placeholder="Event Type"
+            disabled={isReply}
+            {...form.getInputProps("eventType")}
+          />
+          <TextInput
+            aria-label="Event Location"
+            name="eventLocation"
+            placeholder="Event Location"
+            disabled={isReply}
+            {...form.getInputProps("eventLocation")}
+          />
+          <TextInput
+            aria-label="Event Description"
+            name="eventDescription"
+            placeholder="Event Description"
+            disabled={isReply}
+            {...form.getInputProps("eventDescription")}
+          />
+          <Textarea
+            aria-label="Message"
+            name="message"
+            placeholder="Message"
+            multiline
+            {...form.getInputProps("message")}
+          />
+          <button type="submit">Send</button>
+        </form>
+      </Container>
+    </AuthWrapper>
   );
 };
 

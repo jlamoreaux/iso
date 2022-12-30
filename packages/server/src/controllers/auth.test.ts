@@ -1,16 +1,14 @@
-import { describe, expect, test } from "@jest/globals";
+import { describe, expect } from "@jest/globals";
 import { Request, Response, NextFunction } from "express";
 import { login, register } from "./auth";
 import DALPhotographer from "../data/photographer";
 import { PhotographerDocument } from "../models/Photographer";
-import logger from "../utils/logger";
-import passport, { hashPassword, registerUser } from "../lib/auth";
+import { hashPassword, registerUser } from "../lib/auth";
 
 // TODO: LOL fix
 
 // Mocks
 jest.mock("../data/photographer");
-jest.mock("../utils/logger");
 jest.mock("../lib/auth");
 
 // Helper function to create a mock Request object
@@ -52,9 +50,6 @@ describe("login", () => {
     // Create a mock Response object
     const res = createMockResponse();
 
-    // Create a mock NextFunction object
-    const next = createMockNext();
-
     await login(req as Request, res as Response);
 
     // Assert that the response status was set to 200
@@ -68,9 +63,6 @@ describe("login", () => {
 
     // Create a mock Response object
     const res = createMockResponse();
-
-    // Create a mock NextFunction object
-    const next = createMockNext();
 
     await login(req as Request, res as Response);
 
