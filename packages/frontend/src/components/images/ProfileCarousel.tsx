@@ -5,10 +5,13 @@ import { IconArrowLeft, IconArrowRight } from "@tabler/icons";
 import theme from "../../styles/theme";
 
 type ProfileCarouselProps = {
-  images: string[];
+  images: string[] | undefined;
 };
 
 const ProfileCarousel: React.FC<ProfileCarouselProps> = ({ images }) => {
+  if (!images || images.length === 0) {
+    return <ProfileCarouselPlaceholder />;
+  }
   return (
     <Carousel
       sx={{ maxWidth: 320 }}

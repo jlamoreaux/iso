@@ -196,6 +196,25 @@ const theme: MantineThemeOverride = {
     lg: 12,
     xl: 16,
   },
+  // components: {
+  //   // Overlay: {
+  //   //   styles: {
+  //   //     root: {
+  //   //       textDecoration: "none",
+  //   //     },
+  //   //   },
+  //   // },
+  //   // Text: {
+  //   //   styles: {
+  //   //     root: {
+  //   //       textDecoration: "none",
+  //   //     },
+  //   //     a: {
+  //   //       textDecoration: "none",
+  //   //     },
+  //   //   },
+  //   // },
+  // },
 };
 
 export default theme;
