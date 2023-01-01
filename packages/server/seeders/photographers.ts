@@ -1,8 +1,9 @@
-/** eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { faker } from "@faker-js/faker";
 import * as mongoose from "mongoose";
-import Photographer, { PhotographerDocument } from "../src/models/Photographer";
 import { config } from "dotenv";
+import Photographer, { PhotographerDocument } from "../src/models/Photographer";
+import { CURRENTLY_SUPPORTED_REGIONS } from "../src/utils/regions";
 
 config();
 
@@ -39,11 +40,37 @@ const seedPhotographers = async (num: number): Promise<void> => {
   console.log("Done seeding photographers");
 };
 
+const addRegions = async (): Promise<void> => {
+  const photographers = await Photographer.find();
+  // Create a list from enum of all the regions
+  const regions = Object.keys(CURRENTLY_SUPPORTED_REGIONS).map(
+    (key) => CURRENTLY_SUPPORTED_REGIONS[key],
+  );
+
+  photographers.forEach(async (photographer) => {
+    // add two regions to each photographer
+    const region1 = regions[Math.floor(Math.random() * regions.length)];
+    let region2 = regions[Math.floor(Math.random() * regions.length)];
+    while (region1 === region2) {
+      region2 = regions[Math.floor(Math.random() * regions.length)];
+    }
+    // select a city from the region
+    const city1 = region1.cities[Math.floor(Math.random() * region1.cities.length)];
+    const city2 = region2.cities[Math.floor(Math.random() * region2.cities.length)];
+    photographer.regions = [
+      { state: region1.name, city: city1 },
+      { state: region2.name, city: city2 },
+    ];
+    await photographer.save();
+  });
+};
+
 mongoose
   .set("strictQuery", true)
   .connect(process.env.MONGODB_URI as string)
-  .then(() => {
+  .then(async () => {
     console.log("MongoDB Connected");
-    seedPhotographers(100);
+    await addRegions();
   })
+  .then(() => mongoose.connection.close(() => console.log("MongoDB connection closed")))
   .catch((err) => console.log(err));
