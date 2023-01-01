@@ -37,6 +37,7 @@ const FavoriteButton: React.FC<AddFavoriteProps> = ({ id, isFavorite: initialFav
       color={theme.colors?.gray?.[4]}
       onClick={handleAddFavorite}
       loading={isLoading}
+      aria-label={isFavorite ? "Remove from favorites" : "Add to favorites"}
     >
       <IconBookmark color={fillColor} fill={isFavorite ? fillColor : "none"} />
     </ActionIcon>
