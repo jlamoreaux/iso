@@ -29,7 +29,6 @@ export const MessageTile: React.FC<MessageTileProps> = ({
   const markUnread = hasUnreadReplies || !isRead;
   let url = `/messages/${message.id}`;
   if (!isMessageView && replies && replies.length > 0) {
-    console.log(replies);
     url = `/messages/${lastReadReplyId || replies[replies.length - 1]}`;
   }
 

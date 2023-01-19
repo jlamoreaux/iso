@@ -1,7 +1,7 @@
 // Photograhers Controller
 import { Request, Response } from "express";
 import { IPhotographer, PhotographerDocument } from "../models/Photographer";
-import DALPhotographer from "../data/photographer";
+import DALPhotographer, { PhotographerSearchQuery } from "../data/photographer";
 import logger from "../utils/logger";
 /**
  * @description - gets a photographer with the given id
@@ -246,5 +246,36 @@ export const removeFavoritePhotographer = async (
     return res
       .status(500)
       .json({ error: "An error occurred while removing favorite photographer" });
+  }
+};
+
+/**
+ * @description - search for photographers by name, city, state, rate, rating, gear and/or availability
+ * @param {Request} req - request object
+ * @param {Response} res - response object
+ * @returns {Promise<void>}
+ * @todo - add pagination
+ */
+export const searchPhotographers = async (req: Request, res: Response): Promise<Response> => {
+  const query = req.body as PhotographerSearchQuery;
+  const page = (req.body.page as number) || 1;
+  const loggerMetadata = {
+    function: "searchPhotographers",
+    query,
+  };
+  logger.info("Received search photographers request", loggerMetadata);
+  try {
+    const { photographers, totalPages, totalResults } = await DALPhotographer.search({
+      query,
+      page,
+      limit: 10,
+    });
+    return res.status(200).json({ photographers, totalPages, totalResults });
+  } catch (error) {
+    logger.warn("An error occurred while searching photographers", {
+      ...loggerMetadata,
+      error,
+    });
+    return res.status(500).json({ error: "An error occurred while searching photographers" });
   }
 };

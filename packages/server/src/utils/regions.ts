@@ -37,6 +37,59 @@ export const CURRENTLY_SUPPORTED_REGIONS: RegionData = {
   },
 };
 
+const states = {
+  AL: "Alabama",
+  AK: "Alaska",
+  AZ: "Arizona",
+  AR: "Arkansas",
+  CA: "California",
+  CO: "Colorado",
+  CT: "Connecticut",
+  DE: "Delaware",
+  FL: "Florida",
+  GA: "Georgia",
+  HI: "Hawaii",
+  ID: "Idaho",
+  IL: "Illinois",
+  IN: "Indiana",
+  IA: "Iowa",
+  KS: "Kansas",
+  KY: "Kentucky",
+  LA: "Louisiana",
+  ME: "Maine",
+  MD: "Maryland",
+  MA: "Massachusetts",
+  MI: "Michigan",
+  MN: "Minnesota",
+  MS: "Mississippi",
+  MO: "Missouri",
+  MT: "Montana",
+  NE: "Nebraska",
+  NV: "Nevada",
+  NH: "New Hampshire",
+  NJ: "New Jersey",
+  NM: "New Mexico",
+  NY: "New York",
+  NC: "North Carolina",
+  ND: "North Dakota",
+  OH: "Ohio",
+  OK: "Oklahoma",
+  OR: "Oregon",
+  PA: "Pennsylvania",
+  RI: "Rhode Island",
+  SC: "South Carolina",
+  SD: "South Dakota",
+  TN: "Tennessee",
+  TX: "Texas",
+  UT: "Utah",
+  VT: "Vermont",
+  VA: "Virginia",
+  WA: "Washington",
+  WV: "West Virginia",
+  WI: "Wisconsin",
+  WY: "Wyoming",
+};
+
 export type Region = {
   state: string;
   city: string;
@@ -67,4 +120,19 @@ export const findNearestRegion = ({ city, state }: FindNearestRegionParams): Reg
     }
   }
   return undefined;
+};
+
+/**
+ * @description Finds the state name or abbreviation from a string
+ * @param {string} state State name or abbreviation
+ * @returns {string[] | undefined} [state abbreviation, state name] or undefined if not found
+ */
+export const findStateNameOrAbbreviation = (state: string): string[] => {
+  state = state.toLowerCase();
+  for (const [key, value] of Object.entries(states)) {
+    if (value.toLowerCase() === state || key.toLowerCase() === state) {
+      return [key, value];
+    }
+  }
+  return [];
 };

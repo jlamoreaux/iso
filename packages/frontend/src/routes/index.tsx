@@ -11,9 +11,10 @@ import {
   getMessages,
   getMessage,
   getFavorites,
-  getEvents,
-  getEvent,
   getCurrentPhotographer,
+  searchPhotographers,
+  PhotographerSearchQuery,
+  SearchResponse,
 } from "../services/api";
 import logoutLoader from "../utils/logoutLoader";
 import PhotographersList, { LIST_TYPE } from "../pages/photographers/PhotographersList";
@@ -21,6 +22,7 @@ import Compose from "../pages/messages/Compose";
 import Inbox from "../pages/messages/Inbox";
 import ViewMessage from "../pages/messages/ViewMessage";
 import Layout from "../pages/Layout";
+import SearchPhotographers from "../pages/search/SearchPhotographers";
 
 const router = createBrowserRouter([
   {
@@ -114,22 +116,27 @@ const router = createBrowserRouter([
         },
         element: <PhotographersList listType={LIST_TYPE.FAVORITES} />,
       },
-      // {
-      //   path: "/events",
-      //   loader: async () => {
-      //     const events = await getEvents();
-      //     return events;
-      //   },
-      //   element: <EventsList />,
-      // },
-      // {
-      //   path: "/events/:id",
-      //   loader: async ({ params }) => {
-      //     const event = await getEvent(params.id);
-      //     return event;
-      //   },
-      //   element: <EventDetails />,
-      // },
+      {
+        path: "/search",
+        element: <SearchPhotographers />,
+        children: [
+          {
+            path: "results",
+            loader: async ({ request }) => {
+              const url = new URL(request.url);
+              const searchTerm = Object.fromEntries(url.searchParams) as PhotographerSearchQuery;
+              const data = await searchPhotographers(searchTerm);
+              const fetchNextPage = async (pageNumber: number): Promise<SearchResponse> => {
+                const result = await searchPhotographers({ ...searchTerm, page: pageNumber });
+                console.log({ result });
+                return result;
+              };
+              return { data, fetchNextPage };
+            },
+            element: <PhotographersList listType={LIST_TYPE.REGION} />,
+          },
+        ],
+      },
     ],
   },
 ]);

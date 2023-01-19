@@ -1,7 +1,20 @@
-// Description: This file contains the data access layer for the photographers
-import logger from "../utils/logger";
+import logger, { LoggerMetadata } from "../utils/logger";
 import Photographer, { IPhotographer, PhotographerDocument } from "../models/Photographer";
-import { Region } from "../utils/regions";
+import { findStateNameOrAbbreviation, Region } from "../utils/regions";
+import { MongooseError } from "mongoose";
+
+export type PhotographerSearchQuery = {
+  name?: string;
+  availability?: string;
+  state?: string;
+  city?: string;
+  gear?: string;
+  rate?: {
+    min: string;
+    max: string;
+  };
+  rating?: string;
+};
 
 const DALPhotographer = {
   register: async (
@@ -100,6 +113,106 @@ const DALPhotographer = {
     return await Photographer.findByIdAndUpdate(id, {
       $unset: { [unsetKey]: true },
     }).exec();
+  },
+  search: async ({
+    query,
+    page,
+    limit,
+  }: {
+    query: PhotographerSearchQuery;
+    page: number;
+    limit: number;
+  }): Promise<{
+    photographers: PhotographerDocument[];
+    totalPages: number;
+    totalResults: number;
+  }> => {
+    const metadata: LoggerMetadata = {
+      function: "DALPhotographer.search",
+      totalResults: undefined,
+      pageNumber: page,
+      results: [],
+    };
+
+    const isEmptyQuery = Object.values(query).every((value) => {
+      // check if value is string or has min and max properties
+      if (typeof value === "string") {
+        return !value;
+      }
+      return !value.min && !value.max;
+    });
+
+    if (isEmptyQuery) {
+      logger.info("No query provided", metadata);
+      return {
+        photographers: [],
+        totalPages: 0,
+        totalResults: 0,
+      };
+    }
+
+    let findQuery = Photographer.find();
+
+    if (query.name) {
+      findQuery = findQuery.or([
+        { firstName: { $regex: query.name, $options: "i" } },
+        { lastName: { $regex: query.name, $options: "i" } },
+      ]);
+    }
+    if (query.state) {
+      const { state } = query;
+      const [abbr, stateName] = findStateNameOrAbbreviation(state);
+      findQuery = findQuery.where("regions").elemMatch({
+        $or: [
+          { state: { $regex: abbr, $options: "i" } },
+          { state: { $regex: stateName, $options: "i" } },
+        ],
+      });
+    }
+    if (query.city) {
+      findQuery = findQuery.where("regions").elemMatch({
+        city: { $regex: query.city, $options: "i" },
+      });
+    }
+    if (query.availability) {
+      findQuery = findQuery.where("availability").ne(query.availability);
+    }
+    if (query.gear) {
+      findQuery = findQuery.where("gear").equals(query.gear);
+    }
+    if (query.rate) {
+      // convert min and max to numbers
+      const min = Number(query.rate.min),
+        max = Number(query.rate.max);
+      if (min && min > 0) {
+        findQuery = findQuery.where("hourlyRate").gte(min);
+      } else if (max && max < 200) {
+        findQuery = findQuery.where("hourlyRate").lte(max);
+      }
+    }
+    if (query.rating) {
+      // convert rating to number
+      const rating = Number(query.rating);
+
+      findQuery = findQuery.where("rating").gte(rating);
+    }
+
+    // Add pagination to the query
+    findQuery = findQuery.skip((page - 1) * limit).limit(limit);
+
+    logger.info("searching for photographers", metadata);
+    const photographers = await findQuery.exec().catch((err: MongooseError) => {
+      console.log(err);
+      throw new Error(err.message);
+    });
+    const totalResults = await Photographer.countDocuments(findQuery.getFilter());
+    const totalPages = Math.ceil(totalResults / limit);
+
+    metadata.totalResults = totalResults;
+    metadata.results = photographers.map((photographer) => photographer._id);
+    logger.info("search complete", metadata);
+
+    return { photographers, totalPages, totalResults };
   },
 };
 

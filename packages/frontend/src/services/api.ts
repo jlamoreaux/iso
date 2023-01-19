@@ -33,6 +33,25 @@ export type Photographer = User & {
   isFavorite?: boolean;
 };
 
+export type PhotographerSearchQuery = {
+  name: string;
+  location:
+    | string
+    | {
+        city: string;
+        state: string;
+      };
+  gear: string;
+  rate:
+    | string
+    | {
+        min: string;
+        max: string;
+      };
+  rating: string;
+  page?: string | number;
+};
+
 export type Message = {
   sender: string;
   recipient: string;
@@ -81,6 +100,12 @@ export interface RegisterRequest {
 export interface RegisterResponse {
   userId: string;
 }
+
+export type SearchResponse = {
+  photographers: Photographer[];
+  totalResults: number;
+  totalPages: number;
+};
 
 const api = axios.create({
   baseURL: `${import.meta.env.VITE_API_URL}`,
@@ -199,6 +224,20 @@ export const getPhotographersByRegionAndAvailability = async (
   try {
     const res = await api.get(`/api/photographers/${region}/${date}`);
     return res.data;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const searchPhotographers = async (
+  search: PhotographerSearchQuery,
+): Promise<SearchResponse> => {
+  try {
+    const res = await api.post("/api/photographers/search", search);
+    if (res.status === 200) {
+      return res.data;
+    }
+    return { photographers: [], totalResults: 0, totalPages: 0 };
   } catch (error) {
     throw error;
   }

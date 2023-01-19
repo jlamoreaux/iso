@@ -36,6 +36,8 @@ export type IPhotographer = {
   profilePic?: string;
   portfolioImages?: string[];
   bio?: string;
+  rating: number;
+  hourlyRate: number;
   favorites: { [photographerId: string]: boolean };
   isFavorite?: boolean;
   isTrial?: boolean;
@@ -149,6 +151,18 @@ const PhotographerSchema = new Schema(
     bio: {
       type: String,
       required: false,
+    },
+    rating: {
+      type: Number,
+      required: false,
+      default: 0,
+      min: 0,
+      max: 5,
+    },
+    hourlyRate: {
+      type: Number,
+      required: false,
+      default: 0,
     },
     favorites: {
       type: Map,

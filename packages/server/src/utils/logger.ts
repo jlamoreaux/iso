@@ -2,11 +2,8 @@
 import { Request } from "express";
 import { createLogger, format, transports } from "winston";
 
-export type LoggerMetadata = Omit<
-  LoggerFieldsToOmit,
-  "timestamp" | "level" | "message" | "label" | "metadata"
-> & {
-  [key: string]: string | number | boolean | object | undefined | Error;
+export type LoggerMetadata = LoggerFieldsToOmit & {
+  [key: string]: any;
 };
 
 type LoggerFieldsToOmit = {
