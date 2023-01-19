@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo } from "react";
+import React, { useCallback, useEffect, useMemo } from "react";
 import { Title, Stack, Container, Loader } from "@mantine/core";
 import { useLoaderData } from "react-router-dom";
 import { Photographer, SearchResponse } from "../../services/api";
@@ -24,10 +24,10 @@ const PhotographersList: React.FC<PhotographersListProps> = ({ listType }) => {
   };
   const { photographers: initialPhotographers, totalPages, totalResults } = data;
   const [page, setPage] = React.useState(1);
-  const [hasMore, setHasMore] = React.useState(true);
+  const [hasMore, setHasMore] = React.useState(false);
 
   // store photographers in state
-  const [photographers, setPhotographers] = React.useState<Photographer[]>(initialPhotographers);
+  const [photographers, setPhotographers] = React.useState<Photographer[]>([]);
 
   const cannotFetch = !fetchNextPage;
 
@@ -37,6 +37,13 @@ const PhotographersList: React.FC<PhotographersListProps> = ({ listType }) => {
     [LIST_TYPE.FAVORITES]: "Your Favorites",
   };
   const title = titles[listType];
+
+  useEffect(() => {
+    if (data) {
+      console.log("data", data);
+      setPhotographers(initialPhotographers);
+    }
+  }, [data]);
 
   // memoize content
   const content = useMemo(() => {
@@ -74,7 +81,7 @@ const PhotographersList: React.FC<PhotographersListProps> = ({ listType }) => {
       <Container>
         <Title>{title}</Title>
         <InfiniteScroll
-          dataLength={photographers.length}
+          dataLength={photographers?.length || 0}
           next={fetchData}
           hasMore={hasMore}
           loader={<Loader />}

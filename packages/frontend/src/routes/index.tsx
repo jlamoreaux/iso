@@ -65,7 +65,7 @@ const router = createBrowserRouter([
         path: "/photographers/:region",
         loader: async ({ params }) => {
           const photographers = await getPhotographersByRegion(params.region);
-          return photographers;
+          return { data: photographers };
         },
         element: <PhotographersList listType={LIST_TYPE.REGION} />,
       },
@@ -112,7 +112,7 @@ const router = createBrowserRouter([
         path: "/favorites",
         loader: async () => {
           const photographers = await getFavorites();
-          return photographers;
+          return { data: { photographers } };
         },
         element: <PhotographersList listType={LIST_TYPE.FAVORITES} />,
       },
