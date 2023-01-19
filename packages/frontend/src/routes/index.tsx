@@ -128,7 +128,6 @@ const router = createBrowserRouter([
               const data = await searchPhotographers(searchTerm);
               const fetchNextPage = async (pageNumber: number): Promise<SearchResponse> => {
                 const result = await searchPhotographers({ ...searchTerm, page: pageNumber });
-                console.log({ result });
                 return result;
               };
               return { data, fetchNextPage };

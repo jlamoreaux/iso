@@ -40,7 +40,6 @@ const PhotographersList: React.FC<PhotographersListProps> = ({ listType }) => {
 
   useEffect(() => {
     if (data) {
-      console.log("data", data);
       setPhotographers(initialPhotographers);
     }
   }, [data]);

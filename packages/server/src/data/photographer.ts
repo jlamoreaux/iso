@@ -202,7 +202,6 @@ const DALPhotographer = {
 
     logger.info("searching for photographers", metadata);
     const photographers = await findQuery.exec().catch((err: MongooseError) => {
-      console.log(err);
       throw new Error(err.message);
     });
     const totalResults = await Photographer.countDocuments(findQuery.getFilter());
