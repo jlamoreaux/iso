@@ -16,6 +16,7 @@ import {
   getFavoritePhotographers,
   addFavoritePhotographer,
   removeFavoritePhotographer,
+  searchPhotographers,
 } from "../controllers/photographers";
 import { catchErrors } from "../utils/errors";
 
@@ -27,6 +28,7 @@ apiRouter.get("/photographer/:id", catchErrors(getPhotographerById));
 apiRouter.put("/photographer/:id", catchErrors(updatePhotographerById));
 apiRouter.get("/photographers/:region", catchErrors(getPhotographersByRegion));
 apiRouter.get("/photographers/:region/:date", catchErrors(getPhotographersByRegionAndAvailability));
+apiRouter.post("/photographers/search", catchErrors(searchPhotographers));
 
 apiRouter.get("/favorites", catchErrors(getFavoritePhotographers));
 apiRouter.post("/favorites", catchErrors(addFavoritePhotographer));
