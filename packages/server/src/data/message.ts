@@ -26,6 +26,15 @@ const DALMessage = {
   ): Promise<IMessageDocument | null> => {
     return await Message.findOne({ _id: id, sender: photographerId });
   },
+  findByIdAndRecipient: async (
+    id: string,
+    photographerId: string,
+  ): Promise<IMessageDocument | null> => {
+    return await Message.findOne({
+      _id: id,
+      recipient: photographerId,
+    }).populate("sender");
+  },
   findBySender: async (photographerId: string): Promise<IMessageDocument[]> => {
     return await Message.find({ sender: photographerId });
   },

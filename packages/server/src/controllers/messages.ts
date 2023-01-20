@@ -16,6 +16,7 @@ export const getMessage = async (req: Request, res: Response): Promise<Response>
   const loggerMetadata = {
     function: "getMessage",
     messageId: id,
+    numReplies: 0,
   };
   logger.info("Getting message by id", loggerMetadata);
   let message: IMessageDocument | null;
@@ -39,6 +40,8 @@ export const getMessage = async (req: Request, res: Response): Promise<Response>
         result.thread = [rootMessage, ...(rootMessage.replies as IMessageDocument[])];
       }
     }
+    loggerMetadata.numReplies = result.thread.length;
+    logger.info("Message found", loggerMetadata);
     return res.status(200).json(result);
   } catch (error) {
     logger.warn("An error occurred while searching for the message", {
@@ -93,6 +96,7 @@ export const getMessages = async (req: Request, res: Response): Promise<Response
     messages.forEach((message) => {
       if (message.isRootMessage && !message.replyTo) {
         const lastReadReplyId = unreadReplies?.[message.id.toString()];
+        console.log("lastReadReplyId", lastReadReplyId);
         const hasUnreadReplies = lastReadReplyId ? true : false;
         const enhancedMessage = {
           ...convertDocumentToMessage(message),
@@ -173,7 +177,10 @@ export const updateMessage = async (req: Request, res: Response): Promise<Respon
   logger.info("Updating message", loggerMetadata);
   let messageToUpdate: IMessageDocument | null;
   try {
-    messageToUpdate = await DALMessage.findByIdAndSender(id, loggedInUser.id);
+    messageToUpdate = await DALMessage.findByIdAndRecipient(id, loggedInUser.id);
+    if (!messageToUpdate) {
+      messageToUpdate = await DALMessage.findByIdAndSender(id, loggedInUser.id);
+    }
     if (!messageToUpdate) {
       logger.info("Message not found", loggerMetadata);
       return res.status(404).json({ message: "Message not found" });
