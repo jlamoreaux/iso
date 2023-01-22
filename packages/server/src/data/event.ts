@@ -76,12 +76,19 @@ const DALEvent = {
 
     const favoritePhotographerEvents: EventDocument[] = [];
     const otherEvents: EventDocument[] = [];
+    console.log("favorites", user.favorites);
     events.forEach((event) => {
-      if (user.favorites[event.photographer.id || ""]) {
+      const photographerId = event.photographer.id;
+      console.log("photographerId", photographerId);
+      if (photographerId && user.get(`favorites.${photographerId}`)) {
         favoritePhotographerEvents.push(event);
       } else {
         otherEvents.push(event);
       }
+    });
+    logger.info("Found favorites in events feed", {
+      ...loggerMetadata,
+      favoritePhotographerEvents: favoritePhotographerEvents.length,
     });
     const eventsToReturn =
       favoritePhotographerEvents?.length > 0
