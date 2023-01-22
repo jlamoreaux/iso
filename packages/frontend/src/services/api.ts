@@ -107,6 +107,26 @@ export type SearchResponse = {
   totalPages: number;
 };
 
+export type Event = {
+  id: string;
+  title: string;
+  description: string;
+  location: string;
+  date: string;
+  rate: number;
+  photographer: Photographer;
+};
+
+export type EventFeedResponse = {
+  events: Event[];
+  totalResults: number;
+  totalPages: number;
+};
+
+export type EventResponse = {
+  event: Event;
+};
+
 const api = axios.create({
   baseURL: `${import.meta.env.VITE_API_URL}`,
   withCredentials: true,
@@ -319,9 +339,9 @@ export const deleteMessage = async (id: string | undefined): Promise<void> => {
 
 // Event routes
 
-export const getEvents = async (): Promise<Event[]> => {
+export const getEvents = async (page: number): Promise<EventFeedResponse> => {
   try {
-    const res = await api.get("/api/events");
+    const res = await api.get("/api/events?page=" + page);
     return res.data;
   } catch (error) {
     throw error;

@@ -60,4 +60,17 @@ const EventSchema = new Schema(
   },
 );
 
+// Automatically populate the sender field
+EventSchema.pre("find", function (this: any) {
+  this.populate("photographer", "firstName lastName profilePic city state id");
+});
+
+EventSchema.virtual("id").get(function () {
+  return this._id.toHexString();
+});
+
+EventSchema.set("toJSON", {
+  virtuals: true,
+});
+
 export default mongoose.model<EventDocument>("Event", EventSchema);

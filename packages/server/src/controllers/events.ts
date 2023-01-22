@@ -3,6 +3,7 @@ import { Request, Response } from "express";
 import { IEvent, EventDocument } from "../models/Event";
 import DALEvent from "../data/event";
 import logger from "../utils/logger";
+import { IPhotographer } from "../models/Photographer";
 
 /**
  * @description - gets a event with the given id
@@ -31,22 +32,52 @@ export const getEvent = async (req: Request, res: Response): Promise<Response> =
   }
 };
 
+export const getEventsForFeed = async (req: Request, res: Response): Promise<Response> => {
+  const user = req.user as IPhotographer;
+  const userId = user?.id as string;
+  const page = req.query.page as string;
+  const loggerMetadata = {
+    function: "getEventsForFeed",
+    userId,
+    page,
+  };
+
+  if (!userId) {
+    logger.info("Unauthorized", loggerMetadata);
+    return res.status(401).json({ message: "Unauthorized" });
+  }
+
+  logger.info("Getting all events for feed", loggerMetadata);
+  try {
+    const feedResponse = await DALEvent.getEventsForFeed({ userId, page });
+    return res.status(200).json(feedResponse);
+  } catch (error) {
+    logger.info("An error occurred while getting events", loggerMetadata);
+    return res.status(500).json({ message: "An error occurred while getting events" });
+  }
+};
+
 /**
  * @description - gets all events for a photographer
  * @param {Request} req - request object
  * @param {Response} res - response object
  * @returns {Promise<void>}
  */
-export const getEvents = async (req: Request, res: Response): Promise<Response> => {
-  const photographerId = req.query.photographerId as string;
+export const getUserCreatedEvents = async (req: Request, res: Response): Promise<Response> => {
+  const user = req.user as IPhotographer;
+  const userId = user?.id as string;
   const loggerMetadata = {
     function: "getEvents",
-    photographerId,
+    userId,
   };
+  if (!userId) {
+    logger.info("Unauthorized", loggerMetadata);
+    return res.status(401).json({ message: "Unauthorized" });
+  }
   logger.info("Getting all events for user", loggerMetadata);
   let events: EventDocument[] | null;
   try {
-    events = await DALEvent.getEventsByPhotographer(photographerId);
+    events = await DALEvent.getEventsByPhotographer(userId);
     return res.status(200).json(events);
   } catch (error) {
     logger.info("An error occurred while getting events", loggerMetadata);

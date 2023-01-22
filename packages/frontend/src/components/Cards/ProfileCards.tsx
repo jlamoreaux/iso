@@ -6,20 +6,40 @@ import theme from "../../styles/theme";
 
 type ProfileCardProps = {
   photographer: Photographer;
+  style?: "verbose" | "compact";
+  direction?: "ltr" | "rtl";
+  displayName?: boolean;
 };
 
-export const ProfileCard: React.FC<ProfileCardProps> = ({ photographer }) => {
+export const ProfileCard: React.FC<ProfileCardProps> = ({
+  photographer,
+  style = "verbose",
+  direction = "ltr",
+  displayName = true,
+}) => {
   const { id, firstName, lastName, bio, city, state, profilePic } = photographer;
+
   return (
     <UnstyledButton component="a" href={`/photographer/${id}`}>
-      <Group>
-        <ProfilePhoto userFullName={`${firstName} ${lastName}`} photoUrl={profilePic} />
+      <Group sx={{ flexDirection: direction === "rtl" ? "row-reverse" : "row" }}>
+        <ProfilePhoto
+          userFullName={`${firstName} ${lastName}`}
+          photoUrl={profilePic}
+          size={style === "verbose" ? "md" : "sm"}
+        />
         <Stack>
           <Group position="apart">
-            <Title order={3}>{`${firstName} ${lastName}`}</Title>
-            <Title order={5} color={theme!.colors!.gold![4]}>
-              {city}, {state}
-            </Title>
+            {displayName && (
+              <Title
+                order={3}
+                size={style === "verbose" ? "md" : "sm"}
+              >{`${firstName} ${lastName}`}</Title>
+            )}
+            {style === "verbose" && (
+              <Title order={5} color={theme!.colors!.gold![4]}>
+                {city}, {state}
+              </Title>
+            )}
           </Group>
           <Text lineClamp={2}>{bio}</Text>
         </Stack>

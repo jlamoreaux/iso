@@ -1,6 +1,6 @@
 // Test for events controller
 import { Request, Response } from "express";
-import { getEvent, getEvents, createEvent, updateEvent, deleteEvent } from "./events";
+import { getEvent, getEventsForFeed, createEvent, updateEvent, deleteEvent } from "./events";
 import DALEvent from "../data/event";
 
 // Mocking the event data access layer
@@ -37,6 +37,7 @@ describe("Events Controller", () => {
       photographer: 1,
     },
     body: {},
+    user: photographer,
   } as unknown as Request;
 
   describe("getEvents", () => {
@@ -64,9 +65,9 @@ describe("Events Controller", () => {
       mockRequest.body = { photographer };
 
       // Mocking the find function of the event data access layer
-      (DALEvent.getEventsByPhotographer as jest.Mock).mockResolvedValue(events);
+      (DALEvent.getEventsForFeed as jest.Mock).mockResolvedValue(events);
 
-      await getEvents(mockRequest, mockResponse);
+      await getEventsForFeed(mockRequest, mockResponse);
 
       expect(mockResponse.status).toHaveBeenCalledWith(200);
       expect(mockResponse.json).toHaveBeenCalledWith(events);

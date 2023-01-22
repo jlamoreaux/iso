@@ -4,9 +4,17 @@ import { Avatar } from "@mantine/core";
 type ProfilePhotoProps = {
   photoUrl?: string;
   userFullName?: string;
+  size?: "sm" | "md" | "lg";
 };
 
-export const ProfilePhoto: React.FC<ProfilePhotoProps> = ({ photoUrl, userFullName }) => {
+export const ProfilePhoto: React.FC<ProfilePhotoProps> = ({
+  photoUrl,
+  userFullName,
+  size = "md",
+}) => {
   const src = photoUrl || null;
-  return <Avatar src={photoUrl} alt={userFullName} size={104} radius={0} />;
+  const alt = userFullName || "Profile Photo";
+  const radius = size === "sm" ? 25 : size === "md" ? 50 : 100;
+  const avatarSize = size === "sm" ? 50 : size === "md" ? 104 : 200;
+  return <Avatar src={photoUrl} alt={alt} size={avatarSize} radius={radius} />;
 };
