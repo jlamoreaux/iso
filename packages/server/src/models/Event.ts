@@ -1,6 +1,7 @@
 // Event model
 
-import mongoose, { Document } from "mongoose";
+import mongoose, { Document, Types } from "mongoose";
+import { IEventComment } from "./EventComment";
 import { IPhotographer } from "./Photographer";
 
 const Schema = mongoose.Schema;
@@ -12,9 +13,10 @@ export type IEvent = {
   location: string;
   date: Date;
   time: string;
+  comments?: Types.ObjectId[] | IEventComment[];
   isDeleted?: boolean;
   isFulfilled?: boolean;
-  dateCreated?: Date;
+  createdAt?: Date;
 };
 
 export type EventDocument = IEvent & Document;
@@ -54,6 +56,12 @@ const EventSchema = new Schema(
       type: Boolean,
       default: false,
     },
+    comments: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: "EventComment",
+      },
+    ],
   },
   {
     timestamps: true,
@@ -65,8 +73,17 @@ EventSchema.pre("find", function (this: any) {
   this.populate("photographer", "firstName lastName profilePic city state id");
 });
 
+// Populate the comments field for a single event
+EventSchema.pre("findOne", function (this: any) {
+  this.populate("comments", "text createdAt photographer");
+});
+
 EventSchema.virtual("id").get(function () {
   return this._id.toHexString();
+});
+
+EventSchema.virtual("commentsCount").get(function () {
+  return this.comments.length;
 });
 
 EventSchema.set("toJSON", {

@@ -4,6 +4,7 @@ import { IEvent, EventDocument } from "../models/Event";
 import DALEvent from "../data/event";
 import logger from "../utils/logger";
 import { IPhotographer } from "../models/Photographer";
+import { DALEventComment } from "../data/eventComment";
 
 /**
  * @description - gets a event with the given id
@@ -159,5 +160,41 @@ export const deleteEvent = async (req: Request, res: Response): Promise<Response
   } catch (error) {
     logger.error("Error deleting event", { ...loggerMetadata, error: error as Error });
     return res.status(500).json({ message: "Error deleting event" });
+  }
+};
+
+/**
+ * @description - adds a comment to a event
+ * @param {Request} req - request object
+ * @param {Response} res - response object
+ * @returns {Promise<void>}
+ */
+export const addComment = async (req: Request, res: Response): Promise<Response> => {
+  const text = req.body.text;
+  const user = req.user as IPhotographer;
+  const userId = user?.id as string;
+  const eventId = req.params.id;
+  const loggerMetadata = {
+    function: "addComment",
+    userId,
+    eventId,
+  };
+  if (!userId) {
+    logger.info("Unauthorized", loggerMetadata);
+    return res.status(401).json({ message: "Unauthorized" });
+  }
+  if (!text) {
+    logger.info("Missing text", loggerMetadata);
+    return res.status(400).json({ message: "Missing text" });
+  }
+  logger.info("creating comment", loggerMetadata);
+  try {
+    const newComment = await (
+      await DALEventComment.create({ text, photographer: userId, event: eventId })
+    ).populate("photographer");
+    return res.status(201).json(newComment);
+  } catch (error) {
+    logger.error("Error adding comment to event", { ...loggerMetadata, error: error as Error });
+    return res.status(500).json({ message: "Error adding comment to event" });
   }
 };

@@ -115,6 +115,17 @@ export type Event = {
   date: string;
   rate: number;
   photographer: Photographer;
+  comments?: EventComment[];
+  commentsCount?: number;
+};
+
+export type EventComment = {
+  id: string;
+  text: string;
+  createdAt: string;
+  updatedAt: string;
+  event?: Event | string;
+  photographer: Photographer;
 };
 
 export type EventFeedResponse = {
@@ -348,7 +359,7 @@ export const getEvents = async (page: number): Promise<EventFeedResponse> => {
   }
 };
 
-export const getEvent = async (id: string | undefined): Promise<Event> => {
+export const getEventById = async (id: string | undefined): Promise<Event> => {
   try {
     const res = await api.get(`/api/events/${id}`);
     return res.data;
@@ -357,7 +368,7 @@ export const getEvent = async (id: string | undefined): Promise<Event> => {
   }
 };
 
-export const createEvent = async (event: Event): Promise<void> => {
+export const createEvent = async (event: Event): Promise<Event> => {
   try {
     const res = await api.post("/api/events", event);
     return res.data;
@@ -378,6 +389,36 @@ export const updateEvent = async (id: string, event: Event): Promise<void> => {
 export const deleteEvent = async (id: string | undefined): Promise<void> => {
   try {
     const res = await api.delete(`/api/events/${id}`);
+    return res.data;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const getEventsByPhotographer = async (id: string | undefined): Promise<Event[]> => {
+  try {
+    const res = await api.get(`/api/events/photographer/${id}`);
+    return res.data;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const getEventsByPhotographerAndDate = async (
+  id: string | undefined,
+  date: string | undefined,
+): Promise<Event[]> => {
+  try {
+    const res = await api.get(`/api/events/photographer/${id}/${date}`);
+    return res.data;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const createEventComment = async (id: string, comment: Comment): Promise<EventComment> => {
+  try {
+    const res = await api.post(`/api/events/${id}/comments`, comment);
     return res.data;
   } catch (error) {
     throw error;
