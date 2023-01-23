@@ -2,7 +2,7 @@
 
 ISO is a platform that helps photographers find and hire other photographers. This repository
 contains the server and frontend packages for the ISO platform. The repository is hosted on GitHub
-at https://github.com/jlamoreaux/iso-app.git.
+at https://github.com/jlamoreaux/iso
 
 ## Prerequisites
 
@@ -16,7 +16,7 @@ Clone the repository and build the Docker image:
 
 ```bash
 
-git clone https://github.com/jlamoreaux/iso-app.git
+git clone https://github.com/jlamoreaux/iso.git
 cd iso-app
 docker-compose build
 
