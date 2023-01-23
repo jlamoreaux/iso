@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import {
-  Autocomplete,
   Button,
   Container,
   RangeSlider,
@@ -13,8 +12,8 @@ import {
 import { useForm } from "@mantine/form";
 import { Outlet, useNavigate } from "react-router-dom";
 import { AuthWrapper } from "../../context/AuthProvider";
-import { useGooglePlacesAutocomplete } from "../../services/google";
 import { PhotographerSearchQuery, searchPhotographers } from "../../services/api";
+import GeoAutocomplete from "../../components/GeoAutocomplete";
 
 type ConvertedValues = {
   name: string;
@@ -74,8 +73,6 @@ const SearchPhotographers = () => {
     },
   });
 
-  const { inputRef, predictions } = useGooglePlacesAutocomplete();
-
   const handleSearchSubmit = async (values: FormValues) => {
     // convert rate to minRate and maxRate
     const newValues = convertValues(values);
@@ -92,23 +89,7 @@ const SearchPhotographers = () => {
               <Text size="sm">Name</Text>
               <TextInput aria-label="Name" {...form.getInputProps("name")} />
               <Text size="sm">Location</Text>
-              <Autocomplete
-                limit={3}
-                ref={inputRef}
-                data={
-                  predictions
-                    ? predictions.map((prediction) => {
-                        const { city, state } = prediction.value;
-                        return {
-                          value: prediction.label,
-                          city,
-                          state,
-                        };
-                      })
-                    : []
-                }
-                {...form.getInputProps("location")}
-              />
+              <GeoAutocomplete {...form.getInputProps("location")} />
               <Text size="sm">Hourly Rate:</Text>
               <RangeSlider
                 label={(value) => `$${value + (value === 200 ? "+" : "")}`}

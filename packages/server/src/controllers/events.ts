@@ -3,12 +3,14 @@ import { Request, Response } from "express";
 import { IEvent, EventDocument } from "../models/Event";
 import DALEvent from "../data/event";
 import logger from "../utils/logger";
+import { IPhotographer } from "../models/Photographer";
+import { DALEventComment } from "../data/eventComment";
 
 /**
- * @description - gets a event with the given id
+ * gets a event with the given id
  * @param {Request} req - request object
  * @param {Response} res - response object
- * @returns {Promise<void>}
+ * @returns {Promise<Response>}
  */
 export const getEvent = async (req: Request, res: Response): Promise<Response> => {
   const id = req.params.id;
@@ -17,7 +19,7 @@ export const getEvent = async (req: Request, res: Response): Promise<Response> =
     eventId: id,
   };
   logger.info("Getting event by id", loggerMetadata);
-  let event: EventDocument | null;
+  let event: IEvent | null;
   try {
     event = await DALEvent.getEvent(id);
     if (!event) {
@@ -32,21 +34,57 @@ export const getEvent = async (req: Request, res: Response): Promise<Response> =
 };
 
 /**
- * @description - gets all events for a photographer
+ * gets paginated events for a photographer's feed
+ * @param req - request object
+ * @param res - response object
+ * @returns {Promise<Response>} - response object
+ */
+export const getEventsForFeed = async (req: Request, res: Response): Promise<Response> => {
+  const user = req.user as IPhotographer;
+  const userId = user?.id as string;
+  const page = req.query.page as string;
+  const loggerMetadata = {
+    function: "getEventsForFeed",
+    userId,
+    page,
+  };
+
+  if (!userId) {
+    logger.info("Unauthorized", loggerMetadata);
+    return res.status(401).json({ message: "Unauthorized" });
+  }
+
+  logger.info("Getting all events for feed", loggerMetadata);
+  try {
+    const feedResponse = await DALEvent.getEventsForFeed({ userId, page });
+    return res.status(200).json(feedResponse);
+  } catch (error) {
+    logger.info("An error occurred while getting events", loggerMetadata);
+    return res.status(500).json({ message: "An error occurred while getting events" });
+  }
+};
+
+/**
+ * gets all events for a photographer
  * @param {Request} req - request object
  * @param {Response} res - response object
- * @returns {Promise<void>}
+ * @returns {Promise<Response>}
  */
-export const getEvents = async (req: Request, res: Response): Promise<Response> => {
-  const photographerId = req.query.photographerId as string;
+export const getUserCreatedEvents = async (req: Request, res: Response): Promise<Response> => {
+  const user = req.user as IPhotographer;
+  const userId = user?.id as string;
   const loggerMetadata = {
     function: "getEvents",
-    photographerId,
+    userId,
   };
+  if (!userId) {
+    logger.info("Unauthorized", loggerMetadata);
+    return res.status(401).json({ message: "Unauthorized" });
+  }
   logger.info("Getting all events for user", loggerMetadata);
   let events: EventDocument[] | null;
   try {
-    events = await DALEvent.getEventsByPhotographer(photographerId);
+    events = await DALEvent.getEventsByPhotographer(userId);
     return res.status(200).json(events);
   } catch (error) {
     logger.info("An error occurred while getting events", loggerMetadata);
@@ -55,21 +93,22 @@ export const getEvents = async (req: Request, res: Response): Promise<Response> 
 };
 
 /**
- * @description - creates a event
+ * creates a event
  * @param {Request} req - request object
  * @param {Response} res - response object
- * @returns {Promise<void>}
+ * @returns {Promise<Response>}
  */
 export const createEvent = async (req: Request, res: Response): Promise<Response> => {
+  const event = req.body;
+  const user = req.user as IPhotographer;
   const loggerMetadata = {
     function: "createEvent",
-    event: req.body,
+    userId: user.id,
   };
   logger.info("Creating event", loggerMetadata);
-  const event = req.body as IEvent;
-  let newEvent: EventDocument;
+  let newEvent: IEvent;
   try {
-    newEvent = await DALEvent.create(event);
+    newEvent = await DALEvent.create({ photographer: user.id, ...event });
     return res.status(201).json(newEvent);
   } catch (error) {
     logger.error("Error creating event", { ...loggerMetadata, error: error as Error });
@@ -78,20 +117,25 @@ export const createEvent = async (req: Request, res: Response): Promise<Response
 };
 
 /**
- * @description - updates a event
+ * updates an event
  * @param {Request} req - request object
  * @param {Response} res - response object
- * @returns {Promise<void>}
+ * @returns {Promise<Response>}
  */
 export const updateEvent = async (req: Request, res: Response): Promise<Response> => {
   const id = req.params.id;
+  const user = req.user as IPhotographer;
   const loggerMetadata = {
     function: "updateEvent",
     eventId: id,
-    event: req.body,
+    userId: user?.id || "unauthorized",
   };
+  if (!user || !user.id) {
+    logger.info("Unauthorized", loggerMetadata);
+    return res.status(401).json({ message: "Unauthorized" });
+  }
   logger.info("Updating event", loggerMetadata);
-  const event = req.body as IEvent;
+  const event = req.body as Partial<IEvent>;
   try {
     await DALEvent.update(id, event);
     if (!event) {
@@ -106,27 +150,71 @@ export const updateEvent = async (req: Request, res: Response): Promise<Response
 };
 
 /**
- * @description - deletes a event
+ * deletes an event
  * @param {Request} req - request object
  * @param {Response} res - response object
- * @returns {Promise<void>}
+ * @returns {Promise<Response>}
  */
 export const deleteEvent = async (req: Request, res: Response): Promise<Response> => {
   const id = req.params.id;
+  const user = req.user as IPhotographer;
   const loggerMetadata = {
     function: "deleteEvent",
     eventId: id,
+    userId: user?.id || "unauthorized",
   };
-  logger.info("Deleting event", loggerMetadata);
+  if (!user || !user.id) {
+    logger.info("Unauthorized", loggerMetadata);
+    return res.status(401).json({ message: "Unauthorized" });
+  }
+  logger.info("Looking up event to be deleted", loggerMetadata);
   try {
-    const event = await DALEvent.delete(id);
-    if (!event) {
-      logger.info("Event not found", loggerMetadata);
+    logger.info("Attempting to soft delete event", loggerMetadata);
+    const deletedEvent = await DALEvent.softDelete(id, user.id);
+    if (!deletedEvent) {
+      logger.info("Event not found or user not authorized", loggerMetadata);
       return res.status(404).json({ message: "Event not found" });
     }
-    return res.status(200).json({ event, message: "Event deleted" });
+    logger.info("Soft delete succesful", loggerMetadata);
+    return res.status(200).json({ event: deletedEvent, message: "Event Deleted" });
   } catch (error) {
     logger.error("Error deleting event", { ...loggerMetadata, error: error as Error });
     return res.status(500).json({ message: "Error deleting event" });
+  }
+};
+
+/**
+ * adds a comment to a event
+ * @param {Request} req - request object
+ * @param {Response} res - response object
+ * @returns {Promise<Response>}
+ */
+export const addComment = async (req: Request, res: Response): Promise<Response> => {
+  const text = req.body.text;
+  const user = req.user as IPhotographer;
+  const userId = user?.id as string;
+  const eventId = req.params.id;
+  const loggerMetadata = {
+    function: "addComment",
+    userId,
+    eventId,
+  };
+  if (!userId) {
+    logger.info("Unauthorized", loggerMetadata);
+    return res.status(401).json({ message: "Unauthorized" });
+  }
+  if (!text) {
+    logger.info("Missing text", loggerMetadata);
+    return res.status(400).json({ message: "Missing text" });
+  }
+  logger.info("creating comment", loggerMetadata);
+  try {
+    const newComment = await (
+      await DALEventComment.create({ text, photographer: userId, event: eventId })
+    ).populate("photographer");
+    return res.status(201).json(newComment);
+  } catch (error) {
+    logger.error("Error adding comment to event", { ...loggerMetadata, error: error as Error });
+    return res.status(500).json({ message: "Error adding comment to event" });
   }
 };

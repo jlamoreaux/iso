@@ -98,15 +98,16 @@ export const register = async (
 
 // gets the current user
 export const checkAuth = async (req: Request, res: Response): Promise<Response | void> => {
+  const user = req.user as IPhotographer;
   const loggerMetadata = {
     function: "getCurrentUser",
+    userId: user?.id || "unknown",
   };
   logger.info("Getting current user", loggerMetadata);
-  if (!req.user) {
+  if (!user) {
     logger.warn("Unauthorized", loggerMetadata);
     return res.status(401).json({ message: "Unauthorized" });
   }
-  const user = req.user as IPhotographer;
   return res.status(200).json({
     id: user.id,
     firstName: user.firstName,

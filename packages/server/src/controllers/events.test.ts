@@ -1,6 +1,7 @@
 // Test for events controller
 import { Request, Response } from "express";
-import { getEvent, getEvents, createEvent, updateEvent, deleteEvent } from "./events";
+import { getEvent, getEventsForFeed, createEvent, updateEvent, deleteEvent } from "./events";
+import { IPhotographer } from "../models/Photographer";
 import DALEvent from "../data/event";
 
 // Mocking the event data access layer
@@ -9,10 +10,10 @@ jest.mock("../data/event");
 describe("Events Controller", () => {
   let mockResponse: Response;
 
-  const photographer = {
-    id: 1,
-    name: "Photographer 1",
-    description: "Description 1",
+  const photographer: Partial<IPhotographer> = {
+    id: "1",
+    firstName: "John",
+    lastName: "Doe",
     email: "hello@example.com",
   };
 
@@ -37,6 +38,7 @@ describe("Events Controller", () => {
       photographer: 1,
     },
     body: {},
+    user: photographer,
   } as unknown as Request;
 
   describe("getEvents", () => {
@@ -64,9 +66,9 @@ describe("Events Controller", () => {
       mockRequest.body = { photographer };
 
       // Mocking the find function of the event data access layer
-      (DALEvent.getEventsByPhotographer as jest.Mock).mockResolvedValue(events);
+      (DALEvent.getEventsForFeed as jest.Mock).mockResolvedValue(events);
 
-      await getEvents(mockRequest, mockResponse);
+      await getEventsForFeed(mockRequest, mockResponse);
 
       expect(mockResponse.status).toHaveBeenCalledWith(200);
       expect(mockResponse.json).toHaveBeenCalledWith(events);
@@ -77,7 +79,7 @@ describe("Events Controller", () => {
     it("should return an event by id", async () => {
       const event = {
         id: 1,
-        name: "Event 1",
+        title: "Event 1",
         description: "Description 1",
         date: "2020-01-01",
         time: "10:00:00",
@@ -98,7 +100,7 @@ describe("Events Controller", () => {
     it("should create a event", async () => {
       const event = {
         id: 1,
-        name: "Event 1",
+        title: "Event 1",
         description: "Description 1",
         date: "2020-01-01",
         time: "10:00:00",
@@ -128,7 +130,7 @@ describe("Events Controller", () => {
 
       const updatedEvent = {
         id: 1,
-        name: "Event 1",
+        title: "Event 1",
         description: "Description 2",
         date: "2020-01-08",
         time: "12:00:00",
@@ -151,19 +153,22 @@ describe("Events Controller", () => {
     it("should delete a event", async () => {
       const event = {
         id: 1,
-        name: "Event 1",
+        title: "Event 1",
         description: "Description 1",
         date: "2020-01-01",
-        time: "10:00:00",
         location: "Location 1",
-        price: 100,
+        rate: 100,
+        photographer,
       };
 
+      const mockDeletedEvent = { ...event, isDeleted: true };
+
       // Mocking the delete function of the event data access layer
-      (DALEvent.delete as jest.Mock).mockResolvedValue(event);
+      (DALEvent.getEvent as jest.Mock).mockResolvedValue(event);
+      (DALEvent.softDelete as jest.Mock).mockResolvedValue(mockDeletedEvent);
       await deleteEvent(mockRequest, mockResponse);
 
-      const expected = { event, message: "Event deleted" };
+      const expected = { event: mockDeletedEvent, message: "Event Deleted" };
       expect(mockResponse.status).toHaveBeenCalledWith(200);
       expect(mockResponse.json).toHaveBeenCalledWith(expected);
     });

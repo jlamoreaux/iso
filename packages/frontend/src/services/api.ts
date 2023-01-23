@@ -107,6 +107,37 @@ export type SearchResponse = {
   totalPages: number;
 };
 
+export type Event = {
+  id: string;
+  title: string;
+  description: string;
+  location: string;
+  date: string;
+  rate: number;
+  photographer: Photographer;
+  comments?: EventComment[];
+  commentsCount?: number;
+};
+
+export type EventComment = {
+  id: string;
+  text: string;
+  createdAt: string;
+  updatedAt: string;
+  event?: Event | string;
+  photographer: Photographer;
+};
+
+export type EventFeedResponse = {
+  events: Event[];
+  totalResults: number;
+  totalPages: number;
+};
+
+export type EventResponse = {
+  event: Event;
+};
+
 const api = axios.create({
   baseURL: `${import.meta.env.VITE_API_URL}`,
   withCredentials: true,
@@ -319,16 +350,16 @@ export const deleteMessage = async (id: string | undefined): Promise<void> => {
 
 // Event routes
 
-export const getEvents = async (): Promise<Event[]> => {
+export const getEvents = async (page: number): Promise<EventFeedResponse> => {
   try {
-    const res = await api.get("/api/events");
+    const res = await api.get("/api/events?page=" + page);
     return res.data;
   } catch (error) {
     throw error;
   }
 };
 
-export const getEvent = async (id: string | undefined): Promise<Event> => {
+export const getEventById = async (id: string | undefined): Promise<Event> => {
   try {
     const res = await api.get(`/api/events/${id}`);
     return res.data;
@@ -337,7 +368,7 @@ export const getEvent = async (id: string | undefined): Promise<Event> => {
   }
 };
 
-export const createEvent = async (event: Event): Promise<void> => {
+export const createEvent = async (event: Event): Promise<Event> => {
   try {
     const res = await api.post("/api/events", event);
     return res.data;
@@ -346,9 +377,9 @@ export const createEvent = async (event: Event): Promise<void> => {
   }
 };
 
-export const updateEvent = async (id: string, event: Event): Promise<void> => {
+export const updateEvent = async (id: string, event: Event): Promise<Event> => {
   try {
-    const res = await api.put(`/api/events/${id}`, event);
+    const res = await api.patch(`/api/events/${id}`, event);
     return res.data;
   } catch (error) {
     throw error;
@@ -358,6 +389,36 @@ export const updateEvent = async (id: string, event: Event): Promise<void> => {
 export const deleteEvent = async (id: string | undefined): Promise<void> => {
   try {
     const res = await api.delete(`/api/events/${id}`);
+    return res.data;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const getEventsByPhotographer = async (id: string | undefined): Promise<Event[]> => {
+  try {
+    const res = await api.get(`/api/events/photographer/${id}`);
+    return res.data;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const getEventsByPhotographerAndDate = async (
+  id: string | undefined,
+  date: string | undefined,
+): Promise<Event[]> => {
+  try {
+    const res = await api.get(`/api/events/photographer/${id}/${date}`);
+    return res.data;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const createEventComment = async (id: string, comment: Comment): Promise<EventComment> => {
+  try {
+    const res = await api.post(`/api/events/${id}/comments`, comment);
     return res.data;
   } catch (error) {
     throw error;

@@ -15,6 +15,7 @@ import {
   searchPhotographers,
   PhotographerSearchQuery,
   SearchResponse,
+  getEventById,
 } from "../services/api";
 import logoutLoader from "../utils/logoutLoader";
 import PhotographersList, { LIST_TYPE } from "../pages/photographers/PhotographersList";
@@ -23,6 +24,7 @@ import Inbox from "../pages/messages/Inbox";
 import ViewMessage from "../pages/messages/ViewMessage";
 import Layout from "../pages/Layout";
 import SearchPhotographers from "../pages/search/SearchPhotographers";
+import EventDetail from "../pages/events/EventDetail";
 
 const router = createBrowserRouter([
   {
@@ -44,6 +46,14 @@ const router = createBrowserRouter([
       {
         path: "register",
         element: <Register />,
+      },
+      {
+        path: "/event/:id",
+        loader: async ({ params }) => {
+          const event = await getEventById(params.id);
+          return event;
+        },
+        element: <EventDetail />,
       },
       {
         path: "/profile",
