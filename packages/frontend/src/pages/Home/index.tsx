@@ -11,10 +11,7 @@ const Home: React.FC = () => {
       {loading ? (
         <Loader />
       ) : isAuthenticated ? (
-        <>
-          <Text>Hello{user?.firstName && `, ${user.firstName}`}!</Text>
-          <EventsFeed />
-        </>
+        <EventsFeed />
       ) : (
         <Stack spacing="md" align="center">
           <p>The best platform for photographers to find and hire other photographers.</p>

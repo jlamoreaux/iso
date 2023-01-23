@@ -96,7 +96,6 @@ export const getMessages = async (req: Request, res: Response): Promise<Response
     messages.forEach((message) => {
       if (message.isRootMessage && !message.replyTo) {
         const lastReadReplyId = unreadReplies?.[message.id.toString()];
-        console.log("lastReadReplyId", lastReadReplyId);
         const hasUnreadReplies = lastReadReplyId ? true : false;
         const enhancedMessage = {
           ...convertDocumentToMessage(message),

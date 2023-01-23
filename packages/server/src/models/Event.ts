@@ -12,7 +12,7 @@ export type IEvent = {
   description: string;
   location: string;
   date: Date;
-  time: string;
+  rate?: number;
   comments?: Types.ObjectId[] | IEventComment[];
   isDeleted?: boolean;
   isFulfilled?: boolean;
@@ -44,13 +44,12 @@ const EventSchema = new Schema(
       type: Date,
       required: true,
     },
-    time: {
-      type: String,
-      required: true,
-    },
     isFulfilled: {
       type: Boolean,
       default: false,
+    },
+    rate: {
+      type: Number,
     },
     isDeleted: {
       type: Boolean,
@@ -70,12 +69,13 @@ const EventSchema = new Schema(
 
 // Automatically populate the sender field
 EventSchema.pre("find", function (this: any) {
-  this.populate("photographer", "firstName lastName profilePic city state id");
+  this.populate("photographer", "firstName lastName profilePic id");
 });
 
 // Populate the comments field for a single event
 EventSchema.pre("findOne", function (this: any) {
   this.populate("comments", "text createdAt photographer");
+  this.populate("photographer", "firstName lastName profilePic id");
 });
 
 EventSchema.virtual("id").get(function () {

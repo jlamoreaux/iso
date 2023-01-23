@@ -3,6 +3,7 @@ import { getEvents, Event, EventFeedResponse } from "../../services/api";
 import { Loader, Stack } from "@mantine/core";
 import InfiniteScroll from "react-infinite-scroll-component";
 import EventCard from "../../components/cards/EventCard";
+import CreateEventButton from "../../components/buttons/CreateEventButton";
 
 const EventsFeed = () => {
   const [events, setEvents] = useState<Event[]>([]);
@@ -32,14 +33,17 @@ const EventsFeed = () => {
   }, [events]);
 
   return (
-    <InfiniteScroll
-      dataLength={events.length}
-      next={fetchData}
-      hasMore={hasMore}
-      loader={<Loader />}
-    >
-      <Stack spacing="xl">{content}</Stack>
-    </InfiniteScroll>
+    <>
+      <CreateEventButton bottom={32} right={32} />
+      <InfiniteScroll
+        dataLength={events.length}
+        next={fetchData}
+        hasMore={hasMore}
+        loader={<Loader />}
+      >
+        <Stack spacing="xl">{content}</Stack>
+      </InfiniteScroll>
+    </>
   );
 };
 

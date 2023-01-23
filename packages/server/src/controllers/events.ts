@@ -93,15 +93,16 @@ export const getUserCreatedEvents = async (req: Request, res: Response): Promise
  * @returns {Promise<void>}
  */
 export const createEvent = async (req: Request, res: Response): Promise<Response> => {
+  const event = req.body;
+  const user = req.user as IPhotographer;
   const loggerMetadata = {
     function: "createEvent",
-    event: req.body,
+    userId: user.id,
   };
   logger.info("Creating event", loggerMetadata);
-  const event = req.body as IEvent;
   let newEvent: EventDocument;
   try {
-    newEvent = await DALEvent.create(event);
+    newEvent = await DALEvent.create({ photographer: user.id, ...event });
     return res.status(201).json(newEvent);
   } catch (error) {
     logger.error("Error creating event", { ...loggerMetadata, error: error as Error });

@@ -14,28 +14,36 @@ const EventCard: React.FC<EventCardProps> = ({ event }) => {
   return (
     <Card shadow="md" p="xl" radius="md" withBorder>
       <Card.Section withBorder>
-        <Group noWrap align={"start"} p={8} position="apart">
+        <Group noWrap align={"start"} p={8}>
           <ProfileCard photographer={photographer} style="compact" displayName={false} />
-          <Stack>
+          <Stack sx={{ flex: 1 }}>
             <Title order={3} size="h4">
               <Text component="a" href={`/event/${id}`}>
                 {title}
               </Text>
             </Title>
             <Group spacing="xs" mt={-12}>
-              <Text color={theme!.colors!.gold![4]} size="xs" weight="bold">
+              <Text
+                color={theme!.colors!.gold![4]}
+                size="xs"
+                weight="bold"
+                component="a"
+                href={`/event/${id}`}
+              >
                 {location}
               </Text>
-              <Text color={theme!.colors!.gold![4]} size="xs">
+              <Text color={theme!.colors!.gold![4]} size="xs" component="a" href={`/event/${id}`}>
                 {new Date(date).toLocaleDateString()}
               </Text>
               {rate && (
-                <Text color={theme!.colors!.gold![4]} size="xs">
-                  {rate} per hour
+                <Text color={theme!.colors!.gold![4]} size="xs" component="a" href={`/event/${id}`}>
+                  ${rate}/hour
                 </Text>
               )}
             </Group>
-            <Text lineClamp={2}>{description}</Text>
+            <Text lineClamp={2} component="a" href={`/event/${id}`}>
+              {description}
+            </Text>
             <Text color={theme!.colors!.gold![4]} size="xs" component="a" href={`/event/${id}`}>
               {commentsCount} comments
             </Text>

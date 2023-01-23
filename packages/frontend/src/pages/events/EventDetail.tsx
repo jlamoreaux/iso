@@ -2,15 +2,29 @@
 
 import React, { useEffect, useState } from "react";
 import { useLoaderData } from "react-router-dom";
-import { Card, Group, Stack, Title, Text, Button, Space, Container, Textarea } from "@mantine/core";
+import {
+  Card,
+  Group,
+  Stack,
+  Title,
+  Text,
+  Button,
+  Space,
+  Container,
+  Textarea,
+  ActionIcon,
+  Menu,
+} from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { createEventComment, Event, EventComment } from "../../services/api";
 import theme from "../../styles/theme";
 import { ProfileCard } from "../../components/cards/ProfileCards";
-import { AuthWrapper } from "../../context/AuthProvider";
+import { AuthWrapper, useAuth } from "../../context/AuthProvider";
 import Timestamp from "../../components/Timestamp";
+import { IconDots } from "@tabler/icons";
 
 const EventDetail: React.FC = () => {
+  const { user } = useAuth();
   const event = useLoaderData() as Event;
   const {
     id,
@@ -22,7 +36,7 @@ const EventDetail: React.FC = () => {
     photographer,
     comments: initialComments,
   } = event;
-  const formattedDate = new Date(date);
+  const isAuthor = user?.id === photographer.id;
   const [comments, setComments] = useState<EventComment[]>([]);
 
   const form = useForm({
@@ -50,10 +64,22 @@ const EventDetail: React.FC = () => {
         <Stack spacing="xs">
           <Group noWrap align={"start"}>
             <ProfileCard photographer={photographer} style="compact" displayName={false} />
-            <Title order={2}>
+            <Title order={2} sx={{ flex: 1 }}>
               <Text>{title}</Text>
             </Title>
-            {rate && <Text color={theme!.colors!.gold![4]}>{rate} per hour</Text>}
+            {isAuthor && (
+              <Menu withinPortal position="bottom-end" shadow="sm">
+                <Menu.Target>
+                  <ActionIcon color={theme!.colors!.gold![4]} size="sm">
+                    <IconDots />
+                  </ActionIcon>
+                </Menu.Target>
+                <Menu.Dropdown>
+                  <Menu.Item onClick={() => {}}>Edit</Menu.Item>
+                  <Menu.Item onClick={() => {}}>Delete</Menu.Item>
+                </Menu.Dropdown>
+              </Menu>
+            )}
           </Group>
           <Group noWrap align={"start"}>
             <Text color={theme!.colors!.gold![4]} weight="bold">
@@ -63,6 +89,7 @@ const EventDetail: React.FC = () => {
               {new Date(date).toLocaleDateString()}
             </Text>
           </Group>
+          {rate && <Text color={theme!.colors!.gold![4]}>${rate}/hour</Text>}
           <Text>{description}</Text>
         </Stack>
         <Container size="sm" m={16}>

@@ -76,10 +76,8 @@ const DALEvent = {
 
     const favoritePhotographerEvents: EventDocument[] = [];
     const otherEvents: EventDocument[] = [];
-    console.log("favorites", user.favorites);
     events.forEach((event) => {
       const photographerId = event.photographer.id;
-      console.log("photographerId", photographerId);
       if (photographerId && user.get(`favorites.${photographerId}`)) {
         favoritePhotographerEvents.push(event);
       } else {
