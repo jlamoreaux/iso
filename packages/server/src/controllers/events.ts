@@ -19,7 +19,7 @@ export const getEvent = async (req: Request, res: Response): Promise<Response> =
     eventId: id,
   };
   logger.info("Getting event by id", loggerMetadata);
-  let event: EventDocument | null;
+  let event: IEvent | null;
   try {
     event = await DALEvent.getEvent(id);
     if (!event) {
@@ -100,7 +100,7 @@ export const createEvent = async (req: Request, res: Response): Promise<Response
     userId: user.id,
   };
   logger.info("Creating event", loggerMetadata);
-  let newEvent: EventDocument;
+  let newEvent: IEvent;
   try {
     newEvent = await DALEvent.create({ photographer: user.id, ...event });
     return res.status(201).json(newEvent);
@@ -118,13 +118,18 @@ export const createEvent = async (req: Request, res: Response): Promise<Response
  */
 export const updateEvent = async (req: Request, res: Response): Promise<Response> => {
   const id = req.params.id;
+  const user = req.user as IPhotographer;
   const loggerMetadata = {
     function: "updateEvent",
     eventId: id,
-    event: req.body,
+    userId: user?.id || "unauthorized",
   };
+  if (!user || !user.id) {
+    logger.info("Unauthorized", loggerMetadata);
+    return res.status(401).json({ message: "Unauthorized" });
+  }
   logger.info("Updating event", loggerMetadata);
-  const event = req.body as IEvent;
+  const event = req.body as Partial<IEvent>;
   try {
     await DALEvent.update(id, event);
     if (!event) {
@@ -146,18 +151,32 @@ export const updateEvent = async (req: Request, res: Response): Promise<Response
  */
 export const deleteEvent = async (req: Request, res: Response): Promise<Response> => {
   const id = req.params.id;
+  const user = req.user as IPhotographer;
   const loggerMetadata = {
     function: "deleteEvent",
     eventId: id,
+    userId: user?.id || "unauthorized",
   };
-  logger.info("Deleting event", loggerMetadata);
+  if (!user || !user.id) {
+    logger.info("Unauthorized", loggerMetadata);
+    return res.status(401).json({ message: "Unauthorized" });
+  }
+  logger.info("Looking up event to be deleted", loggerMetadata);
   try {
-    const event = await DALEvent.delete(id);
+    const event = await DALEvent.getEvent(id);
     if (!event) {
       logger.info("Event not found", loggerMetadata);
       return res.status(404).json({ message: "Event not found" });
     }
-    return res.status(200).json({ event, message: "Event deleted" });
+    logger.info("Checking if user is authorized to delete event", { ...loggerMetadata, event });
+    if (event?.photographer.id !== user.id) {
+      logger.info("Unauthorized", loggerMetadata);
+      return res.status(401).json({ message: "Unauthorized" });
+    }
+    logger.info("Soft deleting event", loggerMetadata);
+    const deletedEvent = await DALEvent.softDelete(id);
+    logger.info("Soft delete succesful", loggerMetadata);
+    return res.status(200).json({ event: deletedEvent, message: "Event Deleted" });
   } catch (error) {
     logger.error("Error deleting event", { ...loggerMetadata, error: error as Error });
     return res.status(500).json({ message: "Error deleting event" });

@@ -377,9 +377,9 @@ export const createEvent = async (event: Event): Promise<Event> => {
   }
 };
 
-export const updateEvent = async (id: string, event: Event): Promise<void> => {
+export const updateEvent = async (id: string, event: Event): Promise<Event> => {
   try {
-    const res = await api.put(`/api/events/${id}`, event);
+    const res = await api.patch(`/api/events/${id}`, event);
     return res.data;
   } catch (error) {
     throw error;

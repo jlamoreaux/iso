@@ -52,11 +52,18 @@ const CreateEventButton: React.FC<CreateEventButtonProps> = ({ top, right, botto
       location: (value) => {
         if (!value)
           return "Location is required. This will allow photographers to find your event.";
-        if (value.indexOf(",") === -1) return "Please select a location from the dropdown.";
+        if (value.length < 4) return "Please enter a valid location";
       },
       date: (value) => {
         if (!value) return "Please enter a date for your event";
-        if (value.length < 10) return "Please enter a valid date";
+        // Value should be a valid mm/dd/yyyy date
+        const [month, day, year] = value.split("/");
+        if (month.length !== 2 || day.length !== 2 || year.length !== 4)
+          return "Please enter a valid date in the format MM/DD/YYYY";
+      },
+      rate: (value) => {
+        // Value should only be a number
+        if (isNaN(Number(value))) return "Please enter a valid number";
       },
     },
   });
@@ -114,7 +121,7 @@ const CreateEventButton: React.FC<CreateEventButtonProps> = ({ top, right, botto
               <TextInput label="Date" placeholder="MM/DD/YYYY" {...form.getInputProps("date")} />
               <TextInput
                 label="Rate"
-                placeholder="Hourly Rate, e.g. $80"
+                placeholder='Hourly rate in dollars, e.g. "80"'
                 {...form.getInputProps("rate")}
               />
             </Stack>
