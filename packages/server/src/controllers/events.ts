@@ -10,7 +10,7 @@ import { DALEventComment } from "../data/eventComment";
  * gets a event with the given id
  * @param {Request} req - request object
  * @param {Response} res - response object
- * @returns {Promise<void>}
+ * @returns {Promise<Response>}
  */
 export const getEvent = async (req: Request, res: Response): Promise<Response> => {
   const id = req.params.id;
@@ -68,7 +68,7 @@ export const getEventsForFeed = async (req: Request, res: Response): Promise<Res
  * gets all events for a photographer
  * @param {Request} req - request object
  * @param {Response} res - response object
- * @returns {Promise<void>}
+ * @returns {Promise<Response>}
  */
 export const getUserCreatedEvents = async (req: Request, res: Response): Promise<Response> => {
   const user = req.user as IPhotographer;
@@ -96,7 +96,7 @@ export const getUserCreatedEvents = async (req: Request, res: Response): Promise
  * creates a event
  * @param {Request} req - request object
  * @param {Response} res - response object
- * @returns {Promise<void>}
+ * @returns {Promise<Response>}
  */
 export const createEvent = async (req: Request, res: Response): Promise<Response> => {
   const event = req.body;
@@ -120,7 +120,7 @@ export const createEvent = async (req: Request, res: Response): Promise<Response
  * updates an event
  * @param {Request} req - request object
  * @param {Response} res - response object
- * @returns {Promise<void>}
+ * @returns {Promise<Response>}
  */
 export const updateEvent = async (req: Request, res: Response): Promise<Response> => {
   const id = req.params.id;
@@ -153,7 +153,7 @@ export const updateEvent = async (req: Request, res: Response): Promise<Response
  * deletes an event
  * @param {Request} req - request object
  * @param {Response} res - response object
- * @returns {Promise<void>}
+ * @returns {Promise<Response>}
  */
 export const deleteEvent = async (req: Request, res: Response): Promise<Response> => {
   const id = req.params.id;
@@ -187,7 +187,7 @@ export const deleteEvent = async (req: Request, res: Response): Promise<Response
  * adds a comment to a event
  * @param {Request} req - request object
  * @param {Response} res - response object
- * @returns {Promise<void>}
+ * @returns {Promise<Response>}
  */
 export const addComment = async (req: Request, res: Response): Promise<Response> => {
   const text = req.body.text;
