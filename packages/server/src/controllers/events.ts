@@ -7,7 +7,7 @@ import { IPhotographer } from "../models/Photographer";
 import { DALEventComment } from "../data/eventComment";
 
 /**
- * @description - gets a event with the given id
+ * gets a event with the given id
  * @param {Request} req - request object
  * @param {Response} res - response object
  * @returns {Promise<void>}
@@ -33,6 +33,12 @@ export const getEvent = async (req: Request, res: Response): Promise<Response> =
   }
 };
 
+/**
+ * gets paginated events for a photographer's feed
+ * @param req - request object
+ * @param res - response object
+ * @returns {Promise<Response>} - response object
+ */
 export const getEventsForFeed = async (req: Request, res: Response): Promise<Response> => {
   const user = req.user as IPhotographer;
   const userId = user?.id as string;
@@ -59,7 +65,7 @@ export const getEventsForFeed = async (req: Request, res: Response): Promise<Res
 };
 
 /**
- * @description - gets all events for a photographer
+ * gets all events for a photographer
  * @param {Request} req - request object
  * @param {Response} res - response object
  * @returns {Promise<void>}
@@ -87,7 +93,7 @@ export const getUserCreatedEvents = async (req: Request, res: Response): Promise
 };
 
 /**
- * @description - creates a event
+ * creates a event
  * @param {Request} req - request object
  * @param {Response} res - response object
  * @returns {Promise<void>}
@@ -111,7 +117,7 @@ export const createEvent = async (req: Request, res: Response): Promise<Response
 };
 
 /**
- * @description - updates a event
+ * updates an event
  * @param {Request} req - request object
  * @param {Response} res - response object
  * @returns {Promise<void>}
@@ -144,7 +150,7 @@ export const updateEvent = async (req: Request, res: Response): Promise<Response
 };
 
 /**
- * @description - deletes a event
+ * deletes an event
  * @param {Request} req - request object
  * @param {Response} res - response object
  * @returns {Promise<void>}
@@ -163,18 +169,12 @@ export const deleteEvent = async (req: Request, res: Response): Promise<Response
   }
   logger.info("Looking up event to be deleted", loggerMetadata);
   try {
-    const event = await DALEvent.getEvent(id);
-    if (!event) {
-      logger.info("Event not found", loggerMetadata);
+    logger.info("Attempting to soft delete event", loggerMetadata);
+    const deletedEvent = await DALEvent.softDelete(id, user.id);
+    if (!deletedEvent) {
+      logger.info("Event not found or user not authorized", loggerMetadata);
       return res.status(404).json({ message: "Event not found" });
     }
-    logger.info("Checking if user is authorized to delete event", { ...loggerMetadata, event });
-    if (event?.photographer.id !== user.id) {
-      logger.info("Unauthorized", loggerMetadata);
-      return res.status(401).json({ message: "Unauthorized" });
-    }
-    logger.info("Soft deleting event", loggerMetadata);
-    const deletedEvent = await DALEvent.softDelete(id);
     logger.info("Soft delete succesful", loggerMetadata);
     return res.status(200).json({ event: deletedEvent, message: "Event Deleted" });
   } catch (error) {
@@ -184,7 +184,7 @@ export const deleteEvent = async (req: Request, res: Response): Promise<Response
 };
 
 /**
- * @description - adds a comment to a event
+ * adds a comment to a event
  * @param {Request} req - request object
  * @param {Response} res - response object
  * @returns {Promise<void>}

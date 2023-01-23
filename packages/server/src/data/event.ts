@@ -14,8 +14,12 @@ const DALEvent = {
       new: true,
     });
   },
-  softDelete: async (id: string): Promise<IEvent | null> => {
-    return await Event.findByIdAndUpdate(id, { isDeleted: true }, { new: true });
+  softDelete: async (id: string, authorId: string): Promise<IEvent | null> => {
+    return await Event.findOneAndUpdate(
+      { id, photographer: authorId },
+      { isDeleted: true },
+      { new: true },
+    );
   },
   getEventsByPhotographer: async (photographerId: string): Promise<EventDocument[]> => {
     return await Event.find({
