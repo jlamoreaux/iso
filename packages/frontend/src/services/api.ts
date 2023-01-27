@@ -27,6 +27,7 @@ export type Photographer = User & {
     city?: string;
     state?: string;
   }[];
+  rate: number;
   profilePic?: string;
   bio?: string;
   portfolioImages?: string[];
@@ -395,7 +396,9 @@ export const deleteEvent = async (id: string | undefined): Promise<void> => {
   }
 };
 
-export const getEventsByPhotographer = async (id: string | undefined): Promise<Event[]> => {
+export const getEventsByPhotographer = async (
+  id: string | undefined,
+): Promise<EventFeedResponse> => {
   try {
     const res = await api.get(`/api/events/photographer/${id}`);
     return res.data;

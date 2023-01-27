@@ -6,6 +6,7 @@ import {
   deleteEvent,
   getEventsForFeed,
   addComment,
+  getUserCreatedEvents,
 } from "../controllers/events";
 import {
   getMessages,
@@ -56,5 +57,6 @@ apiRouter.post("/events/:id/comments", catchErrors(addComment));
 apiRouter.patch("/events/:id", catchErrors(updateEvent));
 apiRouter.put("/events/:id", catchErrors(updateEvent));
 apiRouter.delete("/events/:id", catchErrors(deleteEvent));
+apiRouter.get("/events/photographer/:id", catchErrors(getUserCreatedEvents));
 
 export default apiRouter;

@@ -1,6 +1,32 @@
 import logger, { LoggerMetadata } from "../utils/logger";
 import Event, { IEvent, EventDocument } from "../models/Event";
 import DALPhotographer from "./photographer";
+import { PhotographerDocument } from "../models/Photographer";
+import { Region } from "../utils/regions";
+
+type EventsFeedParams = {
+  userId: string;
+  photographerId?: string;
+  page?: number;
+  limit?: number;
+  restrictToUserRegions?: boolean;
+};
+
+export type EventsFeedResponse = {
+  events: EventDocument[];
+  totalPages: number;
+  totalResults: number;
+};
+
+type DBFeedQuery = {
+  photographer?: string;
+  region?: {
+    $in: Region[];
+  };
+  date?: Date;
+  isDeleted?: boolean;
+  isFulfilled?: boolean;
+};
 
 const DALEvent = {
   getEvent: async (id: string): Promise<IEvent | null> => {
@@ -21,9 +47,9 @@ const DALEvent = {
       { new: true },
     );
   },
-  getEventsByPhotographer: async (photographerId: string): Promise<EventDocument[]> => {
+  getEventsByPhotographer: async (photographer: string): Promise<EventDocument[]> => {
     return await Event.find({
-      photographer: photographerId,
+      photographer,
     });
   },
   getEventsByRegionAndDate: async (region: string, date: Date): Promise<EventDocument[]> => {
@@ -41,12 +67,10 @@ const DALEvent = {
     userId,
     page,
     limit = 10,
-  }: {
-    userId: string;
-    page?: string;
-    limit?: number;
-  }): Promise<{ events: EventDocument[]; totalPages: number; totalResults: number }> => {
-    let pageNumber = page ? parseInt(page) : 1;
+    photographerId,
+    restrictToUserRegions = true,
+  }: EventsFeedParams): Promise<EventsFeedResponse> => {
+    let pageNumber = page || 1;
     if (pageNumber < 1) {
       pageNumber = 1;
     }
@@ -58,15 +82,25 @@ const DALEvent = {
       totalResults: 0,
     };
     const skip = (pageNumber - 1) * limit;
-    const user = await DALPhotographer.findById(userId);
-    if (!user) throw new Error("User not found");
-    const query = {
+    let user: PhotographerDocument | null = null;
+    let userRegions: Region[] = [];
+    if (restrictToUserRegions) {
+      user = await DALPhotographer.findById(userId);
+      if (user?.regions && user.regions.length > 0) {
+        userRegions = user.regions;
+      }
+    }
+    const query: DBFeedQuery = {
       region: {
-        $in: user?.regions,
+        $in: userRegions,
       },
       isDeleted: false,
       isFulfilled: false,
     };
+
+    if (photographerId) {
+      query.photographer = photographerId;
+    }
 
     logger.info("Finding events", loggerMetadata);
 
@@ -82,7 +116,7 @@ const DALEvent = {
     const otherEvents: EventDocument[] = [];
     events.forEach((event) => {
       const photographerId = event.photographer.id;
-      if (photographerId && user.get(`favorites.${photographerId}`)) {
+      if (photographerId && user?.get(`favorites.${photographerId}`)) {
         favoritePhotographerEvents.push(event);
       } else {
         otherEvents.push(event);

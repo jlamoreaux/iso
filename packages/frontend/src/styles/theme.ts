@@ -188,20 +188,18 @@ const theme: MantineThemeOverride = {
   // Default transition duration is 200ms
   dateFormat: "MM/DD/YYYY",
   focusRing: "auto",
-  defaultRadius: "xl",
-  radius: {
-    xs: 2,
-    sm: 4,
-    md: 8,
-    lg: 12,
-    xl: 16,
-  },
+  // defaultRadius: "xl",
+  // radius: {
+  //   xs: 2,
+  //   sm: 4,
+  //   md: 8,
+  //   lg: 12,
+  //   xl: 16,
+  // },
   components: {
     Button: {
-      styles: {
-        root: {
-          radius: "50%",
-        },
+      defaultProps: {
+        radius: "xl",
       },
     },
     // Overlay: {

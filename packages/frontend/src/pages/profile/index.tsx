@@ -1,20 +1,18 @@
 import {
-  ActionIcon,
   Box,
   Button,
   Center,
-  Container,
   Group,
   Overlay,
   Space,
   Stack,
+  Tabs,
   Text,
   Title,
-  TypographyStylesProvider,
 } from "@mantine/core";
 import React, { useEffect, useState } from "react";
 import { Link, useLoaderData, useNavigate } from "react-router-dom";
-import { useHover, useMediaQuery } from "@mantine/hooks";
+import { useMediaQuery } from "@mantine/hooks";
 import { IconPencil, IconUpload } from "@tabler/icons";
 import { AuthWrapper, useAuth } from "../../context/AuthProvider";
 import ProfileCarousel from "../../components/images/ProfileCarousel";
@@ -22,6 +20,10 @@ import { ProfilePhoto } from "../../components/images/ProfilePhoto";
 import { Photographer } from "../../services/api";
 import FavoriteButton from "../../components/buttons/Favorite";
 import theme from "../../styles/theme";
+import EditButton from "../../components/buttons/EditButton";
+import ProfileTab from "./ProfileTab";
+import ReviewsTab from "./ReviewsTab";
+import EventsTab from "./EventsTab";
 
 const Profile: React.FC = () => {
   const { user } = useAuth();
@@ -34,13 +36,8 @@ const Profile: React.FC = () => {
     portfolioImages: images,
     firstName,
     lastName,
-    gear,
-    city,
-    state,
-    company,
-    regions,
     profilePic,
-    bio,
+    rate,
     isFavorite,
   } = photographer;
 
@@ -56,12 +53,7 @@ const Profile: React.FC = () => {
 
   return (
     <AuthWrapper>
-      <Container
-        style={{
-          width: "100%",
-          margin: 0,
-        }}
-      >
+      <Stack>
         <Box
           sx={{
             position: "relative",
@@ -108,97 +100,37 @@ const Profile: React.FC = () => {
           )}
           <ProfileCarousel images={images} />
         </Box>
-        <Stack
-          style={{
-            position: "relative",
-          }}
-        >
-          <Group>
-            <Title order={1}>{`${firstName} ${lastName}`}</Title>
-            {isOwnProfile && (
-              <ActionIcon onClick={() => navigate("/profile/edit")}>
-                <IconPencil />
-              </ActionIcon>
-            )}
-          </Group>
-          <Text>{bio}</Text>
-          <ProfilePhoto
-            photoUrl={profilePic}
-            userFullName={`${firstName} ${lastName}`}
-          ></ProfilePhoto>
-          {!isOwnProfile && <FavoriteButton id={id} isFavorite={isFavorite || false} />}
+        <Group position="apart" p="sm" noWrap>
+          <Title order={1}>{`${firstName} ${lastName}`}</Title>
+          <Stack align="flex-end" mt={-12} spacing={0}>
+            {isOwnProfile && <EditButton onClick={() => navigate("/profile/edit")} />}
+            {!isOwnProfile && <FavoriteButton id={id} isFavorite={isFavorite || false} />}
+            <ProfilePhoto
+              photoUrl={profilePic}
+              userFullName={`${firstName} ${lastName}`}
+              size="lg"
+            ></ProfilePhoto>
+          </Stack>
+        </Group>
+        <Tabs defaultValue="profile">
+          <Tabs.List position="apart">
+            <Tabs.Tab value="profile">Profile</Tabs.Tab>
+            <Tabs.Tab value="events">Events</Tabs.Tab>
+            <Tabs.Tab value="reviews">Reviews</Tabs.Tab>
+          </Tabs.List>
+          <Tabs.Panel value="profile">
+            <ProfileTab {...photographer} isOwnProfile={isOwnProfile} isFavorite={isFavorite} />
+          </Tabs.Panel>
 
-          <Text>
-            <TypographyStylesProvider>
-              <Group>
-                <Title order={2}>Gear</Title>
-                {isOwnProfile && (
-                  <ActionIcon onClick={() => navigate("/profile/edit")}>
-                    <IconPencil />
-                  </ActionIcon>
-                )}
-              </Group>
-              <Container>
-                {gear && (
-                  <ul>
-                    <li>Cameras: {gear.cameras}</li>
-                    <li>Lenses: {gear.lenses}</li>
-                    <li>Accessories: {gear.accessories}</li>
-                  </ul>
-                )}
-              </Container>
-            </TypographyStylesProvider>
-          </Text>
-          <Text>
-            <TypographyStylesProvider>
-              <Group>
-                <Title order={2}>Details</Title>
-                {isOwnProfile && (
-                  <ActionIcon onClick={() => navigate("/profile/edit")}>
-                    <IconPencil />
-                  </ActionIcon>
-                )}
-              </Group>
-              <Container>
-                <ul>
-                  {city && state && <li>Location: {`${city}, ${state}`}</li>}
-                  <Space p={200} />
-                  {company && <li>Company: {company}</li>}
-                  {regions && (
-                    <li>
-                      Regions:
-                      <ul>
-                        {regions.map((region) => (
-                          <li
-                            key={`${region.city}, ${region.state} `}
-                          >{`${region.city}, ${region.state}`}</li>
-                        ))}
-                      </ul>
-                    </li>
-                  )}
-                </ul>
-              </Container>
-            </TypographyStylesProvider>
-          </Text>
-          {!isOwnProfile && (
-            <Box
-              sx={(theme) => ({
-                textAlign: "right",
-                backgroundColor: theme.colors.tan[4],
-                padding: theme.spacing.md,
-                position: "sticky",
-                bottom: isMobile ? 38 : 0,
-                marginLeft: "-24px",
-                width: "calc(100% - 24px)",
-              })}
-            >
-              <Button variant="filled" component="a" href={"/messages/compose?p=" + id}>
-                Send Inquiry
-              </Button>
-            </Box>
-          )}
-        </Stack>
-      </Container>
+          <Tabs.Panel value="events">
+            <EventsTab profileId={id} />
+          </Tabs.Panel>
+
+          <Tabs.Panel value="reviews">
+            <ReviewsTab reviews={[]} />
+          </Tabs.Panel>
+        </Tabs>
+      </Stack>
     </AuthWrapper>
   );
 };

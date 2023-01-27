@@ -7,7 +7,7 @@ import { AuthWrapper } from "../../context/AuthProvider";
 import InfiniteScroll from "react-infinite-scroll-component";
 
 type PhotographersListProps = {
-  listType: LIST_TYPE;
+  listType?: LIST_TYPE;
   fetchNextPage?: () => Promise<SearchResponse>;
 };
 
@@ -36,7 +36,7 @@ const PhotographersList: React.FC<PhotographersListProps> = ({ listType }) => {
     [LIST_TYPE.AVAILABILITY]: "Available Photographers",
     [LIST_TYPE.FAVORITES]: "Your Favorites",
   };
-  const title = titles[listType];
+  const title = listType && titles[listType];
 
   useEffect(() => {
     if (data) {
@@ -78,7 +78,7 @@ const PhotographersList: React.FC<PhotographersListProps> = ({ listType }) => {
   return (
     <AuthWrapper>
       <Container>
-        <Title>{title}</Title>
+        {title && <Title>{title}</Title>}
         <InfiniteScroll
           dataLength={photographers?.length || 0}
           next={fetchData}

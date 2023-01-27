@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import {
   Button,
+  Collapse,
   Container,
   RangeSlider,
   Rating,
@@ -60,8 +61,8 @@ const convertValues = (values: FormValues): ConvertedValues => {
   };
 };
 
-// Search for photographers by name, location, etc. using manitine useForm hook
 const SearchPhotographers = () => {
+  const [showSearchForm, setShowSearchForm] = useState(true);
   const navigate = useNavigate();
   const form = useForm({
     initialValues: {
@@ -77,35 +78,42 @@ const SearchPhotographers = () => {
     // convert rate to minRate and maxRate
     const newValues = convertValues(values);
     navigate(`/search/results?${new URLSearchParams(newValues).toString()}`);
+    setShowSearchForm(false);
   };
 
   return (
     <AuthWrapper>
-      <Container>
-        <Title>Search for photographers</Title>
+      <Container p="0">
         <Stack>
-          <form onSubmit={form.onSubmit(handleSearchSubmit)}>
-            <Stack spacing="xs">
-              <Text size="sm">Name</Text>
-              <TextInput aria-label="Name" {...form.getInputProps("name")} />
-              <Text size="sm">Location</Text>
-              <GeoAutocomplete {...form.getInputProps("location")} />
-              <Text size="sm">Hourly Rate:</Text>
-              <RangeSlider
-                label={(value) => `$${value + (value === 200 ? "+" : "")}`}
-                {...form.getInputProps("rate")}
-                aria-label="Hourly Rate"
-                minRange={0}
-                maxRange={200}
-                defaultValue={[0, 200]}
-              />
-              <Text size="sm">Rating:</Text>
-              <Rating aria-label="Rating" {...form.getInputProps("rating")} />
-              <Text size="sm">Gear:</Text>
-              <TextInput aria-label="Gear" {...form.getInputProps("gear")} />
-              <Button type="submit">Search</Button>
-            </Stack>
-          </form>
+          {!showSearchForm && (
+            <Button onClick={() => setShowSearchForm(true)} variant="light">
+              Edit Search
+            </Button>
+          )}
+          <Collapse in={showSearchForm}>
+            <form onSubmit={form.onSubmit(handleSearchSubmit)}>
+              <Stack spacing="xs">
+                <Text size="sm">Name</Text>
+                <TextInput aria-label="Name" {...form.getInputProps("name")} />
+                <Text size="sm">Location</Text>
+                <GeoAutocomplete {...form.getInputProps("location")} />
+                <Text size="sm">Hourly Rate:</Text>
+                <RangeSlider
+                  label={(value) => `$${value + (value === 200 ? "+" : "")}`}
+                  {...form.getInputProps("rate")}
+                  aria-label="Hourly Rate"
+                  minRange={0}
+                  maxRange={200}
+                  defaultValue={[0, 200]}
+                />
+                <Text size="sm">Rating:</Text>
+                <Rating aria-label="Rating" {...form.getInputProps("rating")} />
+                <Text size="sm">Gear:</Text>
+                <TextInput aria-label="Gear" {...form.getInputProps("gear")} />
+                <Button type="submit">Search</Button>
+              </Stack>
+            </form>
+          </Collapse>
           <Outlet />
         </Stack>
       </Container>

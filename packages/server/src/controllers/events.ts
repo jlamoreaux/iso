@@ -1,7 +1,7 @@
 // Events controller
 import { Request, Response } from "express";
-import { IEvent, EventDocument } from "../models/Event";
-import DALEvent from "../data/event";
+import { IEvent } from "../models/Event";
+import DALEvent, { EventsFeedResponse } from "../data/event";
 import logger from "../utils/logger";
 import { IPhotographer } from "../models/Photographer";
 import { DALEventComment } from "../data/eventComment";
@@ -42,7 +42,7 @@ export const getEvent = async (req: Request, res: Response): Promise<Response> =
 export const getEventsForFeed = async (req: Request, res: Response): Promise<Response> => {
   const user = req.user as IPhotographer;
   const userId = user?.id as string;
-  const page = req.query.page as string;
+  const page = parseInt(req.query.page as string);
   const loggerMetadata = {
     function: "getEventsForFeed",
     userId,
@@ -73,18 +73,26 @@ export const getEventsForFeed = async (req: Request, res: Response): Promise<Res
 export const getUserCreatedEvents = async (req: Request, res: Response): Promise<Response> => {
   const user = req.user as IPhotographer;
   const userId = user?.id as string;
+  const photographerId = req.params.id;
   const loggerMetadata = {
     function: "getEvents",
     userId,
+    photographerId,
   };
   if (!userId) {
     logger.info("Unauthorized", loggerMetadata);
     return res.status(401).json({ message: "Unauthorized" });
   }
   logger.info("Getting all events for user", loggerMetadata);
-  let events: EventDocument[] | null;
+  let events: EventsFeedResponse | null;
   try {
-    events = await DALEvent.getEventsByPhotographer(userId);
+    events = await DALEvent.getEventsForFeed({
+      userId,
+      photographerId,
+      page: 1,
+      limit: 10,
+      restrictToUserRegions: false,
+    });
     return res.status(200).json(events);
   } catch (error) {
     logger.info("An error occurred while getting events", loggerMetadata);
