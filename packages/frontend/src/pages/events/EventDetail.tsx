@@ -33,7 +33,7 @@ import { AuthWrapper, useAuth } from "../../context/AuthProvider";
 import Timestamp from "../../components/Timestamp";
 import { IconDots } from "@tabler/icons";
 import { DatePicker } from "@mantine/dates";
-import GeoAutocomplete from "../../components/GeoAutocomplete";
+import GeoAutocomplete from "../../components/input/GeoAutocomplete";
 
 const EventDetail: React.FC = () => {
   const { user } = useAuth();

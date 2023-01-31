@@ -90,4 +90,6 @@ EventSchema.set("toJSON", {
   virtuals: true,
 });
 
+EventSchema.index({ title: "text", description: "text" });
+
 export default mongoose.model<EventDocument>("Event", EventSchema);

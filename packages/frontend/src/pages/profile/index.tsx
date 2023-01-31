@@ -12,7 +12,6 @@ import {
 } from "@mantine/core";
 import React, { useEffect, useState } from "react";
 import { Link, useLoaderData, useNavigate } from "react-router-dom";
-import { useMediaQuery } from "@mantine/hooks";
 import { IconPencil, IconUpload } from "@tabler/icons";
 import { AuthWrapper, useAuth } from "../../context/AuthProvider";
 import ProfileCarousel from "../../components/images/ProfileCarousel";
@@ -42,7 +41,6 @@ const Profile: React.FC = () => {
   } = photographer;
 
   const isOwnProfile = user?.id === id;
-  const isMobile = useMediaQuery("(max-width: 600px)");
   const editPhotosUrl = "edit/photos";
 
   useEffect(() => {
@@ -100,8 +98,7 @@ const Profile: React.FC = () => {
           )}
           <ProfileCarousel images={images} />
         </Box>
-        <Group position="apart" p="sm" noWrap>
-          <Title order={1}>{`${firstName} ${lastName}`}</Title>
+        <Group position="left" p="sm" noWrap>
           <Stack align="flex-end" mt={-12} spacing={0}>
             {isOwnProfile && <EditButton onClick={() => navigate("/profile/edit")} />}
             {!isOwnProfile && <FavoriteButton id={id} isFavorite={isFavorite || false} />}
@@ -111,9 +108,10 @@ const Profile: React.FC = () => {
               size="lg"
             ></ProfilePhoto>
           </Stack>
+          <Title order={1}>{`${firstName} ${lastName}`}</Title>
         </Group>
         <Tabs defaultValue="profile">
-          <Tabs.List position="apart">
+          <Tabs.List position="left">
             <Tabs.Tab value="profile">Profile</Tabs.Tab>
             <Tabs.Tab value="events">Events</Tabs.Tab>
             <Tabs.Tab value="reviews">Reviews</Tabs.Tab>

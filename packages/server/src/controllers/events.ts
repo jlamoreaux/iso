@@ -65,6 +65,41 @@ export const getEventsForFeed = async (req: Request, res: Response): Promise<Res
 };
 
 /**
+ * gets paginated events from a search
+ * @param req - request object
+ * @param res - response object
+ * @returns {Promise<Response>} - response object
+ */
+export const searchEvents = async (req: Request, res: Response): Promise<Response> => {
+  const user = req.user as IPhotographer;
+  const userId = user?.id as string;
+  const page = parseInt(req.query.page as string);
+  const query = req.body;
+  const loggerMetadata = {
+    function: "searchEvents",
+    userId,
+    page,
+    query,
+  };
+
+  if (!userId) {
+    logger.info("Unauthorized", loggerMetadata);
+    return res.status(401).json({ message: "Unauthorized" });
+  }
+
+  logger.info("Searching events", loggerMetadata);
+  try {
+    const feedResponse = await DALEvent.search({ page, query, limit: 10 });
+    return res.status(200).json(feedResponse);
+  } catch (error) {
+    logger.info("An error occurred while searching events", {
+      ...loggerMetadata,
+      error: error as Error,
+    });
+    return res.status(500).json({ message: "An error occurred while searching events" });
+  }
+};
+/**
  * gets all events for a photographer
  * @param {Request} req - request object
  * @param {Response} res - response object

@@ -12,7 +12,7 @@ import {
 import { useForm } from "@mantine/form";
 import { Outlet, useNavigate } from "react-router-dom";
 import { PhotographerSearchQuery, searchPhotographers } from "../../services/api";
-import GeoAutocomplete from "../../components/GeoAutocomplete";
+import GeoAutocomplete from "../../components/input/GeoAutocomplete";
 
 type ConvertedValues = {
   name: string;
@@ -75,7 +75,7 @@ const SearchPhotographers = () => {
   const handleSearchSubmit = async (values: FormValues) => {
     // convert rate to minRate and maxRate
     const newValues = convertValues(values);
-    navigate(`/search/results?${new URLSearchParams(newValues).toString()}`);
+    navigate(`/search/photographer/results?${new URLSearchParams(newValues).toString()}`);
     setShowSearchForm(false);
   };
 

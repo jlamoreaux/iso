@@ -3,6 +3,7 @@ import Event, { IEvent, EventDocument } from "../models/Event";
 import DALPhotographer from "./photographer";
 import { PhotographerDocument } from "../models/Photographer";
 import { Region } from "../utils/regions";
+import { FilterQuery } from "mongoose";
 
 type EventsFeedParams = {
   userId: string;
@@ -26,6 +27,27 @@ type DBFeedQuery = {
   date?: Date;
   isDeleted?: boolean;
   isFulfilled?: boolean;
+};
+
+type EventSearchQuery = {
+  keyword?: string;
+  city?: string;
+  state?: string;
+  maxRate?: string;
+  minRate?: string;
+  date?: string;
+};
+
+export type EventSearchResponse = {
+  events: EventDocument[];
+  totalResults: number;
+  totalPages: number;
+};
+
+export type EventSearchParams = {
+  query: EventSearchQuery;
+  page?: number;
+  limit?: number;
 };
 
 const DALEvent = {
@@ -131,6 +153,77 @@ const DALEvent = {
         ? favoritePhotographerEvents.concat(otherEvents)
         : otherEvents;
     return { events: eventsToReturn, totalResults, totalPages: Math.ceil(totalResults / limit) };
+  },
+  search: async ({
+    query,
+    page = 1,
+    limit = 10,
+  }: EventSearchParams): Promise<EventSearchResponse> => {
+    if (page < 1) {
+      page = 1;
+    }
+    const skip = (page - 1) * limit;
+    const dbQuery: FilterQuery<EventDocument> = {
+      isDeleted: false,
+      isFulfilled: false,
+    };
+    const loggerMetadata: LoggerMetadata = {
+      function: "DALEvent.search",
+      page,
+      limit,
+      totalResults: 0,
+    };
+    const minRate = parseInt(query.minRate as string, 10);
+    const maxRate = parseInt(query.maxRate as string, 10);
+
+    if (query.keyword) {
+      dbQuery.$text = {
+        $search: query.keyword,
+      };
+    }
+    if (query.city) {
+      dbQuery.city = query.city;
+    }
+    if (query.state) {
+      dbQuery.state = query.state;
+    }
+    if (minRate > 0) {
+      dbQuery.rate = {
+        $gte: query.minRate,
+      };
+    }
+    if (maxRate < 200) {
+      dbQuery.rate = {
+        ...dbQuery.rate,
+        $lte: query.maxRate,
+      };
+    }
+    if (query.date) {
+      dbQuery.date = query.date;
+      // } else {
+      //   // return dates that are in the future
+      //   dbQuery.date = {
+      //     $gte: new Date(),
+      //   };
+    }
+    logger.info("Searching events", loggerMetadata);
+    const events = await Event.find(dbQuery)
+      .sort({ date: -1 })
+      .skip(skip)
+      .limit(limit)
+      .exec()
+      .catch((err) => {
+        logger.error("Error searching events", {
+          ...loggerMetadata,
+          query: dbQuery,
+          error: err,
+        });
+        throw err;
+      });
+    const totalResults = await Event.countDocuments(dbQuery);
+    loggerMetadata.totalResults = totalResults;
+    logger.info("Found events", loggerMetadata);
+    return { events, totalResults, totalPages: Math.ceil(totalResults / limit) };
   },
 };
 

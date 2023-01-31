@@ -1,6 +1,6 @@
 import React from "react";
 import { Autocomplete, AutocompleteProps } from "@mantine/core";
-import { useGooglePlacesAutocomplete } from "../services/google";
+import { useGooglePlacesAutocomplete } from "../../services/google";
 
 const GeoAutocomplete: React.FC<AutocompleteProps> = (formProps) => {
   const { inputRef, predictions } = useGooglePlacesAutocomplete();
