@@ -10,7 +10,8 @@ type EventCardProps = {
 
 const EventCard: React.FC<EventCardProps> = ({ event }) => {
   // TODO: Add report button
-  const { id, title, description, location, date, rate, photographer, commentsCount } = event;
+  const { id, title, description, date, rate, photographer, commentsCount } = event;
+  const { city, state } = event.location || { undefined };
   return (
     <Card shadow="md" p="xl" radius="md" withBorder>
       <Card.Section withBorder>
@@ -23,15 +24,17 @@ const EventCard: React.FC<EventCardProps> = ({ event }) => {
               </Text>
             </Title>
             <Group spacing="xs" mt={-12}>
-              <Text
-                color={theme!.colors!.gold![4]}
-                size="xs"
-                weight="bold"
-                component="a"
-                href={`/event/${id}`}
-              >
-                {location}
-              </Text>
+              {city && state && (
+                <Text
+                  color={theme!.colors!.gold![4]}
+                  size="xs"
+                  weight="bold"
+                  component="a"
+                  href={`/event/${id}`}
+                >
+                  {city}, {state}
+                </Text>
+              )}
               <Text color={theme!.colors!.gold![4]} size="xs" component="a" href={`/event/${id}`}>
                 {new Date(date).toLocaleDateString()}
               </Text>

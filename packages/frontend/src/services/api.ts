@@ -129,9 +129,9 @@ export type Event = {
   id: string;
   title: string;
   description: string;
-  location: string;
+  location: { city: string; state: string };
   date: string;
-  rate: number;
+  rate?: number;
   photographer: Photographer;
   comments?: EventComment[];
   commentsCount?: number;
@@ -386,7 +386,7 @@ export const getEventById = async (id: string | undefined): Promise<Event> => {
   }
 };
 
-export const createEvent = async (event: Event): Promise<Event> => {
+export const createEvent = async (event: Partial<Event>): Promise<Event> => {
   try {
     const res = await api.post("/api/events", event);
     return res.data;

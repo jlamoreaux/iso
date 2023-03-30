@@ -18,7 +18,7 @@ const CenteredLoader = () => (
 const EventsList: React.FC<EventsListProps> = ({ fetchEvents }) => {
   const [events, setEvents] = useState<Event[]>([]);
   const [hasMore, setHasMore] = useState(true);
-  const [page, setPage] = useState(0);
+  const [page, setPage] = useState(1);
 
   const fetchData = useCallback(async () => {
     // fetch data

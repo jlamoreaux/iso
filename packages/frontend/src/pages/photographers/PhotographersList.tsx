@@ -1,14 +1,14 @@
 import React, { useCallback, useEffect, useMemo } from "react";
 import { Title, Stack, Container, Loader } from "@mantine/core";
 import { useLoaderData } from "react-router-dom";
-import { Photographer, SearchResponse } from "../../services/api";
+import { Photographer, PhotographerSearchResponse } from "../../services/api";
 import { ProfileCard } from "../../components/cards/ProfileCards";
 import { AuthWrapper } from "../../context/AuthProvider";
 import InfiniteScroll from "react-infinite-scroll-component";
 
 type PhotographersListProps = {
   listType?: LIST_TYPE;
-  fetchNextPage?: () => Promise<SearchResponse>;
+  fetchNextPage?: () => Promise<PhotographerSearchResponse>;
 };
 
 export enum LIST_TYPE {
@@ -19,7 +19,7 @@ export enum LIST_TYPE {
 
 const PhotographersList: React.FC<PhotographersListProps> = ({ listType }) => {
   const { data, fetchNextPage } = useLoaderData() as {
-    data: SearchResponse;
+    data: PhotographerSearchResponse;
     fetchNextPage: Function;
   };
   const { photographers: initialPhotographers, totalPages, totalResults } = data;

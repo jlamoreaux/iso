@@ -30,6 +30,7 @@ const convertValues = (values: FormValues): EventSearchQuery => {
 const SearchEvents = () => {
   const [showSearchForm, setShowSearchForm] = useState(true);
   const [showResults, setShowResults] = useState<boolean>(false);
+  const [keyCounter, setKeyCounter] = useState(0);
 
   const form = useForm<FormValues>({
     initialValues: {
@@ -45,9 +46,10 @@ const SearchEvents = () => {
     return data;
   };
 
-  const handleSearchSubmit = async (values: FormValues) => {
+  const handleSearchSubmit = async () => {
     setShowSearchForm(false);
     setShowResults(true);
+    setKeyCounter(keyCounter + 1);
   };
 
   return (
@@ -80,7 +82,9 @@ const SearchEvents = () => {
             </Stack>
           </form>
         </Collapse>
-        <Container>{showResults && <EventsList fetchEvents={fetchNextPage} />}</Container>
+        <Container>
+          {showResults && <EventsList key={keyCounter} fetchEvents={fetchNextPage} />}
+        </Container>
       </Stack>
     </Container>
   );

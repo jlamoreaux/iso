@@ -1,6 +1,7 @@
 // Event model
 
 import mongoose, { Document, Types } from "mongoose";
+import { Region } from "../utils/regions";
 import { IEventComment } from "./EventComment";
 import { IPhotographer } from "./Photographer";
 
@@ -10,7 +11,7 @@ export type IEvent = {
   photographer: IPhotographer;
   title: string;
   description: string;
-  location: string;
+  location: Region;
   date: Date;
   rate?: number;
   comments?: Types.ObjectId[] | IEventComment[];
@@ -37,7 +38,7 @@ const EventSchema = new Schema(
       required: true,
     },
     location: {
-      type: String,
+      type: { city: String, state: String },
       required: true,
     },
     date: {
@@ -90,6 +91,11 @@ EventSchema.set("toJSON", {
   virtuals: true,
 });
 
-EventSchema.index({ title: "text", description: "text" });
+EventSchema.index({
+  title: "text",
+  description: "text",
+  "location.city": "text",
+  "location.state": "text",
+});
 
 export default mongoose.model<EventDocument>("Event", EventSchema);

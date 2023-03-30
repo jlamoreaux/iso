@@ -1,9 +1,10 @@
-import logger, { LoggerMetadata } from "../utils/logger";
-import Event, { IEvent, EventDocument } from "../models/Event";
-import DALPhotographer from "./photographer";
-import { PhotographerDocument } from "../models/Photographer";
-import { Region } from "../utils/regions";
 import { FilterQuery } from "mongoose";
+import DALPhotographer from "./photographer";
+import Event, { IEvent, EventDocument } from "../models/Event";
+import { PhotographerDocument } from "../models/Photographer";
+import logger, { LoggerMetadata } from "../utils/logger";
+import { Region } from "../utils/regions";
+import { getStartOfDay, getEndOfDay } from "../utils/dates";
 
 type EventsFeedParams = {
   userId: string;
@@ -159,19 +160,23 @@ const DALEvent = {
     page = 1,
     limit = 10,
   }: EventSearchParams): Promise<EventSearchResponse> => {
-    if (page < 1) {
-      page = 1;
-    }
-    const skip = (page - 1) * limit;
-    const dbQuery: FilterQuery<EventDocument> = {
-      isDeleted: false,
-      isFulfilled: false,
-    };
     const loggerMetadata: LoggerMetadata = {
       function: "DALEvent.search",
       page,
       limit,
       totalResults: 0,
+    };
+    if (page < 1) {
+      page = 1;
+    }
+    if (limit > 50) {
+      limit = 50;
+      logger.info("Lowering limit of results", loggerMetadata);
+    }
+    const skip = (page - 1) * limit;
+    const dbQuery: FilterQuery<EventDocument> = {
+      isDeleted: false,
+      isFulfilled: false,
     };
     const minRate = parseInt(query.minRate as string, 10);
     const maxRate = parseInt(query.maxRate as string, 10);
@@ -181,11 +186,17 @@ const DALEvent = {
         $search: query.keyword,
       };
     }
+    // use mongoose $search to look in city and state fields
+
     if (query.city) {
-      dbQuery.city = query.city;
+      dbQuery["location.city"] = {
+        $in: [query.city.toLowerCase(), query.city, query.city.toUpperCase()],
+      };
     }
     if (query.state) {
-      dbQuery.state = query.state;
+      dbQuery["location.state"] = {
+        $in: [query.state.toLowerCase(), query.state, query.state.toUpperCase()],
+      };
     }
     if (minRate > 0) {
       dbQuery.rate = {
@@ -199,14 +210,23 @@ const DALEvent = {
       };
     }
     if (query.date) {
-      dbQuery.date = query.date;
-      // } else {
-      //   // return dates that are in the future
-      //   dbQuery.date = {
-      //     $gte: new Date(),
-      //   };
+      const date = new Date(query.date);
+      if (date.toString() === "Invalid Date") {
+        throw new Error("Invalid date");
+      }
+      const startOfDay = getStartOfDay(date);
+      const endOfDay = getEndOfDay(date);
+      dbQuery.date = {
+        $gte: startOfDay,
+        $lte: endOfDay,
+      };
+    } else {
+      // return dates that are in the future
+      dbQuery.date = {
+        $gte: new Date(),
+      };
     }
-    logger.info("Searching events", loggerMetadata);
+    logger.info("Searching events", { ...loggerMetadata, query: dbQuery });
     const events = await Event.find(dbQuery)
       .sort({ date: -1 })
       .skip(skip)

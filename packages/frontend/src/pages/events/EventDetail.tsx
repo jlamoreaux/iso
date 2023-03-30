@@ -48,6 +48,7 @@ const EventDetail: React.FC = () => {
     photographer,
     comments: initialComments,
   } = event;
+  const { city, state } = location || { undefined };
   const isAuthor = user?.id === photographer.id;
   const [comments, setComments] = useState<EventComment[]>([]);
   const [isEditing, setIsEditing] = useState(false);
@@ -233,9 +234,11 @@ const EventDetail: React.FC = () => {
                     )}
                   </Group>
                   <Group noWrap align={"start"}>
-                    <Text color={theme!.colors!.gold![4]} weight="bold">
-                      {location}
-                    </Text>
+                    {city && state && (
+                      <Text color={theme!.colors!.gold![4]} weight="bold">
+                        {city}, {state}
+                      </Text>
+                    )}
                     <Text color={theme!.colors!.gold![4]} fs="italic">
                       {new Date(date).toLocaleDateString()}
                     </Text>
