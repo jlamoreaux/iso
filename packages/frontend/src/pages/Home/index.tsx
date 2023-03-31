@@ -1,7 +1,7 @@
 import React from "react";
 import { Anchor, Container, Loader, Space, Stack, Text } from "@mantine/core";
 import { PrimaryLink } from "../../components/buttons";
-import { AuthWrapper, useAuth } from "../../context/AuthProvider";
+import { useAuth } from "../../context/AuthProvider";
 import EventsFeed from "../events/EventsFeed";
 
 const Home: React.FC = () => {

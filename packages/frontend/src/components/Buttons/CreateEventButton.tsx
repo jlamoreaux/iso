@@ -13,14 +13,18 @@ import {
 } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { IconPlus } from "@tabler/icons";
-import GeoAutocomplete from "../GeoAutocomplete";
-import { createEvent } from "../../services/api";
+import GeoAutocomplete from "../input/GeoAutocomplete";
+import { createEvent, Event } from "../../services/api";
 
 type CreateEventButtonProps = {
   top?: number;
   right?: number;
   bottom?: number;
   left?: number;
+};
+
+type EventFormData = Partial<Event> & {
+  locationString: string;
 };
 
 const CreateEventButton: React.FC<CreateEventButtonProps> = ({ top, right, bottom, left }) => {
@@ -31,13 +35,13 @@ const CreateEventButton: React.FC<CreateEventButtonProps> = ({ top, right, botto
 
   const tooltipLabel = <Text size="xs">Create Event</Text>;
 
-  const form = useForm({
+  const form = useForm<EventFormData>({
     initialValues: {
       title: "",
       description: "",
-      location: "",
+      locationString: "",
       date: "",
-      rate: "",
+      rate: undefined,
     },
 
     validate: {
@@ -49,10 +53,10 @@ const CreateEventButton: React.FC<CreateEventButtonProps> = ({ top, right, botto
         if (!value) return "Add a description so photographers know what you're looking for";
         if (value.length < 10) return "That looks a little short";
       },
-      location: (value) => {
+      locationString: (value) => {
         if (!value)
           return "Location is required. This will allow photographers to find your event.";
-        if (value.length < 4) return "Please enter a valid location";
+        // if (value satisfies string && 0 < 4) return "Please enter a valid locationString";
       },
       date: (value) => {
         if (!value) return "Please enter a date for your event";
@@ -66,6 +70,11 @@ const CreateEventButton: React.FC<CreateEventButtonProps> = ({ top, right, botto
         if (isNaN(Number(value))) return "Please enter a valid number";
       },
     },
+
+    transformValues: (values) => {
+      const [city, state] = values.locationString.split(", ");
+      return { ...values, location: { city, state } };
+    },
   });
 
   const handleCancel = () => {
@@ -75,13 +84,16 @@ const CreateEventButton: React.FC<CreateEventButtonProps> = ({ top, right, botto
     setOpened(false);
   };
 
-  const handleSubmit = async (values: any) => {
+  const handleSubmit = async (values: EventFormData) => {
+    setLoading(true);
     const data = await createEvent(values);
     if (!data || !data.id) {
       setError(true);
+      setLoading(false);
       return;
     }
     setSuccess(true);
+    setLoading(false);
   };
 
   return (
@@ -116,7 +128,7 @@ const CreateEventButton: React.FC<CreateEventButtonProps> = ({ top, right, botto
               <GeoAutocomplete
                 label="Location"
                 placeholder="Location of the event"
-                {...form.getInputProps("location")}
+                {...form.getInputProps("locationString")}
               />
               <TextInput label="Date" placeholder="MM/DD/YYYY" {...form.getInputProps("date")} />
               <TextInput

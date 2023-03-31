@@ -25,14 +25,14 @@ export const ProfileCard: React.FC<ProfileCardProps> = ({
         <ProfilePhoto
           userFullName={`${firstName} ${lastName}`}
           photoUrl={profilePic}
-          size={style === "verbose" ? "md" : "sm"}
+          size={style === "verbose" ? "lg" : "md"}
         />
         <Stack>
           <Group position="apart">
             {displayName && (
               <Title
                 order={3}
-                size={style === "verbose" ? "md" : "sm"}
+                size={style === "verbose" ? "lg" : "md"}
               >{`${firstName} ${lastName}`}</Title>
             )}
             {style === "verbose" && (

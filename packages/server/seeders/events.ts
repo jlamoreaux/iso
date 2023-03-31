@@ -7,11 +7,24 @@ import { config } from "dotenv";
 
 config();
 
+const shouldDeleteEvents = false;
+
+const deleteEvents = async (): Promise<void> => {
+  let events = await Event.find();
+  console.log(`Deleting ${events.length} events...`);
+  await Event.deleteMany();
+  events = await Event.find();
+  console.log(`Done deleting events. ${events.length} events remaining.`);
+};
+
 const generateFakeEvent = (): EventDocument => {
   return new Event({
     title: faker.lorem.sentence(),
     description: faker.lorem.paragraph(),
-    location: faker.address.city(),
+    location: {
+      city: faker.address.city(),
+      state: faker.address.state(),
+    },
     date: faker.date.future(),
     time: faker.date.future().toLocaleTimeString(),
   });
@@ -40,15 +53,14 @@ const seedRootEvents = async (): Promise<EventDocument[]> => {
 mongoose
   .set("strictQuery", true)
   .connect(process.env.MONGODB_URI as string)
-  .then(() => {
+  .then(async () => {
     console.log("MongoDB Connected");
-    seedRootEvents();
-    // deleteEvents();
+    if (shouldDeleteEvents) {
+      await deleteEvents();
+      process.exit(0);
+    }
+    const events = await seedRootEvents();
+    console.log(`${events.length} events created`);
+    process.exit(0);
   })
   .catch((err) => console.log(err));
-
-const deleteEvents = async (): Promise<void> => {
-  console.log("Deleting events...");
-  await Event.deleteMany({});
-  console.log("Done deleting events");
-};

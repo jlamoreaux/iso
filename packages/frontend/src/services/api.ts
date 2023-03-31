@@ -27,6 +27,7 @@ export type Photographer = User & {
     city?: string;
     state?: string;
   }[];
+  rate: number;
   profilePic?: string;
   bio?: string;
   portfolioImages?: string[];
@@ -101,19 +102,36 @@ export interface RegisterResponse {
   userId: string;
 }
 
-export type SearchResponse = {
-  photographers: Photographer[];
+type SearchResponse = {
   totalResults: number;
   totalPages: number;
+};
+
+export type PhotographerSearchResponse = SearchResponse & {
+  photographers: Photographer[];
+};
+
+export type EventSearchResponse = SearchResponse & {
+  events: Event[];
+};
+
+export type EventSearchQuery = {
+  keyword: string;
+  city: string;
+  state: string;
+  maxRate: string;
+  minRate: string;
+  date?: string;
+  page?: string | number;
 };
 
 export type Event = {
   id: string;
   title: string;
   description: string;
-  location: string;
+  location: { city: string; state: string };
   date: string;
-  rate: number;
+  rate?: number;
   photographer: Photographer;
   comments?: EventComment[];
   commentsCount?: number;
@@ -262,7 +280,7 @@ export const getPhotographersByRegionAndAvailability = async (
 
 export const searchPhotographers = async (
   search: PhotographerSearchQuery,
-): Promise<SearchResponse> => {
+): Promise<PhotographerSearchResponse> => {
   try {
     const res = await api.post("/api/photographers/search", search);
     if (res.status === 200) {
@@ -368,7 +386,7 @@ export const getEventById = async (id: string | undefined): Promise<Event> => {
   }
 };
 
-export const createEvent = async (event: Event): Promise<Event> => {
+export const createEvent = async (event: Partial<Event>): Promise<Event> => {
   try {
     const res = await api.post("/api/events", event);
     return res.data;
@@ -395,7 +413,9 @@ export const deleteEvent = async (id: string | undefined): Promise<void> => {
   }
 };
 
-export const getEventsByPhotographer = async (id: string | undefined): Promise<Event[]> => {
+export const getEventsByPhotographer = async (
+  id: string | undefined,
+): Promise<EventFeedResponse> => {
   try {
     const res = await api.get(`/api/events/photographer/${id}`);
     return res.data;
@@ -411,6 +431,21 @@ export const getEventsByPhotographerAndDate = async (
   try {
     const res = await api.get(`/api/events/photographer/${id}/${date}`);
     return res.data;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const searchEvents = async (
+  search: EventSearchQuery,
+  page: number,
+): Promise<EventSearchResponse> => {
+  try {
+    const res = await api.post(`/api/events/search?page=${page}`, search);
+    if (res.status === 200) {
+      return res.data;
+    }
+    return { events: [], totalResults: 0, totalPages: 0 };
   } catch (error) {
     throw error;
   }

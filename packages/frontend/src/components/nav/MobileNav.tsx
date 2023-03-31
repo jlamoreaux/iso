@@ -6,18 +6,19 @@ import navItems from "./navigationItems";
 type ActiveNav = typeof navItems[number]["name"];
 type MobileNavProps = Omit<GroupProps, "children">;
 
-const MobileNavBar: React.FC<MobileNavProps> = ({ hidden }) => {
+const MobileNavBar: React.FC<MobileNavProps> = () => {
   const location = useLocation().pathname;
   const active = navItems.find((item) => item.path === location)?.name;
 
   return (
     <Group
       style={{
-        display: hidden ? "none" : "flex",
         flexDirection: "row",
         flexWrap: "nowrap",
       }}
       position="apart"
+      grow
+      maw="100vw"
       p="0"
     >
       {navItems.map((item) => (

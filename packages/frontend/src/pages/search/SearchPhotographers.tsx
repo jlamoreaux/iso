@@ -1,19 +1,18 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import {
   Button,
+  Collapse,
   Container,
   RangeSlider,
   Rating,
   Stack,
   Text,
   TextInput,
-  Title,
 } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { Outlet, useNavigate } from "react-router-dom";
-import { AuthWrapper } from "../../context/AuthProvider";
 import { PhotographerSearchQuery, searchPhotographers } from "../../services/api";
-import GeoAutocomplete from "../../components/GeoAutocomplete";
+import GeoAutocomplete from "../../components/input/GeoAutocomplete";
 
 type ConvertedValues = {
   name: string;
@@ -60,8 +59,8 @@ const convertValues = (values: FormValues): ConvertedValues => {
   };
 };
 
-// Search for photographers by name, location, etc. using manitine useForm hook
 const SearchPhotographers = () => {
+  const [showSearchForm, setShowSearchForm] = useState(true);
   const navigate = useNavigate();
   const form = useForm({
     initialValues: {
@@ -76,14 +75,19 @@ const SearchPhotographers = () => {
   const handleSearchSubmit = async (values: FormValues) => {
     // convert rate to minRate and maxRate
     const newValues = convertValues(values);
-    navigate(`/search/results?${new URLSearchParams(newValues).toString()}`);
+    navigate(`/search/photographer/results?${new URLSearchParams(newValues).toString()}`);
+    setShowSearchForm(false);
   };
 
   return (
-    <AuthWrapper>
-      <Container>
-        <Title>Search for photographers</Title>
-        <Stack>
+    <Container p="0">
+      <Stack>
+        {!showSearchForm && (
+          <Button onClick={() => setShowSearchForm(true)} variant="light">
+            Edit Search
+          </Button>
+        )}
+        <Collapse in={showSearchForm}>
           <form onSubmit={form.onSubmit(handleSearchSubmit)}>
             <Stack spacing="xs">
               <Text size="sm">Name</Text>
@@ -106,10 +110,10 @@ const SearchPhotographers = () => {
               <Button type="submit">Search</Button>
             </Stack>
           </form>
-          <Outlet />
-        </Stack>
-      </Container>
-    </AuthWrapper>
+        </Collapse>
+        <Outlet />
+      </Stack>
+    </Container>
   );
 };
 

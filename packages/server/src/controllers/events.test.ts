@@ -1,6 +1,13 @@
-// Test for events controller
+/// <reference types="jest" />
 import { Request, Response } from "express";
-import { getEvent, getEventsForFeed, createEvent, updateEvent, deleteEvent } from "./events";
+import {
+  getEvent,
+  getEventsForFeed,
+  createEvent,
+  updateEvent,
+  deleteEvent,
+  searchEvents,
+} from "./events";
 import { IPhotographer } from "../models/Photographer";
 import DALEvent from "../data/event";
 
@@ -171,6 +178,57 @@ describe("Events Controller", () => {
       const expected = { event: mockDeletedEvent, message: "Event Deleted" };
       expect(mockResponse.status).toHaveBeenCalledWith(200);
       expect(mockResponse.json).toHaveBeenCalledWith(expected);
+    });
+  });
+
+  describe("searchEvents", () => {
+    const query = {
+      keyword: "wedding",
+      city: "New York",
+      state: "NY",
+      maxRate: "100",
+      minRate: "50",
+      date: "2022-05-01",
+    };
+
+    afterEach(() => {
+      jest.clearAllMocks();
+    });
+
+    it("should return status code 200 and search results when a user is authenticated", async () => {
+      mockRequest.query = query;
+      const expected = {
+        events: [{ date: new Date(), location: { city: "Anchorage", state: "AK" } }],
+        totalResults: 1,
+        totalPages: 1,
+      };
+
+      (DALEvent.search as jest.Mock).mockResolvedValue(expected);
+      await searchEvents(mockRequest, mockResponse);
+
+      expect(mockResponse.status).toHaveBeenCalledWith(200);
+      expect(mockResponse.json).toHaveBeenCalledWith(expected);
+    });
+
+    it("should return status code 500 and error message when an error occurs during search", async () => {
+      mockRequest.query = query;
+      jest.spyOn(DALEvent, "search").mockRejectedValue(new Error("Search failed"));
+
+      await searchEvents(mockRequest, mockResponse);
+
+      expect(mockResponse.status).toHaveBeenCalledWith(500);
+      expect(mockResponse.json).toHaveBeenCalledWith({
+        message: "An error occurred while searching events",
+      });
+    });
+
+    it("should return status code 401 when a user is not authenticated", async () => {
+      mockRequest.query = query;
+      mockRequest.user = undefined;
+      await searchEvents(mockRequest, mockResponse);
+
+      expect(mockResponse.status).toHaveBeenCalledWith(401);
+      expect(mockResponse.json).toHaveBeenCalledWith({ message: "Unauthorized" });
     });
   });
 });

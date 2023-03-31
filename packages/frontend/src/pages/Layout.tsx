@@ -1,4 +1,4 @@
-import { AppShell, Burger, Footer, Header, Title } from "@mantine/core";
+import { AppShell, Burger, Footer, Header, Space, Title } from "@mantine/core";
 import { useMediaQuery } from "@mantine/hooks";
 import React from "react";
 import { Outlet } from "react-router-dom";
@@ -10,7 +10,6 @@ const Layout: React.FC = () => {
 
   return (
     <AppShell
-      fixed
       padding={0}
       styles={{
         main: {
@@ -21,19 +20,18 @@ const Layout: React.FC = () => {
         <NavBar p="md" hiddenBreakpoint="md" width={{ sm: 200, lg: 300 }} hidden={isMobile} />
       }
       header={
-        <Header height={{ base: 50, md: 70 }} p="md">
-          <div style={{ display: "flex", alignItems: "center", height: "100%" }}>
-            <Title>ISO</Title>
-          </div>
+        <Header height={{ base: 50, md: 70 }} p="sm">
+          <Title>ISO</Title>
         </Header>
       }
       footer={
-        <Footer height="auto" position={{ bottom: 0 }}>
-          <MobileNavBar hidden={!isMobile} />
+        <Footer height="auto" position={{ bottom: 0 }} hidden={!isMobile}>
+          <MobileNavBar />
         </Footer>
       }
     >
       <Outlet />
+      <Space h={isMobile ? 100 : 200} />
     </AppShell>
   );
 };

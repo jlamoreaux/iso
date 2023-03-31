@@ -6,16 +6,18 @@ import Profile from "../pages/profile";
 import Root from "./Root";
 import {
   getPhotographerById,
-  getPhotographersByRegion,
-  getPhotographersByRegionAndAvailability,
   getMessages,
   getMessage,
   getFavorites,
   getCurrentPhotographer,
   searchPhotographers,
   PhotographerSearchQuery,
-  SearchResponse,
+  PhotographerSearchResponse,
   getEventById,
+  getEventsByPhotographer,
+  EventSearchQuery,
+  searchEvents,
+  EventSearchResponse,
 } from "../services/api";
 import logoutLoader from "../utils/logoutLoader";
 import PhotographersList, { LIST_TYPE } from "../pages/photographers/PhotographersList";
@@ -23,8 +25,9 @@ import Compose from "../pages/messages/Compose";
 import Inbox from "../pages/messages/Inbox";
 import ViewMessage from "../pages/messages/ViewMessage";
 import Layout from "../pages/Layout";
-import SearchPhotographers from "../pages/search/SearchPhotographers";
 import EventDetail from "../pages/events/EventDetail";
+import EventsFeed from "../pages/events/EventsFeed";
+import Search from "../pages/search/Search";
 
 const router = createBrowserRouter([
   {
@@ -72,23 +75,11 @@ const router = createBrowserRouter([
         element: <Profile />,
       },
       {
-        path: "/photographers/:region",
+        path: "/photographer/:id/events",
         loader: async ({ params }) => {
-          const photographers = await getPhotographersByRegion(params.region);
-          return { data: photographers };
+          return await getEventsByPhotographer(params.id);
         },
-        element: <PhotographersList listType={LIST_TYPE.REGION} />,
-      },
-      {
-        path: "/photographers/:region/:date",
-        loader: async ({ params }) => {
-          const photographers = await getPhotographersByRegionAndAvailability(
-            params.region,
-            params.date,
-          );
-          return photographers;
-        },
-        element: <PhotographersList listType={LIST_TYPE.AVAILABILITY} />,
+        element: <EventsFeed />,
       },
       {
         path: "/messages",
@@ -128,21 +119,37 @@ const router = createBrowserRouter([
       },
       {
         path: "/search",
-        element: <SearchPhotographers />,
+        element: <Search />,
         children: [
           {
-            path: "results",
+            path: "photographer/results",
             loader: async ({ request }) => {
               const url = new URL(request.url);
-              const searchTerm = Object.fromEntries(url.searchParams) as PhotographerSearchQuery;
-              const data = await searchPhotographers(searchTerm);
-              const fetchNextPage = async (pageNumber: number): Promise<SearchResponse> => {
-                const result = await searchPhotographers({ ...searchTerm, page: pageNumber });
+              const searchTerms = Object.fromEntries(url.searchParams) as PhotographerSearchQuery;
+              const data = await searchPhotographers(searchTerms);
+              const fetchNextPage = async (
+                pageNumber: number,
+              ): Promise<PhotographerSearchResponse> => {
+                const result = await searchPhotographers({ ...searchTerms, page: pageNumber });
                 return result;
               };
               return { data, fetchNextPage };
             },
-            element: <PhotographersList listType={LIST_TYPE.REGION} />,
+            element: <PhotographersList />,
+          },
+          {
+            path: "event/results",
+            loader: async ({ request }) => {
+              const url = new URL(request.url);
+              const searchTerms = Object.fromEntries(url.searchParams) as EventSearchQuery;
+              const data = await searchEvents(searchTerms, 1);
+              const fetchNextPage = async (pageNumber: number): Promise<EventSearchResponse> => {
+                const result = await searchEvents(searchTerms, pageNumber);
+                return result;
+              };
+              return { data, fetchNextPage };
+            },
+            element: <EventsFeed />,
           },
         ],
       },
