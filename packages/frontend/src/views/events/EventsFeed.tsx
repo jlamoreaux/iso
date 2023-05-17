@@ -1,7 +1,7 @@
-import React, { useState, useEffect, useMemo, useCallback } from "react";
+import React from "react";
 import { getEvents } from "../../services/api.js";
-import CreateEventButton from "../../components/buttons/CreateEventButton.js";
-import EventsList from "./EventsList.js";
+import CreateEventButton from "../../components/buttons/CreateEventButton.jsx";
+import EventsList from "./EventsList.jsx";
 
 const EventsFeed = () => {
   const fetchData = async (page: number) => {

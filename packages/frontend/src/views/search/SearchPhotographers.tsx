@@ -12,7 +12,7 @@ import {
 import { useForm } from "@mantine/form";
 import { Outlet, useNavigate } from "react-router-dom";
 import { PhotographerSearchQuery, searchPhotographers } from "../../services/api.js";
-import GeoAutocomplete from "../../components/input/GeoAutocomplete.js";
+import GeoAutocomplete from "../../components/input/GeoAutocomplete.jsx";
 
 type ConvertedValues = {
   name: string;

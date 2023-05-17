@@ -16,7 +16,7 @@ import { DatePicker } from "@mantine/dates";
 import { IconAlertTriangle } from "@tabler/icons-react";
 import { createMessage, MessageResponse } from "../../services/api.js";
 import { ReactComponent as Calendar } from "../../assets/svg/calendar.svg";
-import { AuthWrapper } from "../../context/AuthProvider.js";
+import { AuthWrapper } from "../../context/AuthProvider.jsx";
 import theme from "../../styles/theme.js";
 
 type FormValues = {
