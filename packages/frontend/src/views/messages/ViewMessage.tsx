@@ -3,11 +3,11 @@
 import { Button, Collapse, Container, Group, Space, Stack, Text, Title } from "@mantine/core";
 import React, { useEffect, useState } from "react";
 import { useLoaderData, useLocation, useParams } from "react-router-dom";
-import MessageTile from "../../components/cards/MessageTile.jsx";
-import { PrimaryLink } from "../../components/buttons/Link.jsx";
-import ProfileCard from "../../components/cards/ProfileCards.jsx";
+import MessageTile from "../../components/cards/MessageTile.js";
+import { PrimaryLink } from "../../components/buttons/Link.js";
+import ProfileCard from "../../components/cards/ProfileCards.js";
 import { MessageResponse, updateMessage } from "../../services/api.js";
-import { AuthWrapper } from "../../context/AuthProvider.jsx";
+import { AuthWrapper } from "../../context/AuthProvider.js";
 
 const ViewMessage = () => {
   const [repliesOpen, setRepliesOpen] = useState(true);

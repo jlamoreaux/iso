@@ -1,5 +1,5 @@
 import React from "react";
-import Home from "../pages/home/index.jsx";
+import Home from "../views/home/index.js";
 
 const Root: React.FC = () => {
   return <Home />;
