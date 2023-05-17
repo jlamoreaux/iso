@@ -1,6 +1,6 @@
 import React from "react";
 import { ActionIcon } from "@mantine/core";
-import { IconPencil } from "@tabler/icons";
+import { IconPencil } from "@tabler/icons-react";
 
 type EditButtonProps = {
   onClick?: () => void;

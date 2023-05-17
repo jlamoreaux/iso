@@ -20,20 +20,20 @@ import {
   Modal,
 } from "@mantine/core";
 import { useForm } from "@mantine/form";
+import { IconDots } from "@tabler/icons-react";
+import { DatePicker } from "@mantine/dates";
 import {
   createEventComment,
   deleteEvent,
   Event,
   EventComment,
   updateEvent,
-} from "../../services/api";
-import theme from "../../styles/theme";
-import { ProfileCard } from "../../components/cards/ProfileCards";
-import { AuthWrapper, useAuth } from "../../context/AuthProvider";
-import Timestamp from "../../components/Timestamp";
-import { IconDots } from "@tabler/icons";
-import { DatePicker } from "@mantine/dates";
-import GeoAutocomplete from "../../components/input/GeoAutocomplete";
+} from "../../services/api.js";
+import theme from "../../styles/theme.js";
+import { ProfileCard } from "../../components/cards/ProfileCards.js";
+import { AuthWrapper, useAuth } from "../../context/AuthProvider.js";
+import Timestamp from "../../components/Timestamp.js";
+import GeoAutocomplete from "../../components/input/GeoAutocomplete.js";
 
 const EventDetail: React.FC = () => {
   const { user } = useAuth();

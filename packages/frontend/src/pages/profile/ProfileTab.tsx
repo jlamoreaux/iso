@@ -1,4 +1,5 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 import {
   Box,
   Button,
@@ -9,9 +10,8 @@ import {
   Title,
   TypographyStylesProvider,
 } from "@mantine/core";
-import EditButton from "../../components/buttons/EditButton";
-import { useNavigate } from "react-router-dom";
-import { Photographer } from "../../services/api";
+import EditButton from "../../components/buttons/EditButton.js";
+import { Photographer } from "../../services/api.js";
 
 type ProfileTabProps = Partial<Photographer> & {
   isOwnProfile: boolean;

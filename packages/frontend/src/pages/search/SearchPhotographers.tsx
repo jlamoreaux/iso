@@ -11,8 +11,8 @@ import {
 } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { Outlet, useNavigate } from "react-router-dom";
-import { PhotographerSearchQuery, searchPhotographers } from "../../services/api";
-import GeoAutocomplete from "../../components/input/GeoAutocomplete";
+import { PhotographerSearchQuery, searchPhotographers } from "../../services/api.js";
+import GeoAutocomplete from "../../components/input/GeoAutocomplete.js";
 
 type ConvertedValues = {
   name: string;

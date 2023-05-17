@@ -1,9 +1,8 @@
 import React, { useState, useEffect, useMemo, useCallback } from "react";
-import { getEvents, Event } from "../../services/api";
 import { Container, Loader, Stack } from "@mantine/core";
 import InfiniteScroll from "react-infinite-scroll-component";
-import EventCard from "../../components/cards/EventCard";
-import CreateEventButton from "../../components/buttons/CreateEventButton";
+import { Event } from "../../services/api.js";
+import EventCard from "../../components/cards/EventCard.js";
 
 type EventsListProps = {
   fetchEvents: (page: number) => Promise<{ events: Event[]; totalPages: number }>;
@@ -43,14 +42,14 @@ const EventsList: React.FC<EventsListProps> = ({ fetchEvents }) => {
   }, [events]);
 
   return (
-    <InfiniteScroll
+    <InfiniteScroll.default
       dataLength={events.length}
       next={fetchData}
       hasMore={hasMore}
       loader={<CenteredLoader />}
     >
       <Stack spacing="xl">{content}</Stack>
-    </InfiniteScroll>
+    </InfiniteScroll.default>
   );
 };
 

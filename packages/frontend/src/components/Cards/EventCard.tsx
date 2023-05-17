@@ -1,8 +1,8 @@
 import React from "react";
 import { Card, Group, Stack, Title, Text } from "@mantine/core";
-import { Event } from "../../services/api";
-import theme from "../../styles/theme";
-import { ProfileCard } from "./ProfileCards";
+import { Event } from "../../services/api.js";
+import theme from "../../styles/theme.js";
+import { ProfileCard } from "../../components/cards/ProfileCards.jsx";
 
 type EventCardProps = {
   event: Event;

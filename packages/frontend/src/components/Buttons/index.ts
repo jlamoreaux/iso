@@ -1,1 +1,1 @@
-export { PrimaryLink, SecondaryLink } from "./Link";
+export { PrimaryLink, SecondaryLink } from "./Link.js";

@@ -12,9 +12,9 @@ import {
   Tooltip,
 } from "@mantine/core";
 import { useForm } from "@mantine/form";
-import { IconPlus } from "@tabler/icons";
-import GeoAutocomplete from "../input/GeoAutocomplete";
-import { createEvent, Event } from "../../services/api";
+import { IconPlus } from "@tabler/icons-react";
+import GeoAutocomplete from "../input/GeoAutocomplete.js";
+import { createEvent, Event } from "../../services/api.js";
 
 type CreateEventButtonProps = {
   top?: number;

@@ -13,11 +13,11 @@ import {
 } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { DatePicker } from "@mantine/dates";
-import { IconAlertTriangle } from "@tabler/icons";
-import { createMessage, MessageResponse } from "../../services/api";
+import { IconAlertTriangle } from "@tabler/icons-react";
+import { createMessage, MessageResponse } from "../../services/api.js";
 import { ReactComponent as Calendar } from "../../assets/svg/calendar.svg";
-import { AuthWrapper } from "../../context/AuthProvider";
-import theme from "../../styles/theme";
+import { AuthWrapper } from "../../context/AuthProvider.js";
+import theme from "../../styles/theme.js";
 
 type FormValues = {
   message: string;

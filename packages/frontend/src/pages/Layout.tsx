@@ -1,9 +1,9 @@
-import { AppShell, Burger, Footer, Header, Space, Title } from "@mantine/core";
-import { useMediaQuery } from "@mantine/hooks";
 import React from "react";
 import { Outlet } from "react-router-dom";
-import MobileNavBar from "../components/nav/MobileNav";
-import NavBar from "../components/nav/NavBar";
+import { AppShell, Footer, Header, Space, Title } from "@mantine/core";
+import { useMediaQuery } from "@mantine/hooks";
+import MobileNavBar from "../components/nav/MobileNav.js";
+import NavBar from "../components/nav/NavBar.js";
 
 const Layout: React.FC = () => {
   const isMobile = useMediaQuery("(max-width: 400px)");

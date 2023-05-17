@@ -1,5 +1,11 @@
 import { useEffect, useRef, useState } from "react";
 
+declare global {
+  interface Window {
+    google: any;
+  }
+}
+
 const API_KEY = import.meta.env.VITE_API_GOOGLE_PLACES_API_KEY;
 
 export function useGooglePlacesAutocomplete() {
@@ -30,7 +36,7 @@ export function useGooglePlacesAutocomplete() {
         }
 
         if (window.google && window.google.maps) {
-          const autocompleteService = new google.maps.places.AutocompleteService();
+          const autocompleteService = new window.google.maps.places.AutocompleteService();
           // Send a request to the Places API, and invoke the callback once
           // the data has been returned
           autocompleteService.getPlacePredictions(
@@ -38,14 +44,14 @@ export function useGooglePlacesAutocomplete() {
               input: value,
               types: ["(cities)"],
             },
-            (predictions, status) => {
+            (predictions: any, status: any) => {
               // If the status is not OK, do not proceed
-              if (status !== google.maps.places.PlacesServiceStatus.OK) return;
+              if (status !== window.google.maps.places.PlacesServiceStatus.OK) return;
 
               // Set the predictions state
               if (!predictions || predictions.length < 1) return;
               setPredictions(
-                predictions.map((prediction) => ({
+                predictions.map((prediction: any) => ({
                   label: prediction.description,
                   value: {
                     city: prediction.structured_formatting.main_text,

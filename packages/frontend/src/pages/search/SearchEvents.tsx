@@ -1,10 +1,10 @@
 import React, { useState } from "react";
 import { Button, Container, Collapse, RangeSlider, Stack, Text, TextInput } from "@mantine/core";
 import { useForm } from "@mantine/form";
-import GeoAutocomplete from "../../components/input/GeoAutocomplete";
 import { DatePicker } from "@mantine/dates";
-import { EventSearchQuery, searchEvents } from "../../services/api";
-import EventsList from "../events/EventsList";
+import GeoAutocomplete from "../../components/input/GeoAutocomplete.js";
+import { EventSearchQuery, searchEvents } from "../../services/api.js";
+import EventsList from "../../pages/events/EventsList.js";
 
 type FormValues = {
   keyword: string;

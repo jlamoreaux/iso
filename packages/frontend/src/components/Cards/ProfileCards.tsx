@@ -1,8 +1,8 @@
 import React from "react";
-import { Group, Title, Text, Badge, Stack, Anchor, UnstyledButton } from "@mantine/core";
-import { Photographer } from "../../services/api";
-import { ProfilePhoto } from "../images/ProfilePhoto";
-import theme from "../../styles/theme";
+import { Group, Title, Text, Stack, UnstyledButton } from "@mantine/core";
+import { Photographer } from "../../services/api.js";
+import { ProfilePhoto } from "../images/ProfilePhoto.js";
+import theme from "../../styles/theme.js";
 
 type ProfileCardProps = {
   photographer: Photographer;

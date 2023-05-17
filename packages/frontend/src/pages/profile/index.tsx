@@ -1,28 +1,17 @@
-import {
-  Box,
-  Button,
-  Center,
-  Group,
-  Overlay,
-  Space,
-  Stack,
-  Tabs,
-  Text,
-  Title,
-} from "@mantine/core";
+import { Box, Center, Group, Overlay, Space, Stack, Tabs, Text, Title } from "@mantine/core";
 import React, { useEffect, useState } from "react";
 import { Link, useLoaderData, useNavigate } from "react-router-dom";
-import { IconPencil, IconUpload } from "@tabler/icons";
-import { AuthWrapper, useAuth } from "../../context/AuthProvider";
-import ProfileCarousel from "../../components/images/ProfileCarousel";
-import { ProfilePhoto } from "../../components/images/ProfilePhoto";
-import { Photographer } from "../../services/api";
-import FavoriteButton from "../../components/buttons/Favorite";
-import theme from "../../styles/theme";
-import EditButton from "../../components/buttons/EditButton";
-import ProfileTab from "./ProfileTab";
-import ReviewsTab from "./ReviewsTab";
-import EventsTab from "./EventsTab";
+import { IconPencil, IconUpload } from "@tabler/icons-react";
+import { AuthWrapper, useAuth } from "../../context/AuthProvider.js";
+import ProfileCarousel from "../../components/images/ProfileCarousel.js";
+import { ProfilePhoto } from "../../components/images/ProfilePhoto.js";
+import { Photographer } from "../../services/api.js";
+import FavoriteButton from "../../components/buttons/Favorite.js";
+import theme from "../../styles/theme.js";
+import EditButton from "../../components/buttons/EditButton.js";
+import ProfileTab from "../../pages/profile/ProfileTab.js";
+import ReviewsTab from "../../pages/profile/ReviewsTab.js";
+import EventsTab from "../../pages/profile/EventsTab.js";
 
 const Profile: React.FC = () => {
   const { user } = useAuth();

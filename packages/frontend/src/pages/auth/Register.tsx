@@ -1,3 +1,4 @@
+import React from "react";
 import { useState } from "react";
 import { useForm } from "@mantine/form";
 import {
@@ -15,8 +16,8 @@ import {
   Stack,
 } from "@mantine/core";
 import { redirect, useNavigate } from "react-router-dom";
-import { states } from "../../utils/geography";
-import { register } from "../../services/api";
+import { states } from "../../utils/geography.js";
+import { register } from "../../services/api.js";
 
 type FormData = {
   email: string;

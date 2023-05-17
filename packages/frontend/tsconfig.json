@@ -10,13 +10,14 @@
     "strict": true,
     "forceConsistentCasingInFileNames": true,
     "module": "ES2020",
-    "moduleResolution": "node",
+    "moduleResolution": "node16",
     "resolveJsonModule": true,
     "isolatedModules": true,
     "noEmit": true,
     "jsx": "react-jsx",
-    "rootDir": "src",
-    "baseUrl": "."
+    "rootDir": "./src",
+    "baseUrl": ".",
+    "types": ["vite-plugin-svgr/client"]
   },
   "include": ["src"],
   "references": [{ "path": "./tsconfig.node.json" }]
