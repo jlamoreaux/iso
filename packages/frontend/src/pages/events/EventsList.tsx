@@ -2,7 +2,7 @@ import React, { useState, useEffect, useMemo, useCallback } from "react";
 import { Container, Loader, Stack } from "@mantine/core";
 import InfiniteScroll from "react-infinite-scroll-component";
 import { Event } from "../../services/api.js";
-import EventCard from "../../components/cards/EventCard.js";
+import EventCard from "../../components/cards/EventCard.jsx";
 
 type EventsListProps = {
   fetchEvents: (page: number) => Promise<{ events: Event[]; totalPages: number }>;

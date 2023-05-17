@@ -1,9 +1,9 @@
 import React from "react";
 import { MantineProvider } from "@mantine/core";
 import { RouterProvider } from "react-router-dom";
-import router from "./routes/index.js";
+import router from "./routes/index.jsx";
 import theme from "./styles/theme.js";
-import AuthProvider from "./context/AuthProvider.js";
+import AuthProvider from "./context/AuthProvider.jsx";
 
 const App = () => {
   return (

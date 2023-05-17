@@ -3,15 +3,15 @@ import React, { useEffect, useState } from "react";
 import { Link, useLoaderData, useNavigate } from "react-router-dom";
 import { IconPencil, IconUpload } from "@tabler/icons-react";
 import { AuthWrapper, useAuth } from "../../context/AuthProvider.js";
-import ProfileCarousel from "../../components/images/ProfileCarousel.js";
-import { ProfilePhoto } from "../../components/images/ProfilePhoto.js";
-import { Photographer } from "../../services/api.js";
-import FavoriteButton from "../../components/buttons/Favorite.js";
+import ProfileCarousel from "../../components/images/ProfileCarousel.jsx";
+import { ProfilePhoto } from "../../components/images/ProfilePhoto.jsx";
+import { Photographer } from "../../services/api.jsx";
+import FavoriteButton from "../../components/buttons/Favorite.jsx";
 import theme from "../../styles/theme.js";
-import EditButton from "../../components/buttons/EditButton.js";
-import ProfileTab from "../../pages/profile/ProfileTab.js";
-import ReviewsTab from "../../pages/profile/ReviewsTab.js";
-import EventsTab from "../../pages/profile/EventsTab.js";
+import EditButton from "../../components/buttons/EditButton.jsx";
+import ProfileTab from "../../pages/profile/ProfileTab.jsx";
+import ReviewsTab from "../../pages/profile/ReviewsTab.jsx";
+import EventsTab from "../../pages/profile/EventsTab.jsx";
 
 const Profile: React.FC = () => {
   const { user } = useAuth();

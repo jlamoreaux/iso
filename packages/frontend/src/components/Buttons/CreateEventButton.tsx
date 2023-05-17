@@ -13,7 +13,7 @@ import {
 } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { IconPlus } from "@tabler/icons-react";
-import GeoAutocomplete from "../input/GeoAutocomplete.js";
+import GeoAutocomplete from "../input/GeoAutocomplete.jsx";
 import { createEvent, Event } from "../../services/api.js";
 
 type CreateEventButtonProps = {

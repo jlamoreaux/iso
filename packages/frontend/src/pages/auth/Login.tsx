@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { useAuth } from "../../context/AuthProvider.js";
+import { useAuth } from "../../context/AuthProvider.jsx";
 
 import {
   TextInput,

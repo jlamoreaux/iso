@@ -1,9 +1,9 @@
 import React from "react";
 import { useLoaderData } from "react-router-dom";
 import { Container, Stack, Title } from "@mantine/core";
-import { AuthWrapper } from "../../context/AuthProvider.js";
-import MessageTile from "../../components/cards/MessageTile.js";
-import { IncomingMessage } from "../../services/api.js";
+import { AuthWrapper } from "../../context/AuthProvider.jsx";
+import MessageTile from "../../components/cards/MessageTile.jsx";
+import { IncomingMessage } from "../../services/api.jsx";
 
 const sortMessages = (messages: IncomingMessage[]) => {
   if (messages.length > 0) {
