@@ -67,8 +67,8 @@ mongoose
   .connect(process.env.MONGODB_URI as string)
   .then(() => {
     console.log("MongoDB Connected");
-    // seedRootMessages();
-    seedReplyMessages();
+    seedRootMessages();
+    // seedReplyMessages();
     // deleteMessages();
   })
   .catch((err) => console.log(err));

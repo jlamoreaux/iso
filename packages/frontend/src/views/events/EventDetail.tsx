@@ -260,7 +260,7 @@ const EventDetail: React.FC = () => {
               <Stack spacing="lg">
                 {comments &&
                   comments.map((comment) => (
-                    <Group w="100%">
+                    <Group w="100%" key={comment.id}>
                       <ProfileCard
                         photographer={comment.photographer}
                         style="compact"

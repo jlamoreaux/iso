@@ -41,11 +41,6 @@ const SearchEvents = () => {
     },
   });
 
-  const fetchNextPage = async (page: number) => {
-    const data = await searchEvents({ ...convertValues(form.values) }, page);
-    return data;
-  };
-
   const handleSearchSubmit = async () => {
     setShowSearchForm(false);
     setShowResults(true);
@@ -83,7 +78,7 @@ const SearchEvents = () => {
           </form>
         </Collapse>
         <Container>
-          {showResults && <EventsList key={keyCounter} fetchEvents={fetchNextPage} />}
+          {showResults && <EventsList key={keyCounter} />}
         </Container>
       </Stack>
     </Container>

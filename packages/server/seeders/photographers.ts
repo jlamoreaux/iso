@@ -71,6 +71,7 @@ mongoose
   .then(async () => {
     console.log("MongoDB Connected");
     await addRegions();
+    await seedPhotographers(10);
   })
   .then(() => mongoose.connection.close(() => console.log("MongoDB connection closed")))
   .catch((err) => console.log(err));

@@ -15,7 +15,7 @@ type EventsFeedParams = {
 };
 
 export type EventsFeedResponse = {
-  events: EventDocument[];
+  data: EventDocument[];
   totalPages: number;
   totalResults: number;
 };
@@ -153,7 +153,7 @@ const DALEvent = {
       favoritePhotographerEvents?.length > 0
         ? favoritePhotographerEvents.concat(otherEvents)
         : otherEvents;
-    return { events: eventsToReturn, totalResults, totalPages: Math.ceil(totalResults / limit) };
+    return { data: eventsToReturn, totalResults, totalPages: Math.ceil(totalResults / limit) };
   },
   search: async ({
     query,
