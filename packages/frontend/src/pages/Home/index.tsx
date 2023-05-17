@@ -1,6 +1,6 @@
 import React from "react";
 import { Anchor, Container, Loader, Space, Stack, Text } from "@mantine/core";
-import { PrimaryLink } from "../../components/buttons/index.jsx";
+import { PrimaryLink } from "../../components/buttons/index.js";
 import { useAuth } from "../../context/AuthProvider.jsx";
 import EventsFeed from "../events/EventsFeed.jsx";
 

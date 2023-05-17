@@ -4,8 +4,8 @@ import { Button, Collapse, Container, Group, Space, Stack, Text, Title } from "@
 import React, { useEffect, useState } from "react";
 import { useLoaderData, useLocation, useParams } from "react-router-dom";
 import MessageTile from "../../components/cards/MessageTile.jsx";
-import { PrimaryLink } from "../../components/buttons/index.jsx";
-import { ProfileCard } from "../../components/cards/ProfileCards.jsx";
+import { PrimaryLink } from "../../components/buttons/index.js";
+import ProfileCard from "../../components/cards/ProfileCards.jsx";
 import { MessageResponse, updateMessage } from "../../services/api.js";
 import { AuthWrapper } from "../../context/AuthProvider.jsx";
 

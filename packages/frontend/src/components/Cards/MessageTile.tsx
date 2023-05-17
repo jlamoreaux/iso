@@ -11,11 +11,7 @@ type MessageTileProps = {
   isMessageView?: boolean;
 };
 
-export const MessageTile: React.FC<MessageTileProps> = ({
-  message,
-  currentMessage,
-  isMessageView,
-}) => {
+const MessageTile: React.FC<MessageTileProps> = ({ message, currentMessage, isMessageView }) => {
   const { firstName, lastName, city, state, profilePic } = message.sender;
   const {
     lastReply,

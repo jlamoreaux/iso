@@ -3,7 +3,7 @@ import InfiniteScroll from "react-infinite-scroll-component";
 import { useLoaderData } from "react-router-dom";
 import { Title, Stack, Container, Loader } from "@mantine/core";
 import { Photographer, PhotographerSearchResponse } from "../../services/api.js";
-import { ProfileCard } from "../../components/cards/ProfileCards.jsx";
+import ProfileCard from "../../components/cards/ProfileCards.jsx";
 import { AuthWrapper } from "../../context/AuthProvider.jsx";
 
 type PhotographersListProps = {

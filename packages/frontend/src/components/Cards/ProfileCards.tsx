@@ -11,7 +11,7 @@ type ProfileCardProps = {
   displayName?: boolean;
 };
 
-export const ProfileCard: React.FC<ProfileCardProps> = ({
+const ProfileCard: React.FC<ProfileCardProps> = ({
   photographer,
   style = "verbose",
   direction = "ltr",
@@ -47,3 +47,5 @@ export const ProfileCard: React.FC<ProfileCardProps> = ({
     </UnstyledButton>
   );
 };
+
+export default ProfileCard;
