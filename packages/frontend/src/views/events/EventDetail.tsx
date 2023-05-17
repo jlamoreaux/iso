@@ -28,7 +28,7 @@ import {
   updateEvent,
 } from "../../services/api.js";
 import theme from "../../styles/theme.js";
-import ProfileCard from "../../components/cards/ProfileCards.js";
+import ProfileCard from "../../components/cards/ProfileCards.jsx";
 import { AuthWrapper, useAuth } from "../../context/AuthProvider.js";
 import Timestamp from "../../components/Timestamp.js";
 import GeoAutocomplete from "../../components/input/GeoAutocomplete.js";
