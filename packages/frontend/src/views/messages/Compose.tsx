@@ -14,10 +14,10 @@ import {
 import { useForm } from "@mantine/form";
 import { DatePicker } from "@mantine/dates";
 import { IconAlertTriangle } from "@tabler/icons-react";
-import { createMessage, MessageResponse } from "../../services/api.js";
+import { createMessage, MessageResponse } from "../../services/api.ts";
 import { ReactComponent as Calendar } from "../../assets/svg/calendar.svg";
-import { AuthWrapper } from "../../context/AuthProvider.js";
-import theme from "../../styles/theme.js";
+import { AuthWrapper } from "../../context/AuthProvider.ts";
+import theme from "../../styles/theme.ts";
 
 type FormValues = {
   message: string;

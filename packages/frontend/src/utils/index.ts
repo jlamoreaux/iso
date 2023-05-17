@@ -1,4 +1,4 @@
-import * as geography from "./geography.js";
-import * as logoutLoader from "./logoutLoader.js";
+import * as geography from "./geography.ts";
+import * as logoutLoader from "./logoutLoader.ts";
 
 export { geography, logoutLoader };

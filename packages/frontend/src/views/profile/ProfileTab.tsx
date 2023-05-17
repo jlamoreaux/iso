@@ -10,8 +10,8 @@ import {
   Title,
   TypographyStylesProvider,
 } from "@mantine/core";
-import EditButton from "../../components/buttons/EditButton.js";
-import { Photographer } from "../../services/api.js";
+import EditButton from "../../components/buttons/EditButton.ts";
+import { Photographer } from "../../services/api.ts";
 
 type ProfileTabProps = Partial<Photographer> & {
   isOwnProfile: boolean;

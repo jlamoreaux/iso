@@ -1,8 +1,8 @@
 import React from "react";
 import dayjs from "dayjs";
-import relativeTime from "dayjs/plugin/relativeTime.js";
+import relativeTime from "dayjs/plugin/relativeTime.ts";
 import { Text, Tooltip } from "@mantine/core";
-import theme from "../styles/theme.js";
+import theme from "../styles/theme.ts";
 
 type TimestampProps = {
   dateTime: Date;

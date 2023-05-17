@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { logout } from "../../services/api.js";
+import { logout } from "../../services/api.ts";
 
 const Logout = () => {
   const [isLoggedOut, setIsLoggedOut] = useState<boolean>(false);

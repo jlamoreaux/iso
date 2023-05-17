@@ -1,7 +1,7 @@
 import { Navbar, NavbarProps, NavLink } from "@mantine/core";
 import React, { useState } from "react";
 import { useLocation } from "react-router-dom";
-import navItems from "./navigationItems.js";
+import navItems from "./navigationItems.ts";
 
 type ActiveNav = (typeof navItems)[number]["name"];
 type NavBarProps = Omit<NavbarProps, "children">;

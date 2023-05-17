@@ -1,8 +1,8 @@
 import React, { useEffect, useMemo, useState } from "react";
 import InfiniteScroll from "react-infinite-scroll-component";
 import { Stack, Text } from "@mantine/core";
-import { Event, getEventsByPhotographer } from "../../services/api.js";
-import EventCard from "../../components/cards/EventCard.js";
+import { Event, getEventsByPhotographer } from "../../services/api.ts";
+import EventCard from "../../components/cards/EventCard.ts";
 
 type EventsTabProps = {
   profileId: string;

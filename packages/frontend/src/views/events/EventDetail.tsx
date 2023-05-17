@@ -26,12 +26,12 @@ import {
   Event,
   EventComment,
   updateEvent,
-} from "../../services/api.js";
-import theme from "../../styles/theme.js";
-import ProfileCard from "../../components/cards/ProfileCards.js";
-import { AuthWrapper, useAuth } from "../../context/AuthProvider.js";
-import Timestamp from "../../components/Timestamp.js";
-import GeoAutocomplete from "../../components/input/GeoAutocomplete.js";
+} from "../../services/api.ts";
+import theme from "../../styles/theme.ts";
+import ProfileCard from "../../components/cards/ProfileCards.ts";
+import { AuthWrapper, useAuth } from "../../context/AuthProvider.ts";
+import Timestamp from "../../components/Timestamp.ts";
+import GeoAutocomplete from "../../components/input/GeoAutocomplete.ts";
 
 const EventDetail: React.FC = () => {
   const { user } = useAuth();
