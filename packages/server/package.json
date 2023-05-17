@@ -6,7 +6,7 @@
   "main": "dist/app.js",
   "engines": {
     "node": "18.12.1",
-    "yarn": ">=1.22.18"
+    "yarn": ">=1.22.5"
   },
   "nodemonConfig": {
     "ignore": [
