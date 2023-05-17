@@ -34,7 +34,7 @@ const EventsTab: React.FC<EventsTabProps> = ({ profileId }) => {
   }, [events]);
 
   return (
-    <InfiniteScroll.default
+    <InfiniteScroll
       dataLength={events?.length}
       next={fetchEvents}
       hasMore={hasMore}
@@ -43,7 +43,7 @@ const EventsTab: React.FC<EventsTabProps> = ({ profileId }) => {
       <Stack spacing="xl" p="md">
         {content}
       </Stack>
-    </InfiniteScroll.default>
+    </InfiniteScroll>
   );
 };
 

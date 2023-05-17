@@ -79,14 +79,14 @@ const PhotographersList: React.FC<PhotographersListProps> = ({ listType }) => {
     <AuthWrapper>
       <Container>
         {title && <Title>{title}</Title>}
-        <InfiniteScroll.default
+        <InfiniteScroll
           dataLength={photographers?.length || 0}
           next={fetchData}
           hasMore={hasMore}
           loader={<Loader />}
         >
           {content}
-        </InfiniteScroll.default>
+        </InfiniteScroll>
       </Container>
     </AuthWrapper>
   );

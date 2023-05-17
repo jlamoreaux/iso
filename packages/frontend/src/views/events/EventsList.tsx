@@ -42,14 +42,14 @@ const EventsList: React.FC<EventsListProps> = ({ fetchEvents }) => {
   }, [events]);
 
   return (
-    <InfiniteScroll.default
+    <InfiniteScroll
       dataLength={events.length}
       next={fetchData}
       hasMore={hasMore}
       loader={<CenteredLoader />}
     >
       <Stack spacing="xl">{content}</Stack>
-    </InfiniteScroll.default>
+    </InfiniteScroll>
   );
 };
 
