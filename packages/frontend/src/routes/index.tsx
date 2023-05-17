@@ -1,10 +1,10 @@
 import React from "react";
 import { createBrowserRouter } from "react-router-dom";
-import Login from "../views/auth/Login.ts";
-import Logout from "../views/auth/Logout.ts";
-import Register from "../views/auth/Register.ts";
-import Profile from "../views/profile/index.ts";
-import Root from "./Root.ts";
+import Login from "../views/auth/Login.js";
+import Logout from "../views/auth/Logout.js";
+import Register from "../views/auth/Register.js";
+import Profile from "../views/profile/index.js";
+import Root from "./Root.js";
 import {
   getPhotographerById,
   getMessages,
@@ -19,16 +19,16 @@ import {
   EventSearchQuery,
   searchEvents,
   EventSearchResponse,
-} from "../services/api.ts";
-import logoutLoader from "../utils/logoutLoader.ts";
-import PhotographersList, { LIST_TYPE } from "../views/photographers/PhotographersList.ts";
-import Compose from "../views/messages/Compose.ts";
-import Inbox from "../views/messages/Inbox.ts";
-import ViewMessage from "../views/messages/ViewMessage.ts";
-import Layout from "../views/Layout.ts";
-import EventDetail from "../views/events/EventDetail.ts";
-import EventsFeed from "../views/events/EventsFeed.ts";
-import Search from "../views/search/Search.ts";
+} from "../services/api.js";
+import logoutLoader from "../utils/logoutLoader.js";
+import PhotographersList, { LIST_TYPE } from "../views/photographers/PhotographersList.js";
+import Compose from "../views/messages/Compose.js";
+import Inbox from "../views/messages/Inbox.js";
+import ViewMessage from "../views/messages/ViewMessage.js";
+import Layout from "../views/Layout.js";
+import EventDetail from "../views/events/EventDetail.js";
+import EventsFeed from "../views/events/EventsFeed.js";
+import Search from "../views/search/Search.js";
 
 const router = createBrowserRouter([
   {

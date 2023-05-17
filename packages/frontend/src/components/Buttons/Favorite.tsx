@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import { ActionIcon } from "@mantine/core";
 import { IconBookmark } from "@tabler/icons-react";
-import theme from "../../styles/theme.ts";
-import { addFavorite, removeFavorite } from "../../services/api.ts";
+import theme from "../../styles/theme.js";
+import { addFavorite, removeFavorite } from "../../services/api.js";
 
 type AddFavoriteProps = {
   id: string;

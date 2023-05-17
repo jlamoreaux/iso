@@ -1,7 +1,7 @@
 import { Group, GroupProps, Navbar, NavbarProps, NavLink } from "@mantine/core";
 import React from "react";
 import { useLocation } from "react-router-dom";
-import navItems from "./navigationItems.ts";
+import navItems from "./navigationItems.js";
 
 type ActiveNav = (typeof navItems)[number]["name"];
 type MobileNavProps = Omit<GroupProps, "children">;

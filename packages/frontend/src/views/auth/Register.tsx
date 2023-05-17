@@ -16,8 +16,8 @@ import {
   Stack,
 } from "@mantine/core";
 import { redirect, useNavigate } from "react-router-dom";
-import { states } from "../../utils/geography.ts";
-import { register } from "../../services/api.ts";
+import { states } from "../../utils/geography.js";
+import { register } from "../../services/api.js";
 
 type FormData = {
   email: string;

@@ -2,9 +2,9 @@ import React, { useCallback, useEffect, useMemo } from "react";
 import InfiniteScroll from "react-infinite-scroll-component";
 import { useLoaderData } from "react-router-dom";
 import { Title, Stack, Container, Loader } from "@mantine/core";
-import { Photographer, PhotographerSearchResponse } from "../../services/api.ts";
-import ProfileCard from "../../components/cards/ProfileCards.ts";
-import { AuthWrapper } from "../../context/AuthProvider.ts";
+import { Photographer, PhotographerSearchResponse } from "../../services/api.js";
+import ProfileCard from "../../components/cards/ProfileCards.js";
+import { AuthWrapper } from "../../context/AuthProvider.js";
 
 type PhotographersListProps = {
   listType?: LIST_TYPE;

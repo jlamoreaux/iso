@@ -1,7 +1,7 @@
 import { Loader } from "@mantine/core";
 import React, { useState, useEffect, useContext } from "react";
-import Login from "../views/auth/Login.ts";
-import { getLoggedInUser, login as loginApi, logout as logoutApi, User } from "../services/api.ts";
+import Login from "../views/auth/Login.js";
+import { getLoggedInUser, login as loginApi, logout as logoutApi, User } from "../services/api.js";
 
 interface IAuthContext {
   user: User | null;

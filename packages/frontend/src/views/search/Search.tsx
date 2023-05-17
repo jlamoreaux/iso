@@ -1,8 +1,8 @@
 import React from "react";
 import { Container, Stack, Tabs, Title } from "@mantine/core";
-import { AuthWrapper } from "../../context/AuthProvider.ts";
-import SearchPhotographers from "./SearchPhotographers.ts";
-import SearchEvents from "./SearchEvents.ts";
+import { AuthWrapper } from "../../context/AuthProvider.js";
+import SearchPhotographers from "./SearchPhotographers.js";
+import SearchEvents from "./SearchEvents.js";
 
 const Search = () => {
   return (
