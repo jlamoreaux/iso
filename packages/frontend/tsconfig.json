@@ -16,7 +16,7 @@
     "noEmit": true,
     "jsx": "react-jsx",
     "rootDir": "src",
-    "baseUrl": ".",
+    "baseUrl": "./src",
     "types": ["vite-plugin-svgr/client"]
   },
   "include": ["src/**/*.ts", "src/**/*.tsx", "src/**/*.svg"],
