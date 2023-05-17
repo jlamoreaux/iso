@@ -3,8 +3,8 @@ import InfiniteScroll from "react-infinite-scroll-component";
 import { useLoaderData } from "react-router-dom";
 import { Title, Stack, Container, Loader } from "@mantine/core";
 import { Photographer, PhotographerSearchResponse } from "../../services/api.js";
-import ProfileCard from "../../components/cards/ProfileCards.js";
-import { AuthWrapper } from "../../context/AuthProvider.js";
+import ProfileCard from "../../components/cards/ProfileCards.jsx";
+import { AuthWrapper } from "../../context/AuthProvider.jsx";
 
 type PhotographersListProps = {
   listType?: LIST_TYPE;
@@ -79,14 +79,14 @@ const PhotographersList: React.FC<PhotographersListProps> = ({ listType }) => {
     <AuthWrapper>
       <Container>
         {title && <Title>{title}</Title>}
-        <InfiniteScroll
+        <InfiniteScroll.default
           dataLength={photographers?.length || 0}
           next={fetchData}
           hasMore={hasMore}
           loader={<Loader />}
         >
           {content}
-        </InfiniteScroll>
+        </InfiniteScroll.default>
       </Container>
     </AuthWrapper>
   );
