@@ -1,9 +1,9 @@
 import React from "react";
+import { Link } from "react-router-dom";
 import { Group, Title, Text, Stack, Indicator } from "@mantine/core";
 import { IncomingMessage } from "../../services/api.jsx";
 import { ProfilePhoto } from "../images/ProfilePhoto.jsx";
 import theme from "../../styles/theme.js";
-import { Link } from "react-router-dom";
 
 type MessageTileProps = {
   message: IncomingMessage;

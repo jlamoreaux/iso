@@ -19,7 +19,7 @@ import {
   searchEvents,
   EventSearchResponse,
 } from "../services/api.js";
-import logoutLoader from "../utils/logoutLoader.jsx";
+import logoutLoader from "../utils/logoutLoader.js";
 import PhotographersList, { LIST_TYPE } from "../pages/photographers/PhotographersList.js";
 import Compose from "../pages/messages/Compose.jsx";
 import Inbox from "../pages/messages/Inbox.jsx";
