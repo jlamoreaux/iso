@@ -1,5 +1,7 @@
 {
   "compilerOptions": {
+    "baseUrl": "src",
+    "outDir": "dist",
     "target": "ES6",
     "useDefineForClassFields": true,
     "lib": ["DOM", "DOM.Iterable", "ES6", "ESNext"],
@@ -14,11 +16,10 @@
     "resolveJsonModule": true,
     "isolatedModules": true,
     "noEmit": true,
-    "jsx": "react-jsx",
+    "jsx": "react",
     "rootDir": "src",
-    "baseUrl": "./src",
     "types": ["vite-plugin-svgr/client"]
   },
-  "include": ["src/**/*.ts", "src/**/*.tsx", "src/**/*.svg"],
+  "include": ["src/**/*"],
   "references": [{ "path": "./tsconfig.node.json" }]
 }
