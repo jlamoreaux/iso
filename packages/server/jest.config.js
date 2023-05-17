@@ -1,11 +1,14 @@
 module.exports = {
-  rootDir: '../../',
-  roots: ['<rootDir>/packages/server/src'],
+  rootDir: "../../",
+  roots: ["<rootDir>/packages/server/src"],
   transform: {
-    '^.+\\.ts?$': ['ts-jest', { tsconfig: "<rootDir>/packages/server/tsconfig.json", diagnostics: false }]
+    "^.+\\.ts?$": [
+      "ts-jest",
+      { tsconfig: "<rootDir>/packages/server/tsconfig.json", diagnostics: false },
+    ],
   },
-  testMatch: ["**/*.test.ts"],
-  testEnvironment: 'node',
+  testMatch: ["**/*.test.js"],
+  testEnvironment: "node",
   // testRegex: './src/.*\\.(test|spec)?\\.(ts|ts)$',
-  moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx', 'json', 'node'],
+  moduleFileExtensions: ["ts", "tsx", "js", "jsx", "json", "node"],
 };

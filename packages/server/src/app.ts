@@ -13,10 +13,11 @@ config();
 
 const inProd = process.env.NODE_ENV === "production";
 const port = process.env.PORT || 3001;
+const FRONTEND_URL = process.env.FRONTEND_URL || "http://localhost:5173";
 const app = express();
 
 app.use(express.urlencoded({ extended: false }));
-app.use(cors({ credentials: true, origin: "http://localhost:5173" }));
+app.use(cors({ credentials: true, origin: FRONTEND_URL }));
 app.use(express.static(path.join(__dirname, "public")));
 app.use(passport.initialize());
 app.use(
