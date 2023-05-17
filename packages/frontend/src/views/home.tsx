@@ -1,8 +1,8 @@
 import React from "react";
 import { Anchor, Container, Loader, Space, Stack, Text } from "@mantine/core";
-import { PrimaryLink } from "../components/buttons/Link.js";
-import { useAuth } from "../context/AuthProvider.js";
-import EventsFeed from "./events/EventsFeed.js";
+import { PrimaryLink } from "../components/buttons/Link.jsx";
+import { useAuth } from "../context/AuthProvider.jsx";
+import EventsFeed from "./events/EventsFeed.jsx";
 
 const Home: React.FC = () => {
   const { isAuthenticated, user, loading } = useAuth();

@@ -2,7 +2,7 @@ import { createBrowserRouter } from "react-router-dom";
 import Login from "../views/auth/Login.js";
 import Logout from "../views/auth/Logout.js";
 import Register from "../views/auth/Register.js";
-import Profile from "../views/profile/index.js";
+import Profile from "../views/profile/Profile.js";
 import Root from "./Root.jsx";
 import {
   getPhotographerById,

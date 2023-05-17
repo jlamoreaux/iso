@@ -31,7 +31,7 @@ import theme from "../../styles/theme.js";
 import ProfileCard from "../../components/cards/ProfileCards.jsx";
 import { AuthWrapper, useAuth } from "../../context/AuthProvider.jsx";
 import Timestamp from "../../components/Timestamp.jsx";
-import GeoAutocomplete from "../../components/GeoAutocomplete.jsx";
+import GeoAutocomplete from "../../components/input/GeoAutocomplete.jsx";
 
 const EventDetail: React.FC = () => {
   const { user } = useAuth();
