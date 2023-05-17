@@ -7,7 +7,7 @@ module.exports = {
       { tsconfig: "<rootDir>/packages/server/tsconfig.json", diagnostics: false },
     ],
   },
-  testMatch: ["**/*.test.js"],
+  testMatch: ["**/*.test.ts"],
   testEnvironment: "node",
   // testRegex: './src/.*\\.(test|spec)?\\.(ts|ts)$',
   moduleFileExtensions: ["ts", "tsx", "js", "jsx", "json", "node"],
