@@ -1,7 +1,7 @@
 import React from "react";
 import { Group, Title, Text, Stack, UnstyledButton } from "@mantine/core";
-import { Photographer } from "../../services/api.jsx";
-import { ProfilePhoto } from "../images/ProfilePhoto.jsx";
+import { Photographer } from "../../services/api.js";
+import { ProfilePhoto } from "../images/ProfilePhoto.js";
 import theme from "../../styles/theme.js";
 
 type ProfileCardProps = {

@@ -28,10 +28,10 @@ import {
   updateEvent,
 } from "../../services/api.js";
 import theme from "../../styles/theme.js";
-import ProfileCard from "../../components/cards/ProfileCards.jsx";
-import { AuthWrapper, useAuth } from "../../context/AuthProvider.jsx";
-import Timestamp from "../../components/Timestamp.jsx";
-import GeoAutocomplete from "../../components/input/GeoAutocomplete.jsx";
+import ProfileCard from "../../components/cards/ProfileCards.js";
+import { AuthWrapper, useAuth } from "../../context/AuthProvider.js";
+import Timestamp from "../../components/Timestamp.js";
+import GeoAutocomplete from "../../components/input/GeoAutocomplete.js";
 
 const EventDetail: React.FC = () => {
   const { user } = useAuth();
