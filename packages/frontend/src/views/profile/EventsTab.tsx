@@ -1,49 +1,48 @@
 import React, { useEffect, useMemo, useState } from "react";
-import InfiniteScroll from "react-infinite-scroll-component";
-import { Stack, Text } from "@mantine/core";
+import InfiniteScroll from "react-infinite-scroller";
+import { Container, Loader, Stack, Text } from "@mantine/core";
 import { Event, getEventsByPhotographer } from "../../services/api.js";
 import EventCard from "../../components/cards/EventCard.jsx";
+import usePaginatedData from "../../hooks/usePaginatedData.js";
 
 type EventsTabProps = {
   profileId: string;
 };
 
+const CenteredLoader = () => (
+  <Container w="100%" pos="relative" display="flex" p="0">
+    <Loader m="auto" mt="md" />
+  </Container>
+);
+
 const EventsTab: React.FC<EventsTabProps> = ({ profileId }) => {
-  const [events, setEvents] = useState<Event[]>([]);
-  const [page, setPage] = useState(0);
-  const [hasMore, setHasMore] = useState(true);
+  const { data, hasMore, fetchData, page } = usePaginatedData<Event>(
+    // TODO: Add pagination to getEventsByPhotographer
+    () => getEventsByPhotographer(profileId)
+  );
 
-  const fetchEvents = async () => {
-    const data = await getEventsByPhotographer(profileId);
-    if (!data || !data.events) return setHasMore(false);
-    setPage(page + 1);
-    setHasMore(data.totalPages > page);
-    setEvents(data.events);
-  };
+   const events = useMemo(() => data, [data]);
 
-  useEffect(() => {
-    fetchEvents();
-  }, []);
-
-  const content = useMemo(() => {
-    if (!events || events.length === 0) {
-      return <div>No events found</div>;
-    }
-
-    return events.map((event, i) => <EventCard key={i} event={event} />);
-  }, [events]);
+  if (!events || !events.length) {
+    return <div>No events to display</div>;
+  }
 
   return (
-    <InfiniteScroll.default
-      dataLength={events?.length}
-      next={fetchEvents}
-      hasMore={hasMore}
-      loader={<Text>Loading...</Text>}
-    >
-      <Stack spacing="xl" p="md">
-        {content}
-      </Stack>
-    </InfiniteScroll.default>
+    <div>
+      <InfiniteScroll
+        loadMore={() => {
+          fetchData(page + 1); // Pass the updated page
+        }}
+        hasMore={hasMore}
+        loader={<CenteredLoader />}
+      >
+        <Stack spacing="xl">
+          {events.map((event, i) => (
+            <EventCard event={event} key={i} />
+          ))}
+        </Stack>
+      </InfiniteScroll>
+    </div>
   );
 };
 

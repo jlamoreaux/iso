@@ -147,7 +147,7 @@ export type EventComment = {
 };
 
 export type EventFeedResponse = {
-  events: Event[];
+  data: Event[];
   totalResults: number;
   totalPages: number;
 };
@@ -368,7 +368,7 @@ export const deleteMessage = async (id: string | undefined): Promise<void> => {
 
 // Event routes
 
-export const getEvents = async (page: number): Promise<EventFeedResponse> => {
+export const getEvents = async (page: number = 1): Promise<EventFeedResponse> => {
   try {
     const res = await api.get("/api/events?page=" + page);
     return res.data;

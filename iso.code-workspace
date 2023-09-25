@@ -44,6 +44,6 @@
     }
   },
   "extensions": {
-    "recommendations": ["dbaeumer.vscode-eslint", "ms-vscode.vscode-typescript-tslint-plugin"]
+    "recommendations": ["dbaeumer.vscode-eslint"]
   }
 }
